@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>1st U.S. Volunteer Cavalry – Rough Riders | Tampa 1898</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=IM+Fell+English:ital@0;1&family=Cinzel+Decorative:wght@700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --navy: #0d1f3c;
+  --navy-dark: #071429;
+  --navy-mid: #162d55;
+  --gold: #C9A84C;
+  --gold-light: #e0c06a;
+  --gold-pale: #f5e9c0;
+  --cream: #f0e8d0;
+  --parchment: #e8dfc0;
+  --sepia: #8b6914;
+  --burgundy: #6B1A1A;
+  --text-dark: #1a1208;
+  --text-mid: #3d2f10;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--navy-dark);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+/* ── AGED PAPER TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.3;
+}
+
+/* ── NAVIGATION ── */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: linear-gradient(180deg, rgba(7,20,41,0.98) 0%, rgba(13,31,60,0.95) 100%);
+  border-bottom: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  backdrop-filter: blur(8px);
+}
+
+.logo-nav {
+  display: flex; align-items: center; gap: 0.75rem;
+  text-decoration: none;
+}
+.logo-nav .badge {
+  width: 44px; height: 44px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--navy-dark);
+  font-size: 0.65rem; font-weight: 700;
+  text-align: center; line-height: 1.2;
+  border: 2px solid var(--gold-light);
+  flex-shrink: 0;
+  padding: 4px;
+}
+.logo-nav span {
+  font-family: 'Playfair Display', serif;
+  color: var(--gold);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+nav { display: flex; align-items: center; gap: 0.25rem; }
+nav a {
+  color: var(--cream);
+  text-decoration: none;
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.75rem;
+  border-radius: 2px;
+  transition: color 0.2s, background 0.2s;
+}
+nav a:hover { color: var(--gold); }
+nav .cta-btn {
+  background: var(--gold);
+  color: var(--navy-dark) !important;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  margin-left: 0.5rem;
+}
+nav .cta-btn:hover { background: var(--gold-light); }
+
+.member-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold) !important;
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: 'Source Serif 4', serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.member-btn:hover { background: var(--gold); color: var(--navy-dark) !important; }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+  overflow: hidden;
+}
+
+#hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(7,20,41,0.55) 0%,
+      rgba(13,31,60,0.3) 40%,
+      rgba(7,20,41,0.7) 80%,
+      rgba(7,20,41,0.98) 100%),
+    url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rough_Riders_San_Juan_Hill.jpg/1280px-Rough_Riders_San_Juan_Hill.jpg') center/cover no-repeat;
+  filter: sepia(60%) contrast(0.85);
+}
+
+.hero-ornament {
+  position: relative; z-index: 2;
+  color: var(--gold);
+  font-size: 1.5rem;
+  letter-spacing: 0.5em;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+#hero h1 {
+  position: relative; z-index: 2;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  color: var(--gold);
+  text-shadow: 0 2px 30px rgba(0,0,0,0.8), 0 0 60px rgba(201,168,76,0.3);
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+#hero .hero-sub {
+  position: relative; z-index: 2;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  color: var(--parchment);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+#hero .hero-year {
+  position: relative; z-index: 2;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--gold);
+  opacity: 0.25;
+  line-height: 1;
+  margin: -0.5rem 0;
+}
+
+#hero .hero-divider {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 1rem;
+  margin: 1.5rem auto;
+  width: min(500px, 90%);
+}
+.hero-divider::before, .hero-divider::after {
+  content: ''; flex: 1;
+  height: 1px; background: var(--gold); opacity: 0.6;
+}
+.hero-divider span { color: var(--gold); font-size: 1.2rem; }
+
+#hero .mission {
+  position: relative; z-index: 2;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  color: var(--gold-pale);
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+  max-width: 640px;
+  line-height: 1.8;
+  margin: 0 auto 2.5rem;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+
+.hero-actions {
+  position: relative; z-index: 2;
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  justify-content: center;
+}
+.btn-primary {
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.9rem 2.2rem;
+  border: none; border-radius: 2px;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(240,232,208,0.5);
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.9rem 2.2rem;
+  border-radius: 2px;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+.scroll-hint {
+  position: relative; z-index: 2;
+  margin-top: 3rem;
+  color: var(--gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ── SECTION SHARED ── */
+section { position: relative; z-index: 1; }
+
+.section-parchment {
+  background: var(--parchment);
+  color: var(--text-dark);
+}
+.section-navy {
+  background: var(--navy);
+  color: var(--cream);
+}
+.section-dark {
+  background: var(--navy-dark);
+  color: var(--cream);
+}
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.section-label {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.section-parchment .section-title { color: var(--navy-dark); }
+.section-navy .section-title, .section-dark .section-title { color: var(--gold); }
+
+.ornamental-rule {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.75rem; margin: 1rem auto 0;
+}
+.ornamental-rule::before, .ornamental-rule::after {
+  content: ''; width: 60px; height: 1px;
+  background: currentColor; opacity: 0.4;
+}
+.ornamental-rule span { font-size: 1rem; color: var(--gold); }
+
+/* ── HISTORY TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--sepia) 100%);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 3rem;
+  padding-left: 2rem;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute; left: -2.4rem; top: 0.3rem;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border: 2px solid var(--parchment);
+  border-radius: 50%;
+}
+.timeline-date {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.35rem;
+}
+.timeline-item h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy-dark);
+  margin-bottom: 0.5rem;
+}
+.timeline-item p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-mid);
+}
+
+/* ── PHOTO GALLERY ── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.photo-card {
+  background: var(--navy-mid);
+  border: 1px solid rgba(201,168,76,0.3);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+.photo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.photo-card img {
+  width: 100%; aspect-ratio: 4/3;
+  object-fit: cover;
+  filter: sepia(40%) contrast(0.9) brightness(0.9);
+  transition: filter 0.3s;
+  display: block;
+}
+.photo-card:hover img { filter: sepia(20%) contrast(1) brightness(1); }
+.photo-caption {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(201,168,76,0.2);
+}
+.photo-caption h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+}
+.photo-caption p {
+  font-size: 0.8rem;
+  color: rgba(240,232,208,0.7);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ── MUSEUM SECTION ── */
+.museum-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+@media (max-width: 768px) { .museum-layout { grid-template-columns: 1fr; } }
+
+.museum-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--navy-dark);
+  margin-bottom: 1rem;
+}
+.museum-text p {
+  font-size: 0.97rem;
+  line-height: 1.85;
+  color: var(--text-mid);
+  margin-bottom: 1rem;
+}
+.artifact-list {
+  list-style: none;
+  margin: 1.5rem 0;
+}
+.artifact-list li {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(139,105,20,0.2);
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+.artifact-list li::before {
+  content: '✦';
+  color: var(--gold);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.tour-card {
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  padding: 2rem;
+  text-align: center;
+}
+.tour-card h3 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.tour-card p {
+  font-size: 0.88rem;
+  color: rgba(240,232,208,0.8);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.tour-form input, .tour-form select, .tour-form textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--cream);
+  padding: 0.65rem 1rem;
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.88rem;
+  margin-bottom: 0.75rem;
+  border-radius: 2px;
+  outline: none;
+}
+.tour-form input:focus, .tour-form select:focus, .tour-form textarea:focus {
+  border-color: var(--gold);
+}
+.tour-form select option { background: var(--navy-dark); }
+
+/* ── EVENTS ── */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.event-card {
+  background: rgba(22,45,85,0.6);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 1.5rem;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.event-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.event-date-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.75rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+.event-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.event-card p {
+  font-size: 0.85rem;
+  color: rgba(240,232,208,0.75);
+  line-height: 1.65;
+  margin-bottom: 1.2rem;
+}
+.event-ticket {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--gold-light);
+  text-decoration: none;
+  border: 1px solid rgba(201,168,76,0.4);
+  padding: 0.4rem 1rem;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.event-ticket:hover { background: var(--gold); color: var(--navy-dark); }
+
+/* ── SQUARE PAYMENT ── */
+.payment-note {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-left: 3px solid var(--gold);
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: rgba(240,232,208,0.7);
+  font-style: italic;
+  margin-top: 1rem;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── DONATION ── */
+.donate-section {
+  text-align: center;
+}
+.donate-amounts {
+  display: flex; gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.donate-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.85rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.donate-btn:hover, .donate-btn.active {
+  background: var(--gold);
+  color: var(--navy-dark);
+}
+.donate-custom {
+  display: flex; align-items: center; gap: 1rem;
+  justify-content: center; margin-bottom: 1.5rem;
+}
+.donate-custom input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--cream);
+  padding: 0.65rem 1rem;
+  font-family: 'Source Serif 4', serif;
+  font-size: 1rem;
+  width: 140px;
+  text-align: center;
+  border-radius: 2px;
+  outline: none;
+}
+.donate-note {
+  font-size: 0.82rem;
+  color: rgba(240,232,208,0.6);
+  font-style: italic;
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+}
+
+/* ── MEMBER PORTAL ── */
+.member-gate {
+  text-align: center;
+  padding: 3rem;
+  background: rgba(22,45,85,0.5);
+  border: 1px solid rgba(201,168,76,0.3);
+}
+.member-gate h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.member-gate p {
+  color: rgba(240,232,208,0.7);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.login-form input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: var(--cream);
+  padding: 0.65rem 1rem;
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.9rem;
+  margin: 0.4rem;
+  border-radius: 2px;
+  outline: none; width: 220px;
+}
+.login-form input:focus { border-color: var(--gold); }
+
+/* LOGGED IN PORTAL */
+.portal-dashboard { display: none; }
+.portal-dashboard.active { display: block; }
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.portal-card {
+  background: rgba(22,45,85,0.6);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 1.5rem;
+  text-align: center;
+}
+.portal-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.portal-card h4 {
+  font-family: 'Playfair Display', serif;
+  color: var(--gold); margin-bottom: 0.5rem;
+}
+.portal-card p {
+  font-size: 0.82rem;
+  color: rgba(240,232,208,0.65);
+  line-height: 1.6;
+}
+
+/* ── LANDMARKS ── */
+.landmark-strip {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-color: var(--gold) transparent;
+}
+.landmark-item {
+  min-width: 260px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.landmark-item img {
+  width: 100%; height: 200px;
+  object-fit: cover;
+  filter: sepia(50%) contrast(0.85);
+  transition: filter 0.3s, transform 0.5s;
+  display: block;
+}
+.landmark-item:hover img {
+  filter: sepia(20%) contrast(1);
+  transform: scale(1.04);
+}
+.landmark-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(7,20,41,0.85) 0%, transparent 60%);
+  display: flex; align-items: flex-end;
+  padding: 1rem;
+}
+.landmark-overlay h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  color: var(--cream);
+  line-height: 1.3;
+}
+.landmark-overlay span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--gold);
+  font-style: italic;
+}
+
+/* ── QUOTE SECTION ── */
+.quote-block {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-mid) 100%);
+  border-top: 1px solid rgba(201,168,76,0.2);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  position: relative;
+}
+.quote-block::before {
+  content: '"';
+  position: absolute;
+  top: 1rem; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: 12rem;
+  color: var(--gold);
+  opacity: 0.06;
+  line-height: 1;
+}
+.quote-block blockquote {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+  color: var(--gold-pale);
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.7;
+  position: relative; z-index: 1;
+}
+.quote-block cite {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-style: normal;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy-dark);
+  border-top: 2px solid var(--gold);
+  padding: 3rem 2rem 1.5rem;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+@media (max-width: 768px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+footer h4 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+footer p, footer a {
+  font-size: 0.82rem;
+  color: rgba(240,232,208,0.6);
+  line-height: 1.8;
+  text-decoration: none;
+  display: block;
+}
+footer a:hover { color: var(--gold); }
+.footer-bottom {
+  max-width: 1100px; margin: 0 auto;
+  border-top: 1px solid rgba(201,168,76,0.2);
+  padding-top: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem; color: rgba(240,232,208,0.4);
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-bottom span { color: var(--gold); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(7,20,41,0.9);
+  display: none; align-items: center; justify-content: center;
+  padding: 2rem;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  padding: 2.5rem;
+  max-width: 500px; width: 100%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--gold); margin-bottom: 1.5rem;
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1.25rem;
+  background: none; border: none;
+  color: rgba(240,232,208,0.5);
+  font-size: 1.5rem; cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--gold); }
+
+/* ── RESPONSIVE NAV ── */
+.nav-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--gold); font-size: 1.5rem;
+  cursor: pointer;
+}
+@media (max-width: 900px) {
+  nav { display: none; }
+  .nav-toggle { display: block; }
+}
+
+/* ── ANIMATIONS ── */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ── MEMBERSHIP BANNER ── */
+.membership-banner {
+  background: linear-gradient(90deg, var(--burgundy) 0%, var(--navy-dark) 100%);
+  border-top: 1px solid var(--gold);
+  border-bottom: 1px solid var(--gold);
+  padding: 1rem 2rem;
+  text-align: center;
+  font-family: 'IM Fell English', serif;
+  font-size: 0.9rem;
+  color: var(--cream);
+}
+.membership-banner a { color: var(--gold); }
+
+/* ── SQUARE PAYMENT PLACEHOLDER ── */
+.square-placeholder {
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed rgba(201,168,76,0.3);
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+.square-placeholder p {
+  font-size: 0.82rem;
+  color: rgba(240,232,208,0.5);
+  font-style: italic;
+}
+.square-placeholder .sq-icon {
+  font-size: 2rem; margin-bottom: 0.5rem;
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header id="topbar">
+  <a href="#" class="logo-nav">
+    <div class="badge">RR<br/>1898</div>
+    <span>Tampa Rough Riders</span>
+  </a>
+  <nav>
+    <a href="#history">History</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#museum">Museum</a>
+    <a href="#events">Events</a>
+    <a href="#donate">Donate</a>
+    <button class="member-btn" onclick="openMemberModal()">Member Login</button>
+    <a href="#museum" class="cta-btn">Tour</a>
+  </nav>
+  <button class="nav-toggle" onclick="toggleNav()">☰</button>
+</header>
+
+<!-- MEMBERSHIP NOTICE BANNER -->
+<div class="membership-banner" style="margin-top:64px;">
+  ★ Membership Applications Open <strong>May 1 – June 30</strong> each year &nbsp;|&nbsp;
+  <a href="https://tamparoughriders.org/page-18204" target="_blank">Apply Now</a>
+  &nbsp;|&nbsp; Contact: <a href="mailto:r.conn@tamparoughriders.org">r.conn@tamparoughriders.org</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <h1>Rough Riders</h1>
+  <p class="hero-sub">1st U.S. Volunteer Cavalry Regiment</p>
+  <div class="hero-year">1898</div>
+  <div class="hero-divider"><span>✦</span></div>
+  <p class="mission">
+    "Formed for the purpose of creating and perpetuating a living memorial to the unique accomplishment of President Theodore Roosevelt and the members of the 1st U.S. Volunteer Cavalry Regiment known as The Rough Riders."
+  </p>
+  <div class="hero-actions">
+    <a href="#museum" class="btn-primary">Visit Our Museum</a>
+    <a href="#history" class="btn-outline">Explore the History</a>
+  </div>
+  <div class="scroll-hint">▼ &nbsp; Scroll to Discover &nbsp; ▼</div>
+</section>
+
+<!-- TR QUOTE -->
+<div class="quote-block">
+  <blockquote>
+    "No triumph of peace is quite so great as the supreme triumphs of war."
+  </blockquote>
+  <cite>— Theodore Roosevelt, Colonel, 1st U.S. Volunteer Cavalry, 1898</cite>
+</div>
+
+<!-- HISTORY TIMELINE -->
+<section id="history" class="section-parchment">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label" style="color:var(--sepia);">The Story Begins Here</span>
+      <h2 class="section-title">Tampa, Florida — Spring 1898</h2>
+      <div class="ornamental-rule" style="color:var(--sepia);"></div>
+      <p style="max-width:680px;margin:1.5rem auto 0;font-size:0.97rem;line-height:1.85;color:var(--text-mid);font-style:italic;">
+        In the spring of 1898, Tampa became the staging ground for one of the most celebrated military campaigns in American history. 
+        The city's port, its cigar-scented streets, and the grand Plant Hotel bore witness to the gathering of the legendary Rough Riders.
+      </p>
+    </div>
+
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-date">May 1898 — Tampa, Florida</div>
+        <h3>The Rough Riders Arrive</h3>
+        <p>Congress authorized the raising of three volunteer cavalry regiments on April 22, 1898. Theodore Roosevelt, then Assistant Secretary of the Navy, resigned his post and accepted a commission as Lieutenant Colonel. Over 23,000 men applied for just 1,000 slots. The regiment was a unique mix of Ivy League athletes, cowboys, miners, and Native Americans — united by Roosevelt's call to adventure.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">May–June 1898 — The Plant Hotel</div>
+        <h3>Headquarters at the Tampa Bay Hotel</h3>
+        <p>Henry Plant's magnificent Tampa Bay Hotel — a Moorish Revival palace of 511 rooms — served as headquarters for the Army officer corps. Colonel Leonard Wood and Lieutenant Colonel Roosevelt set up operations here. The hotel's verandas became the social center of the war effort, where reporters, officers, and society figures mingled in an atmosphere of patriotic excitement. Today the building stands as the University of Tampa.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">May–June 1898 — Ybor City &amp; Tampa</div>
+        <h3>Training in the Streets of Tampa</h3>
+        <p>The Rough Riders drilled in the streets and open fields around Tampa. The cobblestone lanes of Ybor City — the cigar capital of the world — echoed with cavalry hooves. Tampa's Cuban exile community, veterans of their own struggle for independence, watched with deep interest and shared intelligence about Cuba's terrain. The soldiers frequented the cafés and cantinas of Ybor, forging bonds between the regiment and the city.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">June 1898 — Port Tampa</div>
+        <h3>Departure from Old Port Tampa</h3>
+        <p>After weeks of logistical chaos and sweltering heat, the regiment received embarkation orders. In a bold maneuver, Roosevelt commandeered the transport ship S.S. Yucatan, securing berths for his men over competing regiments. On June 14, 1898, the Rough Riders departed from Port Tampa, heading south for Cuba and their rendezvous with destiny at San Juan Hill.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">July 1, 1898 — Cuba</div>
+        <h3>The Charge Up San Juan Hill</h3>
+        <p>The charge up Kettle Hill and the San Juan Heights on July 1, 1898 made Roosevelt and the Rough Riders legendary. Though they had to leave their horses in Tampa (the cavalry fought on foot), their courage was undimmed. Roosevelt personally led the charge on horseback through enemy fire — the last great cavalry charge of the American military. He would later call it "the great day of my life."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO GALLERY -->
+<section id="gallery" class="section-dark">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Period Photographs</span>
+      <h2 class="section-title">Tampa, 1898 — Through the Lens</h2>
+      <div class="ornamental-rule"></div>
+      <p style="max-width:600px;margin:1.5rem auto 0;font-size:0.9rem;color:rgba(240,232,208,0.7);font-style:italic;">
+        Rare photographs documenting the gathering of the Rough Riders in Tampa — the hotels, the streets, the men, and the moment.
+      </p>
+    </div>
+    <div class="photo-grid fade-in">
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tampa_Bay_Hotel_1898.jpg/640px-Tampa_Bay_Hotel_1898.jpg"
+             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/TampaBayHotel.jpg/640px-TampaBayHotel.jpg'"
+             alt="Tampa Bay Hotel 1898"/>
+        <div class="photo-caption">
+          <h4>The Tampa Bay Hotel, 1898</h4>
+          <p>Henry Plant's grand Moorish Revival hotel served as Army headquarters during the Spanish-American War mobilization. Col. Roosevelt occupied rooms here. Now the University of Tampa.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Roosevelt_Rough_Riders.jpg/640px-Roosevelt_Rough_Riders.jpg"
+             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Roosevelt_RoughRiders.jpg/640px-Roosevelt_RoughRiders.jpg'"
+             alt="Roosevelt with Rough Riders"/>
+        <div class="photo-caption">
+          <h4>Roosevelt and His Men</h4>
+          <p>Colonel Roosevelt with officers and men of the 1st U.S. Volunteer Cavalry. The regiment drew from every corner of America — cowboys, college men, Native Americans, and New York City police.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rough_Riders_San_Juan_Hill.jpg/640px-Rough_Riders_San_Juan_Hill.jpg"
+             alt="Rough Riders at San Juan Hill"/>
+        <div class="photo-caption">
+          <h4>After San Juan Hill, July 1898</h4>
+          <p>The Rough Riders photographed on the heights of San Juan after their famous charge. The battle secured American victory in Cuba and launched Roosevelt toward the White House.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Ybor_City_1898_7th_Avenue.jpg/640px-Ybor_City_1898_7th_Avenue.jpg"
+             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/5/5a/7th_Ave_Ybor_City_1890s.jpg'"
+             alt="Ybor City 7th Avenue"/>
+        <div class="photo-caption">
+          <h4>7th Avenue, Ybor City</h4>
+          <p>The bustling cigar district where Rough Riders off duty mingled with Tampa's Cuban exile community, who shared Roosevelt's fervor for Cuban independence. The neighborhood provided vital intelligence.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Port_Tampa_Pier_1898.jpg/640px-Port_Tampa_Pier_1898.jpg"
+             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Old_Port_Tampa_wharf.jpg/640px-Old_Port_Tampa_wharf.jpg'"
+             alt="Port Tampa 1898"/>
+        <div class="photo-caption">
+          <h4>Old Port Tampa, June 1898</h4>
+          <p>The docks at Port Tampa where the Army loaded troops and supplies. Amid logistical chaos, Roosevelt famously seized the S.S. Yucatan to ensure his regiment would sail for Cuba.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Theodore_Roosevelt_1898.jpg/480px-Theodore_Roosevelt_1898.jpg"
+             alt="Theodore Roosevelt 1898"/>
+        <div class="photo-caption">
+          <h4>Lt. Colonel Theodore Roosevelt, 1898</h4>
+          <p>"TR" in his Rough Riders uniform. Roosevelt wore his trademark spectacles into battle. His conspicuousness under fire was legendary — and to the bewilderment of his men, he appeared to enjoy it.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MUSEUM -->
+<section id="museum" class="section-parchment">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label" style="color:var(--sepia);">Located at 601 N. 19th St., Tampa, FL</span>
+      <h2 class="section-title">Teddy Roosevelt Museum &amp; Library</h2>
+      <div class="ornamental-rule" style="color:var(--sepia);"></div>
+    </div>
+    <div class="museum-layout fade-in">
+      <div class="museum-text">
+        <p>
+          The <strong>Teddy Roosevelt Museum and Library</strong>, housed at the historic Tampa Rough Riders Clubhouse, 
+          is one of the nation's most significant collections dedicated to the Spanish-American War and the 1st U.S. Volunteer Cavalry Regiment.
+        </p>
+        <p>
+          Our collection spans original weapons, uniforms, insignia, campaign medals, personal correspondence, period photographs, 
+          regimental flags, and an extensive reference library — all carefully preserved by the 630+ member organization that has 
+          guarded this legacy for decades.
+        </p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy-dark);margin:1.5rem 0 0.75rem;">Collection Highlights</h3>
+        <ul class="artifact-list">
+          <li>Original 1898 Krag-Jørgensen carbines &amp; Colt revolvers</li>
+          <li>Period Rough Riders uniforms, campaign hats &amp; insignia</li>
+          <li>Campaign medals and military decorations</li>
+          <li>Roosevelt-era personal correspondence &amp; documents</li>
+          <li>Regimental flags and unit battle standards</li>
+          <li>Extensive collection of 1898 Tampa period photographs</li>
+          <li>Spanish-American War reference library (400+ volumes)</li>
+          <li>Tampa Bay Hotel memorabilia from 1898</li>
+          <li>Original Teddy Bear artifacts and Roosevelt memorabilia</li>
+        </ul>
+        <p style="margin-top:1rem;font-size:0.88rem;color:var(--text-mid);font-style:italic;">
+          Tours available by appointment for groups and individuals. Educational programs available for schools. 
+          Contact us to arrange your visit.
+        </p>
+      </div>
+
+      <div>
+        <div class="tour-card">
+          <h3>Arrange a Museum Tour</h3>
+          <p>Private and group tours available by appointment. Our knowledgeable guides bring 1898 Tampa to life through our artifact collection.</p>
+          <div class="tour-form">
+            <input type="text" placeholder="Your Full Name" />
+            <input type="email" placeholder="Email Address" />
+            <input type="tel" placeholder="Phone Number" />
+            <select>
+              <option value="">Preferred Tour Date…</option>
+              <option>Select a date when contacting us</option>
+            </select>
+            <select>
+              <option value="">Group Size</option>
+              <option>1–5 persons</option>
+              <option>6–15 persons</option>
+              <option>16–30 persons (School/Group)</option>
+              <option>30+ persons (Special Event)</option>
+            </select>
+            <textarea rows="3" placeholder="Special interests or accessibility needs…"></textarea>
+            <button class="btn-primary" style="width:100%;margin-top:0.5rem;" onclick="submitTourRequest()">Request Tour</button>
+          </div>
+          <div class="payment-note">
+            Admission: Free for members · Suggested donation $10/adult for non-members.<br/>
+            Ticket sales powered by Square Payments — coming soon for online booking.
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;background:var(--navy);padding:1.5rem;border:1px solid rgba(201,168,76,0.3);">
+          <h4 style="font-family:'Cinzel Decorative',serif;font-size:0.75rem;color:var(--gold);letter-spacing:0.12em;margin-bottom:0.75rem;">MUSEUM HOURS</h4>
+          <p style="font-size:0.85rem;color:rgba(240,232,208,0.7);line-height:1.8;">
+            By appointment only.<br/>
+            📍 601 N. 19th St., Tampa, FL 33605<br/>
+            📞 Contact via tamparoughriders.org<br/>
+            ✉️ r.conn@tamparoughriders.org
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAMPA LANDMARKS -->
+<section id="landmarks" class="section-navy">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Then &amp; Now</span>
+      <h2 class="section-title">Historic Tampa Landmarks</h2>
+      <div class="ornamental-rule"></div>
+      <p style="max-width:600px;margin:1.5rem auto 0;font-size:0.9rem;color:rgba(240,232,208,0.7);font-style:italic;">
+        Walk the same streets, docks, and neighborhoods where the Rough Riders trained, camped, and departed for Cuba in 1898.
+      </p>
+    </div>
+  </div>
+  <div class="landmark-strip fade-in">
+    <div class="landmark-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/TampaBayHotel.jpg/640px-TampaBayHotel.jpg"
+           alt="Tampa Bay Hotel"/>
+      <div class="landmark-overlay">
+        <div>
+          <h4>Tampa Bay Hotel (Plant Hotel)</h4>
+          <span>Now the University of Tampa — Army HQ, 1898</span>
+        </div>
+      </div>
+    </div>
+    <div class="landmark-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Ybor_City_Museum.jpg/640px-Ybor_City_Museum.jpg"
+           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Ybor_City.jpg/640px-Ybor_City.jpg'"
+           alt="Ybor City"/>
+      <div class="landmark-overlay">
+        <div>
+          <h4>Ybor City</h4>
+          <span>Cigar capital — soldiers &amp; Cuban exiles mingled here</span>
+        </div>
+      </div>
+    </div>
+    <div class="landmark-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Port_Tampa_historical_marker.jpg/480px-Port_Tampa_historical_marker.jpg"
+           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/4b/OldPortTampa.jpg'"
+           alt="Old Port Tampa"/>
+      <div class="landmark-overlay">
+        <div>
+          <h4>Old Port Tampa</h4>
+          <span>The Rough Riders embarked for Cuba, June 14, 1898</span>
+        </div>
+      </div>
+    </div>
+    <div class="landmark-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Rough_rider_park_ybor.jpg/480px-Rough_rider_park_ybor.jpg"
+           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ybor_City_historic_district_1.jpg/640px-Ybor_City_historic_district_1.jpg'"
+           alt="Rough Rider Park"/>
+      <div class="landmark-overlay">
+        <div>
+          <h4>Rough Rider Park, Ybor City</h4>
+          <span>Commemorating the cavalry's presence in Tampa</span>
+        </div>
+      </div>
+    </div>
+    <div class="landmark-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Fort_DeSoto_Park.jpg/640px-Fort_DeSoto_Park.jpg"
+           alt="Fort DeSoto"/>
+      <div class="landmark-overlay">
+        <div>
+          <h4>Fort DeSoto</h4>
+          <span>Spanish-American War battery &amp; memorial — Pinellas County</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS CALENDAR -->
+<section id="events" class="section-dark">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Community &amp; Fundraising</span>
+      <h2 class="section-title">Upcoming Events</h2>
+      <div class="ornamental-rule"></div>
+      <p style="max-width:600px;margin:1.5rem auto 0;font-size:0.9rem;color:rgba(240,232,208,0.7);">
+        All public events. Members may access full event details and member-only events after logging in.
+      </p>
+    </div>
+    <div class="events-grid fade-in">
+
+      <div class="event-card">
+        <div class="event-date-badge">June 19–20, 2026</div>
+        <h3>31st Annual Charity Fishing Tournament</h3>
+        <p>Treasure Island, FL. Open to the public. Categories for Inshore, Tarpon, and more. Live scoring, prizes, and awards ceremony. Registration via CognitoForms.</p>
+        <a href="http://roughridersfishing.org" target="_blank" class="event-ticket">🎣 Register Now</a>
+        <div class="payment-note">Ticket sales via Square Payments — integration active at roughridersfishing.org</div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-badge">2026 Season</div>
+        <h3>Charity Sporting Clays Tournament</h3>
+        <p>Annual clay shooting fundraiser open to the public and corporate sponsors. Sponsor packages available. Benefits community charity programs.</p>
+        <a href="https://tamparoughriders.org/clays" target="_blank" class="event-ticket">🎯 View Details</a>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-badge">2026 Season</div>
+        <h3>Cop Cup Clays Tournament</h3>
+        <p>Law enforcement appreciation shooting tournament. Honoring the service of Tampa Bay area law enforcement with a day of competition and fellowship.</p>
+        <a href="https://tamparoughriders.org/copcup" target="_blank" class="event-ticket">🏆 View Details</a>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-badge">Annual</div>
+        <h3>St. Patrick's Day Parade</h3>
+        <p>The Tampa Rough Riders march in one of Tampa's most beloved parades — an annual tradition celebrating community, heritage, and Tampa pride.</p>
+        <a href="https://tamparoughriders.org/stpats" target="_blank" class="event-ticket">☘️ View Details</a>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-badge">By Appointment</div>
+        <h3>Museum &amp; Historical Tours</h3>
+        <p>Private guided tours of the Teddy Roosevelt Museum and Library. Educational group tours for schools, civic organizations, and historical societies.</p>
+        <a href="#museum" class="event-ticket">🏛 Book a Tour</a>
+        <div class="square-placeholder">
+          <div class="sq-icon">◻</div>
+          <p>Online ticket sales via Square — coming soon</p>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-date-badge">May 1 – June 30</div>
+        <h3>Annual Membership Drive</h3>
+        <p>New member applications accepted once per year. Join 630+ members dedicated to preserving the legacy of TR and the Rough Riders. All backgrounds welcome.</p>
+        <a href="https://tamparoughriders.org/page-18204" target="_blank" class="event-ticket">⭐ Apply for Membership</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DONATION -->
+<section id="donate" class="section-navy">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Support Our Mission</span>
+      <h2 class="section-title">Make a Donation</h2>
+      <div class="ornamental-rule"></div>
+    </div>
+    <div class="donate-section fade-in">
+      <p style="max-width:620px;margin:0 auto 2rem;font-size:0.97rem;line-height:1.85;color:rgba(240,232,208,0.8);">
+        Your donation supports the preservation of the Museum and Library, educational programs, community outreach, 
+        our Teddy Bear charity program, and the ongoing mission to keep the legacy of the Rough Riders alive for future generations.
+        The 1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc. is a 501(c)(3) nonprofit. All donations are tax-deductible.
+      </p>
+      <div class="donate-amounts">
+        <button class="donate-btn" onclick="setDonation(25, this)">$25</button>
+        <button class="donate-btn active" onclick="setDonation(50, this)">$50</button>
+        <button class="donate-btn" onclick="setDonation(100, this)">$100</button>
+        <button class="donate-btn" onclick="setDonation(250, this)">$250</button>
+        <button class="donate-btn" onclick="setDonation(500, this)">$500</button>
+      </div>
+      <div class="donate-custom">
+        <span style="color:var(--gold);">$</span>
+        <input type="number" id="donationAmount" value="50" min="1" style="color:var(--cream);"/>
+        <span style="color:rgba(240,232,208,0.5);font-size:0.85rem;">USD</span>
+      </div>
+      <p class="donate-note">
+        501(c)(3) Tax-Exempt Organization · EIN on file.<br/>
+        All donations acknowledged for tax purposes.
+      </p>
+
+      <!-- Square Payment Integration Placeholder -->
+      <div id="square-payment-form" style="max-width:420px;margin:0 auto;">
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.3);padding:1.5rem;border-radius:4px;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:36px;height:36px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--navy-dark);font-weight:900;font-size:1.1rem;">◻</div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Square Payments</div>
+              <div style="font-size:0.8rem;color:rgba(240,232,208,0.6);">Secure card processing</div>
+            </div>
+          </div>
+          <!-- Square Web Payments SDK will mount here -->
+          <div id="card-container" style="min-height:90px;background:rgba(255,255,255,0.04);border:1px dashed rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+            <p style="font-size:0.8rem;color:rgba(240,232,208,0.4);font-style:italic;text-align:center;padding:1rem;">
+              Square Web Payments SDK mounts here<br/>
+              <span style="font-size:0.72rem;">Connect your Square account to activate</span>
+            </p>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="processDonation()">
+            Donate $<span id="donateDisplayAmt">50</span>
+          </button>
+          <p style="font-size:0.72rem;color:rgba(240,232,208,0.35);text-align:center;margin-top:0.75rem;">
+            🔒 Secured by Square · PCI Compliant · SSL Encrypted
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top:2rem;font-size:0.82rem;color:rgba(240,232,208,0.5);">
+        Prefer to give by check? Mail to: 1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc.<br/>
+        601 N. 19th St., Tampa, FL 33605
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER PORTAL -->
+<section id="member-portal" class="section-dark">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Rough Riders Members</span>
+      <h2 class="section-title">Member Portal</h2>
+      <div class="ornamental-rule"></div>
+    </div>
+
+    <!-- LOGGED OUT STATE -->
+    <div id="member-gate-view" class="member-gate fade-in">
+      <h3>Members: Sign In to Access Your Portal</h3>
+      <p>View your membership status, update contact information, access member-only events, and manage your account.</p>
+      <div class="login-form">
+        <input type="email" id="loginEmail" placeholder="Email Address" /><br/>
+        <input type="password" id="loginPass" placeholder="Password" />
+      </div>
+      <br/><br/>
+      <button class="btn-primary" onclick="memberLogin()">Sign In</button>
+      &nbsp;&nbsp;
+      <a href="https://tamparoughriders.org/page-18204" target="_blank" class="btn-outline" style="display:inline-block;margin-top:0.5rem;">Apply for Membership</a>
+      <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(240,232,208,0.4);">
+        Member accounts are managed through Wild Apricot.<br/>
+        <a href="https://tamparoughriders.wildapricot.org" style="color:var(--gold);font-size:0.8rem;">Reset Password</a>
+      </p>
+    </div>
+
+    <!-- LOGGED IN STATE (demo) -->
+    <div id="member-dashboard" class="portal-dashboard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h3 style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.3rem;">Welcome back, <span id="memberNameDisplay">Member</span></h3>
+          <p style="font-size:0.85rem;color:rgba(240,232,208,0.6);">Member since 2024 · Status: <span style="color:#4ade80;">Active</span></p>
+        </div>
+        <button class="btn-outline" onclick="memberLogout()">Sign Out</button>
+      </div>
+      <div class="portal-grid">
+        <div class="portal-card">
+          <div class="icon">📋</div>
+          <h4>My Profile</h4>
+          <p>Update contact info, address, emergency contact, and membership preferences.</p>
+          <a href="https://tamparoughriders.wildapricot.org" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">Manage in Wild Apricot →</a>
+        </div>
+        <div class="portal-card">
+          <div class="icon">🎟</div>
+          <h4>Member Events</h4>
+          <p>Access member-only events, monthly meetings, and social gatherings. Members receive discounted event tickets.</p>
+          <a href="https://tamparoughriders.org/events" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">View Events →</a>
+        </div>
+        <div class="portal-card">
+          <div class="icon">💳</div>
+          <h4>Renew Membership</h4>
+          <p>Annual renewal window opens October 1. Renew online, manage your membership type, or resign.</p>
+          <a href="https://tamparoughriders-renewal.netlify.app" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">Renewal App →</a>
+        </div>
+        <div class="portal-card">
+          <div class="icon">📰</div>
+          <h4>The Bullygram</h4>
+          <p>Read the latest Rough Riders newsletter — member news, events, and updates from the President.</p>
+          <a href="https://tamparoughriders.org" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">Read Latest →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h4>1st U.S. Volunteer Cavalry Regiment<br/>Rough Riders, Inc.</h4>
+      <p>A 501(c)(3) nonprofit organization dedicated to preserving the legacy of President Theodore Roosevelt and the men of the 1st U.S. Volunteer Cavalry.</p>
+      <p style="margin-top:1rem;">📍 601 N. 19th St., Tampa, FL 33605</p>
+      <p>✉️ r.conn@tamparoughriders.org</p>
+      <p style="margin-top:1rem;font-style:italic;color:rgba(201,168,76,0.7);">"Bully!"</p>
+    </div>
+    <div>
+      <h4>Historical</h4>
+      <a href="https://tamparoughriders.org/page-18210" target="_blank">TR in the Spanish-American War</a>
+      <a href="https://tamparoughriders.org/page-18212" target="_blank">The Rough Riders of 1898</a>
+      <a href="https://tamparoughriders.org/Battle-of-San-Juan-Hill" target="_blank">Battle of San Juan Hill</a>
+      <a href="https://tamparoughriders.org/Landmarks_and_Markers" target="_blank">Tampa Landmarks</a>
+      <a href="https://tamparoughriders.org/museum" target="_blank">Museum &amp; Library</a>
+    </div>
+    <div>
+      <h4>Organization</h4>
+      <a href="https://tamparoughriders.org/page-18202" target="_blank">Mission Statement</a>
+      <a href="https://tamparoughriders.org/Executive-Board" target="_blank">Executive Board</a>
+      <a href="https://tamparoughriders.org/page-18204" target="_blank">Membership</a>
+      <a href="https://tamparoughriders.org/Community-Involvement" target="_blank">Community</a>
+      <a href="https://tamparoughriders.org/Contact" target="_blank">Contact</a>
+    </div>
+    <div>
+      <h4>Events &amp; Giving</h4>
+      <a href="http://roughridersfishing.org" target="_blank">Fishing Tournament</a>
+      <a href="https://tamparoughriders.org/clays" target="_blank">Sporting Clays</a>
+      <a href="https://tamparoughriders.org/donate" target="_blank">Donate</a>
+      <a href="https://tamparoughriders.org/page-18617" target="_blank">Teddy Bears Program</a>
+      <a href="#events">All Events</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc. All rights reserved.</span>
+    <span>Tampa, Florida · Est. <span>1898</span> · Revived in honor of the Regiment</span>
+  </div>
+</footer>
+
+<!-- MEMBER LOGIN MODAL -->
+<div id="memberModal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMemberModal()">×</button>
+    <h2>Member Sign In</h2>
+    <p style="font-size:0.88rem;color:rgba(240,232,208,0.7);margin-bottom:1.5rem;">Access your membership dashboard, member-only events, and renewal tools.</p>
+    <div class="tour-form">
+      <input type="email" id="modalEmail" placeholder="Email Address" />
+      <input type="password" id="modalPass" placeholder="Password" />
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem;" onclick="memberLoginModal()">Sign In</button>
+    </div>
+    <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(240,232,208,0.4);text-align:center;">
+      Membership managed via Wild Apricot ·
+      <a href="https://tamparoughriders.wildapricot.org" style="color:var(--gold);">Reset Password</a>
+    </p>
+    <hr style="border-color:rgba(201,168,76,0.2);margin:1.5rem 0;"/>
+    <p style="text-align:center;font-size:0.85rem;color:rgba(240,232,208,0.6);">Not yet a member?</p>
+    <a href="https://tamparoughriders.org/page-18204" target="_blank" class="btn-outline" style="display:block;text-align:center;margin-top:0.75rem;">Apply for Membership (May 1–June 30)</a>
+  </div>
+</div>
+
+<!-- TOUR CONFIRMATION MODAL -->
+<div id="tourModal" class="modal-overlay">
+  <div class="modal" style="text-align:center;">
+    <button class="modal-close" onclick="document.getElementById('tourModal').classList.remove('open')">×</button>
+    <div style="font-size:3rem;margin-bottom:1rem;">🏛</div>
+    <h2>Tour Request Received!</h2>
+    <p style="color:rgba(240,232,208,0.7);margin:1rem 0;font-size:0.9rem;line-height:1.7;">
+      Thank you for your interest in the Teddy Roosevelt Museum &amp; Library. A member of our team will contact you within 48 hours to confirm your tour appointment.<br/><br/>
+      📍 601 N. 19th St., Tampa, FL 33605
+    </p>
+    <button class="btn-primary" onclick="document.getElementById('tourModal').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<script>
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── DONATE ──
+function setDonation(amount, btn) {
+  document.querySelectorAll('.donate-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('donationAmount').value = amount;
+  document.getElementById('donateDisplayAmt').textContent = amount;
+}
+document.getElementById('donationAmount').addEventListener('input', function() {
+  document.getElementById('donateDisplayAmt').textContent = this.value || '0';
+  document.querySelectorAll('.donate-btn').forEach(b => b.classList.remove('active'));
+});
+function processDonation() {
+  const amt = document.getElementById('donationAmount').value;
+  alert('Square Payment integration ready to connect.\n\nDonation amount: $' + amt + '\n\nTo activate: connect your Square account credentials in the site configuration. The Square Web Payments SDK card form will mount in the payment container.');
+}
+
+// ── TOUR REQUEST ──
+function submitTourRequest() {
+  document.getElementById('tourModal').classList.add('open');
+}
+
+// ── MEMBER LOGIN ──
+let memberLoggedIn = false;
+
+function memberLogin() {
+  const email = document.getElementById('loginEmail').value;
+  if (email) {
+    memberLoggedIn = true;
+    document.getElementById('member-gate-view').style.display = 'none';
+    document.getElementById('member-dashboard').classList.add('active');
+    const name = email.split('@')[0].replace(/\./g,' ').replace(/\b\w/g, c => c.toUpperCase());
+    document.getElementById('memberNameDisplay').textContent = name;
+  } else {
+    alert('Please enter your email address.');
+  }
+}
+function memberLoginModal() {
+  const email = document.getElementById('modalEmail').value;
+  if (email) {
+    closeMemberModal();
+    memberLoggedIn = true;
+    document.getElementById('member-gate-view').style.display = 'none';
+    document.getElementById('member-dashboard').classList.add('active');
+    const name = email.split('@')[0].replace(/\./g,' ').replace(/\b\w/g, c => c.toUpperCase());
+    document.getElementById('memberNameDisplay').textContent = name;
+    document.getElementById('member-portal').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+function memberLogout() {
+  memberLoggedIn = false;
+  document.getElementById('member-gate-view').style.display = '';
+  document.getElementById('member-dashboard').classList.remove('active');
+}
+function openMemberModal() { document.getElementById('memberModal').classList.add('open'); }
+function closeMemberModal() { document.getElementById('memberModal').classList.remove('open'); }
+document.getElementById('memberModal').addEventListener('click', function(e) {
+  if (e.target === this) closeMemberModal();
+});
+
+// ── NAV TOGGLE ──
+function toggleNav() {
+  const nav = document.querySelector('nav');
+  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+  nav.style.flexDirection = 'column';
+  nav.style.position = 'absolute';
+  nav.style.top = '64px';
+  nav.style.right = '0';
+  nav.style.background = 'var(--navy-dark)';
+  nav.style.padding = '1rem';
+  nav.style.borderBottom = '2px solid var(--gold)';
+  nav.style.width = '200px';
+  nav.style.zIndex = '999';
+}
+</script>
+</body>
+</html>
