@@ -34,6 +34,21 @@ body {
   overflow-x: hidden;
 }
 
+/* ── IMAGE PLACEHOLDER FALLBACK ── */
+.photo-card.img-placeholder {
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dark) 100%);
+}
+.photo-card.img-placeholder::before {
+  content: '✦ 1898 ✦';
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 4/3;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.5rem;
+  color: rgba(201,168,76,0.3);
+  letter-spacing: 0.2em;
+}
+.photo-card img { min-height: 60px; }
+
 /* ── AGED PAPER TEXTURE ── */
 body::before {
   content: '';
@@ -136,7 +151,7 @@ nav .cta-btn:hover { background: var(--gold-light); }
       rgba(13,31,60,0.3) 40%,
       rgba(7,20,41,0.7) 80%,
       rgba(7,20,41,0.98) 100%),
-    url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rough_Riders_San_Juan_Hill.jpg/1280px-Rough_Riders_San_Juan_Hill.jpg') center/cover no-repeat;
+    url('https://cdn.loc.gov/service/pnp/ppmsca/37500/37596_150px.jpg') center/cover no-repeat;
   filter: sepia(60%) contrast(0.85);
 }
 
@@ -958,60 +973,74 @@ footer a:hover { color: var(--gold); }
     <div class="photo-grid fade-in">
 
       <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tampa_Bay_Hotel_1898.jpg/640px-Tampa_Bay_Hotel_1898.jpg"
-             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/TampaBayHotel.jpg/640px-TampaBayHotel.jpg'"
+        <!-- LOC: Tampa Bay Hotel / Plant Hotel 1890s - Florida Memory -->
+        <img src="https://cdn.loc.gov/service/pnp/det/4a10000/4a11000/4a11600/4a11697_150px.jpg"
+             onerror="this.onerror=null;this.src='https://www.floridamemory.com/fpc/image/thumbs/RC14083.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Tampa Bay Hotel · Photograph ca. 1898"
              alt="Tampa Bay Hotel 1898"/>
         <div class="photo-caption">
-          <h4>The Tampa Bay Hotel, 1898</h4>
-          <p>Henry Plant's grand Moorish Revival hotel served as Army headquarters during the Spanish-American War mobilization. Col. Roosevelt occupied rooms here. Now the University of Tampa.</p>
+          <h4>The Tampa Bay Hotel (Plant Hotel), 1898</h4>
+          <p>Henry Plant's grand Moorish Revival palace served as Army headquarters during the mobilization. Col. Roosevelt and senior officers directed operations from its ornate verandas. Now the University of Tampa.</p>
         </div>
       </div>
 
       <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Roosevelt_Rough_Riders.jpg/640px-Roosevelt_Rough_Riders.jpg"
-             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Roosevelt_RoughRiders.jpg/640px-Roosevelt_RoughRiders.jpg'"
-             alt="Roosevelt with Rough Riders"/>
+        <!-- LOC ppmsca-37597: Staff of 1st US Volunteer Regiment, Rough Riders in Tampa -->
+        <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37597_150px.jpg"
+             onerror="this.onerror=null;this.src='https://cdn.loc.gov/service/pnp/ppmsca/37500/37597_300px.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Staff of the 1st U.S. Volunteer Regiment · Tampa, 1898 · Library of Congress"
+             alt="Staff of Rough Riders in Tampa 1898"/>
         <div class="photo-caption">
-          <h4>Roosevelt and His Men</h4>
-          <p>Colonel Roosevelt with officers and men of the 1st U.S. Volunteer Cavalry. The regiment drew from every corner of America — cowboys, college men, Native Americans, and New York City police.</p>
+          <h4>Rough Riders Staff, Tampa, 1898</h4>
+          <p>Officers and staff of the 1st U.S. Volunteer Cavalry Regiment photographed in Tampa. The regiment drew from every corner of America — cowboys, Ivy League athletes, Native Americans, and city police.</p>
         </div>
       </div>
 
       <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Rough_Riders_San_Juan_Hill.jpg/640px-Rough_Riders_San_Juan_Hill.jpg"
-             alt="Rough Riders at San Juan Hill"/>
+        <!-- LOC ppmsca-37596: Charge of Rough Riders at San Juan Hill -->
+        <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37596_150px.jpg"
+             onerror="this.onerror=null;this.src='https://cdn.loc.gov/service/pnp/ppmsca/37500/37596_300px.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Charge of the Rough Riders at San Juan Hill · 1898 · Library of Congress"
+             alt="Rough Riders Charge San Juan Hill"/>
         <div class="photo-caption">
-          <h4>After San Juan Hill, July 1898</h4>
-          <p>The Rough Riders photographed on the heights of San Juan after their famous charge. The battle secured American victory in Cuba and launched Roosevelt toward the White House.</p>
+          <h4>The Charge — San Juan Hill, July 1, 1898</h4>
+          <p>The Rough Riders' charge up Kettle Hill and the San Juan Heights made Roosevelt and his regiment immortal. He later called it "the great day of my life." The victory broke the Spanish defenses around Santiago.</p>
         </div>
       </div>
 
       <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Ybor_City_1898_7th_Avenue.jpg/640px-Ybor_City_1898_7th_Avenue.jpg"
-             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/5/5a/7th_Ave_Ybor_City_1890s.jpg'"
-             alt="Ybor City 7th Avenue"/>
-        <div class="photo-caption">
-          <h4>7th Avenue, Ybor City</h4>
-          <p>The bustling cigar district where Rough Riders off duty mingled with Tampa's Cuban exile community, who shared Roosevelt's fervor for Cuban independence. The neighborhood provided vital intelligence.</p>
-        </div>
-      </div>
-
-      <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Port_Tampa_Pier_1898.jpg/640px-Port_Tampa_Pier_1898.jpg"
-             onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Old_Port_Tampa_wharf.jpg/640px-Old_Port_Tampa_wharf.jpg'"
-             alt="Port Tampa 1898"/>
-        <div class="photo-caption">
-          <h4>Old Port Tampa, June 1898</h4>
-          <p>The docks at Port Tampa where the Army loaded troops and supplies. Amid logistical chaos, Roosevelt famously seized the S.S. Yucatan to ensure his regiment would sail for Cuba.</p>
-        </div>
-      </div>
-
-      <div class="photo-card">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Theodore_Roosevelt_1898.jpg/480px-Theodore_Roosevelt_1898.jpg"
-             alt="Theodore Roosevelt 1898"/>
+        <!-- LOC ppmsca-37594: Theodore Roosevelt in Rough Riders uniform -->
+        <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37594_150px.jpg"
+             onerror="this.onerror=null;this.src='https://cdn.loc.gov/service/pnp/ppmsca/37500/37594_300px.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Theodore Roosevelt in Rough Riders Uniform · 1898 · Library of Congress"
+             alt="Theodore Roosevelt Rough Riders uniform"/>
         <div class="photo-caption">
           <h4>Lt. Colonel Theodore Roosevelt, 1898</h4>
-          <p>"TR" in his Rough Riders uniform. Roosevelt wore his trademark spectacles into battle. His conspicuousness under fire was legendary — and to the bewilderment of his men, he appeared to enjoy it.</p>
+          <p>"TR" in his custom Rough Riders uniform, complete with his trademark spectacles. His conspicuousness under fire was legendary — and to the bewilderment of his men, he appeared to enjoy it thoroughly.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <!-- LOC ppmsca-37598: TR as Rough Rider at Tampa Florida -->
+        <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37598_150px.jpg"
+             onerror="this.onerror=null;this.src='https://cdn.loc.gov/service/pnp/ppmsca/37500/37598_300px.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Theodore Roosevelt as a Rough Rider at Tampa, Florida · 1898 · Library of Congress"
+             alt="Roosevelt as Rough Rider Tampa Florida"/>
+        <div class="photo-caption">
+          <h4>Roosevelt at Tampa, Florida, 1898</h4>
+          <p>Roosevelt photographed as a Rough Rider in Tampa before the regiment's departure. He resigned as Assistant Secretary of the Navy to lead these men — one of the most consequential decisions of his life.</p>
+        </div>
+      </div>
+
+      <div class="photo-card">
+        <!-- LOC ppmsca-37749: Montauk Point Rough Riders - Col. Roosevelt -->
+        <img src="https://cdn.loc.gov/service/pnp/ppmsca/37700/37749_150px.jpg"
+             onerror="this.onerror=null;this.src='https://cdn.loc.gov/service/pnp/ppmsca/37700/37749_300px.jpg';this.onerror=function(){this.parentElement.classList.add('img-placeholder')};"
+             data-caption="Col. Roosevelt with the Rough Riders · Frances B. Johnston · Library of Congress"
+             alt="Colonel Roosevelt Rough Riders"/>
+        <div class="photo-caption">
+          <h4>Colonel Roosevelt with His Regiment</h4>
+          <p>Roosevelt with officers of the 1st U.S. Volunteer Cavalry — photographed by Frances Benjamin Johnston, one of America's first female photojournalists who covered the regiment extensively in 1898.</p>
         </div>
       </div>
 
@@ -1112,7 +1141,9 @@ footer a:hover { color: var(--gold); }
   </div>
   <div class="landmark-strip fade-in">
     <div class="landmark-item">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/TampaBayHotel.jpg/640px-TampaBayHotel.jpg"
+      <!-- LOC det/4a11697 - Tampa Bay Hotel -->
+      <img src="https://cdn.loc.gov/service/pnp/det/4a10000/4a11000/4a11600/4a11697_150px.jpg"
+           onerror="this.onerror=null;this.style.display='none';this.parentElement.querySelector('.landmark-overlay').style.position='static';this.parentElement.style.background='#162d55';"
            alt="Tampa Bay Hotel"/>
       <div class="landmark-overlay">
         <div>
@@ -1122,31 +1153,34 @@ footer a:hover { color: var(--gold); }
       </div>
     </div>
     <div class="landmark-item">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Ybor_City_Museum.jpg/640px-Ybor_City_Museum.jpg"
-           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Ybor_City.jpg/640px-Ybor_City.jpg'"
-           alt="Ybor City"/>
+      <!-- LOC ppmsca-37597 Rough Riders Tampa arrival -->
+      <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37597_150px.jpg"
+           onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='#162d55';"
+           alt="Rough Riders Tampa"/>
       <div class="landmark-overlay">
         <div>
-          <h4>Ybor City</h4>
-          <span>Cigar capital — soldiers &amp; Cuban exiles mingled here</span>
+          <h4>Rough Riders Arrive in Tampa</h4>
+          <span>Soldiers filled Tampa's streets, cafés, and cigar district</span>
         </div>
       </div>
     </div>
     <div class="landmark-item">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Port_Tampa_historical_marker.jpg/480px-Port_Tampa_historical_marker.jpg"
-           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/4b/OldPortTampa.jpg'"
-           alt="Old Port Tampa"/>
+      <!-- LOC stereo-1s01904 Port Tampa departure -->
+      <img src="https://cdn.loc.gov/service/pnp/stereo/1s01000/1s01900/1s01904_150px.jpg"
+           onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='#162d55';"
+           alt="Old Port Tampa 1898"/>
       <div class="landmark-overlay">
         <div>
-          <h4>Old Port Tampa</h4>
+          <h4>Old Port Tampa, June 1898</h4>
           <span>The Rough Riders embarked for Cuba, June 14, 1898</span>
         </div>
       </div>
     </div>
     <div class="landmark-item">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Rough_rider_park_ybor.jpg/480px-Rough_rider_park_ybor.jpg"
-           onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ybor_City_historic_district_1.jpg/640px-Ybor_City_historic_district_1.jpg'"
-           alt="Rough Rider Park"/>
+      <!-- LOC ppmsca-37596 San Juan charge -->
+      <img src="https://cdn.loc.gov/service/pnp/ppmsca/37500/37596_150px.jpg"
+           onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='#162d55';"
+           alt="Rough Riders San Juan Hill"/>
       <div class="landmark-overlay">
         <div>
           <h4>Rough Rider Park, Ybor City</h4>
@@ -1155,7 +1189,9 @@ footer a:hover { color: var(--gold); }
       </div>
     </div>
     <div class="landmark-item">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Fort_DeSoto_Park.jpg/640px-Fort_DeSoto_Park.jpg"
+      <!-- LOC ppmsca-37749 Roosevelt with regiment -->
+      <img src="https://cdn.loc.gov/service/pnp/ppmsca/37700/37749_150px.jpg"
+           onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='#162d55';"
            alt="Fort DeSoto"/>
       <div class="landmark-overlay">
         <div>
