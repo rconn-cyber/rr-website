@@ -9,448 +9,345 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --navy:       #0d1f3c;
-  --navy-dark:  #071429;
-  --navy-mid:   #162d55;
-  --gold:       #C9A84C;
-  --gold-light: #e0c06a;
-  --gold-pale:  #f5e9c0;
-  --cream:      #f0e8d0;
-  --parchment:  #e8dfc0;
-  --burgundy:   #6B1A1A;
-  --text-dark:  #1a1208;
-  --text-mid:   #3d2f10;
-  --sepia:      #8b6914;
+  --navy:      #0d1f3c;
+  --navy-mid:  #162d55;
+  --gold:      #C9A84C;
+  --gold-dark: #a07e2a;
+  --gold-lt:   #e8c96a;
+  --cream:     #f0e8d0;
+  --parchment: #e8dfc0;
+  --burgundy:  #6B1A1A;
+  --bg:        #f7f8fa;
+  --bg2:       #ffffff;
+  --text:      #1a1a2e;
+  --text-mid:  #4a4a6a;
+  --border:    #dde0e8;
+  --shadow:    rgba(13,31,60,0.10);
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
 body {
   font-family: 'Crimson Pro', Georgia, serif;
-  background: var(--navy-dark);
-  color: var(--cream);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
 }
 
-/* ── HEADER ─────────────────────────────────────────────────────────────── */
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(7,20,41,0.97);
-  border-bottom: 1px solid rgba(201,168,76,0.25);
-  backdrop-filter: blur(8px);
+  background: var(--navy);
+  border-bottom: 3px solid var(--gold);
   padding: 0.75rem 2rem;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem;
 }
-.header-brand {
-  display: flex; align-items: center; gap: 0.75rem;
-  text-decoration: none;
-}
+.header-brand { text-decoration: none; }
 .header-logo-text {
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem; font-weight: 700;
-  color: var(--gold);
-  letter-spacing: 0.05em;
-  line-height: 1.3;
+  font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700;
+  color: var(--gold); letter-spacing: 0.05em; line-height: 1.3;
 }
 .header-logo-text span {
-  display: block; font-size: 0.7rem; font-weight: 400;
-  color: rgba(240,232,208,0.6); letter-spacing: 0.12em;
-  text-transform: uppercase;
+  display: block; font-size: 0.65rem; font-weight: 400;
+  color: rgba(240,232,208,0.6); letter-spacing: 0.15em; text-transform: uppercase;
 }
-.header-nav { display: flex; gap: 1.5rem; align-items: center; }
+.header-nav { display: flex; gap: 1.5rem; }
 .header-nav a {
-  font-family: 'Cinzel', serif; font-size: 0.72rem;
+  font-family: 'Cinzel', serif; font-size: 0.68rem;
   letter-spacing: 0.1em; text-transform: uppercase;
-  color: rgba(240,232,208,0.7); text-decoration: none;
-  transition: color 0.2s;
+  color: rgba(240,232,208,0.7); text-decoration: none; transition: color 0.2s;
 }
 .header-nav a:hover, .header-nav a.active { color: var(--gold); }
 
-/* ── HERO ────────────────────────────────────────────────────────────────── */
+/* ── HERO ─────────────────────────────────────────────────────────────────── */
 .events-hero {
-  background: linear-gradient(135deg, var(--navy-dark) 0%, #0f2040 50%, #1a0a0a 100%);
-  border-bottom: 2px solid rgba(201,168,76,0.3);
-  padding: 4rem 2rem 3rem;
-  text-align: center;
-  position: relative; overflow: hidden;
-}
-.events-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    45deg, transparent, transparent 40px,
-    rgba(201,168,76,0.015) 40px, rgba(201,168,76,0.015) 41px
-  );
+  background: linear-gradient(135deg, var(--navy) 0%, #162d55 100%);
+  padding: 3.5rem 2rem 3rem; text-align: center;
+  border-bottom: 1px solid var(--border);
 }
 .hero-label {
-  font-family: 'Cinzel', serif; font-size: 0.7rem;
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
   letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 1rem;
+  color: var(--gold); margin-bottom: 0.75rem;
 }
 .hero-title {
-  font-family: 'Cinzel Decorative', serif; font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 700; color: var(--cream);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700; color: #fff;
   text-shadow: 0 2px 20px rgba(201,168,76,0.3);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 .hero-rule {
-  width: 120px; height: 1px;
+  width: 100px; height: 2px; margin: 1rem auto;
   background: linear-gradient(to right, transparent, var(--gold), transparent);
-  margin: 1rem auto;
 }
 .hero-subtitle {
-  font-size: 1.05rem; color: rgba(240,232,208,0.7);
-  max-width: 500px; margin: 0 auto;
-  font-style: italic;
+  font-size: 1rem; color: rgba(240,232,208,0.75);
+  max-width: 500px; margin: 0 auto; font-style: italic;
 }
 
-/* ── FILTER BAR ──────────────────────────────────────────────────────────── */
+/* ── FILTER BAR ───────────────────────────────────────────────────────────── */
 .filter-bar {
-  background: rgba(13,31,60,0.8);
-  border-bottom: 1px solid rgba(201,168,76,0.15);
-  padding: 1rem 2rem;
-  display: flex; gap: 0.6rem; flex-wrap: wrap;
-  justify-content: center; align-items: center;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 2rem;
+  display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow);
 }
 .filter-btn {
-  font-family: 'Cinzel', serif; font-size: 0.68rem;
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
   letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 0.4rem 1rem; border-radius: 2px;
-  border: 1px solid rgba(201,168,76,0.3);
-  background: transparent; color: rgba(240,232,208,0.6);
+  padding: 0.4rem 1rem; border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent; color: var(--text-mid);
   cursor: pointer; transition: all 0.2s;
 }
-.filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+.filter-btn:hover { border-color: var(--gold); color: var(--navy); }
 .filter-btn.active {
-  background: var(--gold); color: var(--navy-dark);
-  border-color: var(--gold); font-weight: 600;
+  background: var(--navy); color: var(--gold);
+  border-color: var(--navy); font-weight: 600;
 }
 
-/* ── MAIN LAYOUT ─────────────────────────────────────────────────────────── */
-.events-main {
-  max-width: 1200px; margin: 0 auto;
-  padding: 3rem 2rem 5rem;
-}
+/* ── MAIN ─────────────────────────────────────────────────────────────────── */
+.events-main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
 
-/* ── LOADING / ERROR ─────────────────────────────────────────────────────── */
+/* ── LOADING ──────────────────────────────────────────────────────────────── */
 .state-msg {
   text-align: center; padding: 4rem 2rem;
-  color: rgba(240,232,208,0.5);
-  font-style: italic; font-size: 1.1rem;
+  color: var(--text-mid); font-style: italic; font-size: 1.05rem;
 }
 .spinner {
   width: 36px; height: 36px;
-  border: 3px solid rgba(201,168,76,0.2);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+  border: 3px solid var(--border); border-top-color: var(--gold);
+  border-radius: 50%; animation: spin 0.9s linear infinite;
   margin: 0 auto 1rem;
 }
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── FEATURED EVENT ──────────────────────────────────────────────────────── */
-.featured-section { margin-bottom: 3rem; }
-.featured-label {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 1rem;
+/* ── FEATURED ─────────────────────────────────────────────────────────────── */
+.featured-section { margin-bottom: 2.5rem; }
+.section-label {
+  font-family: 'Cinzel', serif; font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-dark); margin-bottom: 1rem;
   display: flex; align-items: center; gap: 0.75rem;
 }
-.featured-label::after {
-  content: ''; flex: 1; height: 1px;
-  background: linear-gradient(to right, rgba(201,168,76,0.4), transparent);
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
 }
 .featured-card {
-  background: linear-gradient(135deg, rgba(22,45,85,0.9), rgba(107,26,26,0.2));
-  border: 1px solid rgba(201,168,76,0.4);
-  border-radius: 3px;
-  display: grid; grid-template-columns: 1fr 1.2fr;
-  gap: 0; overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+  display: grid; grid-template-columns: 1.1fr 1fr;
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
 }
 .featured-card:hover {
+  box-shadow: 0 8px 32px rgba(13,31,60,0.15);
   transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(201,168,76,0.15);
 }
 .featured-photo {
-  aspect-ratio: 4/3;
-  background: rgba(13,31,60,0.8);
-  position: relative; overflow: hidden;
+  aspect-ratio: 4/3; overflow: hidden; background: var(--parchment);
+  position: relative;
 }
-.featured-photo img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: sepia(20%) brightness(0.85);
-}
+.featured-photo img { width:100%; height:100%; object-fit:cover; }
 .featured-photo-empty {
-  display: flex; align-items: center; justify-content: center;
-  font-size: 4rem; height: 100%;
-  background: linear-gradient(135deg, rgba(13,31,60,0.9), rgba(107,26,26,0.3));
+  height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: 5rem;
+  background: linear-gradient(135deg, var(--cream), var(--parchment));
 }
 .featured-body {
-  padding: 2.5rem;
-  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 2.5rem; display: flex; flex-direction: column;
+  justify-content: space-between; border-left: 4px solid var(--gold);
 }
 .featured-meta {
-  font-family: 'Cinzel', serif; font-size: 0.7rem;
-  letter-spacing: 0.15em; color: var(--gold);
-  margin-bottom: 0.75rem;
+  font-family: 'Cinzel', serif; font-size: 0.68rem;
+  letter-spacing: 0.12em; color: var(--gold-dark); margin-bottom: 0.6rem;
 }
 .featured-title {
-  font-family: 'Cinzel', serif; font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-  font-weight: 700; color: var(--cream);
-  line-height: 1.3; margin-bottom: 0.75rem;
+  font-family: 'Cinzel', serif; font-size: clamp(1.2rem,2.5vw,1.6rem);
+  font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 0.6rem;
+}
+.featured-location {
+  font-size: 0.85rem; color: var(--text-mid); margin-bottom: 0.75rem;
 }
 .featured-desc {
-  font-size: 1rem; color: rgba(240,232,208,0.8);
-  line-height: 1.7; margin-bottom: 1.5rem;
+  font-size: 1rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 1.5rem; flex: 1;
 }
 .event-cta {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: 'Cinzel', serif; font-size: 0.72rem;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  background: var(--gold); color: var(--navy-dark);
-  padding: 0.7rem 1.5rem; text-decoration: none;
-  font-weight: 600; transition: all 0.2s;
-  border-radius: 2px; width: fit-content;
+  font-family: 'Cinzel', serif; font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--navy); color: var(--gold);
+  padding: 0.7rem 1.5rem; text-decoration: none; font-weight: 600;
+  border-radius: 4px; width: fit-content; border: none; cursor: pointer;
+  transition: all 0.2s;
 }
-.event-cta:hover {
-  background: var(--gold-light);
-  box-shadow: 0 4px 20px rgba(201,168,76,0.4);
-}
+.event-cta:hover { background: var(--navy-mid); box-shadow: 0 4px 16px var(--shadow); }
 
-/* ── EVENTS GRID ─────────────────────────────────────────────────────────── */
-.section-divider {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.25em; text-transform: uppercase;
-  color: rgba(240,232,208,0.4); margin-bottom: 1.5rem;
-  display: flex; align-items: center; gap: 0.75rem;
-}
-.section-divider::before, .section-divider::after {
-  content: ''; flex: 1; height: 1px;
-  background: rgba(201,168,76,0.2);
-}
+/* ── GRID ─────────────────────────────────────────────────────────────────── */
 .events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 .event-card {
-  background: rgba(13,31,60,0.7);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 3px; overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
   display: flex; flex-direction: column;
 }
 .event-card:hover {
+  box-shadow: 0 6px 24px rgba(13,31,60,0.15);
   transform: translateY(-3px);
-  border-color: rgba(201,168,76,0.5);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 }
 .card-photo {
-  height: 180px; overflow: hidden;
-  background: rgba(22,45,85,0.5);
-  position: relative;
+  height: 170px; overflow: hidden; background: var(--parchment); position: relative;
 }
-.card-photo img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: sepia(15%) brightness(0.85);
-  transition: filter 0.3s;
-}
-.event-card:hover .card-photo img { filter: sepia(10%) brightness(0.9); }
+.card-photo img { width:100%; height:100%; object-fit:cover; transition: transform 0.3s; }
+.event-card:hover .card-photo img { transform: scale(1.04); }
 .card-photo-empty {
-  height: 100%; display: flex; align-items: center; justify-content: center;
-  font-size: 3rem;
-  background: linear-gradient(135deg, rgba(13,31,60,0.9), rgba(22,45,85,0.6));
+  height:100%; display:flex; align-items:center; justify-content:center;
+  font-size:3rem; background: linear-gradient(135deg, var(--cream), var(--parchment));
 }
-.card-category-badge {
-  position: absolute; top: 0.75rem; left: 0.75rem;
-  font-family: 'Cinzel', serif; font-size: 0.58rem;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  background: rgba(7,20,41,0.9); color: var(--gold);
-  padding: 0.25rem 0.6rem; border: 1px solid rgba(201,168,76,0.4);
-  border-radius: 2px;
+.card-cat-badge {
+  position: absolute; top: 0.6rem; left: 0.6rem;
+  font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.12em;
+  text-transform: uppercase; background: var(--navy); color: var(--gold);
+  padding: 0.2rem 0.6rem; border-radius: 3px;
 }
-.card-members-badge {
-  position: absolute; top: 0.75rem; right: 0.75rem;
-  font-family: 'Cinzel', serif; font-size: 0.55rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  background: rgba(107,26,26,0.9); color: var(--cream);
-  padding: 0.2rem 0.5rem; border-radius: 2px;
+.card-top-stripe {
+  height: 3px; background: var(--gold);
 }
 .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
 .card-date {
-  font-family: 'Cinzel', serif; font-size: 0.68rem;
-  letter-spacing: 0.12em; color: var(--gold);
-  margin-bottom: 0.5rem;
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
+  letter-spacing: 0.12em; color: var(--gold-dark); margin-bottom: 0.4rem;
 }
 .card-title {
-  font-family: 'Cinzel', serif; font-size: 1rem;
-  font-weight: 600; color: var(--cream);
-  line-height: 1.4; margin-bottom: 0.6rem;
+  font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 600;
+  color: var(--navy); line-height: 1.4; margin-bottom: 0.4rem;
 }
 .card-location {
-  font-size: 0.85rem; color: rgba(240,232,208,0.55);
-  margin-bottom: 0.6rem;
-  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.82rem; color: var(--text-mid); margin-bottom: 0.5rem;
 }
-.card-desc {
-  font-size: 0.9rem; color: rgba(240,232,208,0.7);
-  line-height: 1.6; flex: 1; margin-bottom: 1rem;
-}
-.card-footer { margin-top: auto; }
+.card-desc { font-size: 0.9rem; color: var(--text-mid); line-height: 1.6; flex: 1; margin-bottom: 1rem; }
 .card-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--gold); text-decoration: none;
-  border: 1px solid rgba(201,168,76,0.4);
-  padding: 0.5rem 1rem; border-radius: 2px;
-  transition: all 0.2s; width: 100%; justify-content: center;
+  display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--navy); text-decoration: none;
+  border: 1px solid var(--navy); padding: 0.5rem 1rem; border-radius: 4px;
+  transition: all 0.2s; width: 100%; background: transparent; cursor: pointer;
 }
-.card-btn:hover {
-  background: var(--gold); color: var(--navy-dark);
-  border-color: var(--gold);
-}
+.card-btn:hover { background: var(--navy); color: var(--gold); }
 
-/* ── DETAIL MODAL ────────────────────────────────────────────────────────── */
+/* ── MODAL ────────────────────────────────────────────────────────────────── */
 .modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(7,20,41,0.92); backdrop-filter: blur(4px);
+  background: rgba(7,20,41,0.6); backdrop-filter: blur(4px);
   align-items: flex-start; justify-content: center;
   padding: 2rem 1rem; overflow-y: auto;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: linear-gradient(160deg, #0d1f3c, #071429);
-  border: 1px solid rgba(201,168,76,0.4);
-  border-radius: 3px; width: 100%; max-width: 780px;
-  position: relative; overflow: hidden;
+  background: var(--bg2); border-radius: 8px;
+  width: 100%; max-width: 760px; position: relative; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(13,31,60,0.3);
   animation: modalIn 0.25s ease;
 }
-@keyframes modalIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.modal-top-stripe { height: 4px; background: linear-gradient(to right, var(--navy), var(--gold)); }
 .modal-close {
-  position: absolute; top: 1rem; right: 1rem; z-index: 10;
-  font-family: 'Cinzel', serif; font-size: 0.7rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: rgba(240,232,208,0.5); background: transparent;
-  border: 1px solid rgba(201,168,76,0.2); padding: 0.4rem 0.8rem;
-  cursor: pointer; transition: all 0.2s; border-radius: 2px;
+  position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;
+  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.1em;
+  color: var(--text-mid); background: var(--bg); border: 1px solid var(--border);
+  padding: 0.35rem 0.75rem; cursor: pointer; border-radius: 4px; transition: all 0.2s;
 }
-.modal-close:hover { color: var(--cream); border-color: var(--gold); }
+.modal-close:hover { background: var(--navy); color: var(--gold); border-color: var(--navy); }
 .modal-photo-strip {
-  height: 260px; position: relative; overflow: hidden;
-  background: rgba(13,31,60,0.8);
+  height: 240px; overflow: hidden; background: var(--parchment); position: relative;
 }
-.modal-photo-strip img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: sepia(20%) brightness(0.8);
-}
+.modal-photo-strip img { width:100%; height:100%; object-fit:cover; }
 .modal-photo-empty {
-  height: 100%; display: flex; align-items: center; justify-content: center;
-  font-size: 5rem;
-  background: linear-gradient(135deg, rgba(7,20,41,1), rgba(22,45,85,0.8));
+  height:100%; display:flex; align-items:center; justify-content:center;
+  font-size:5rem; background: linear-gradient(135deg, var(--cream), var(--parchment));
 }
 .modal-photo-nav {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 1rem;
+  position:absolute; inset:0; display:flex;
+  align-items:center; justify-content:space-between; padding:0 1rem;
 }
 .photo-nav-btn {
-  background: rgba(7,20,41,0.8); border: 1px solid rgba(201,168,76,0.3);
-  color: var(--gold); font-size: 1.2rem; width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; border-radius: 2px; transition: all 0.2s;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--border);
+  color: var(--navy); font-size: 1.2rem; width:36px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; border-radius:50%; box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.2s;
 }
-.photo-nav-btn:hover { background: rgba(201,168,76,0.2); }
+.photo-nav-btn:hover { background: var(--navy); color: var(--gold); }
 .photo-counter {
-  position: absolute; bottom: 0.75rem; right: 1rem;
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  color: rgba(240,232,208,0.6); background: rgba(7,20,41,0.7);
-  padding: 0.2rem 0.5rem; border-radius: 2px;
+  position:absolute; bottom:0.75rem; right:1rem;
+  font-family:'Cinzel',serif; font-size:0.62rem;
+  background: rgba(255,255,255,0.9); color: var(--text-mid);
+  padding:0.2rem 0.6rem; border-radius:3px;
 }
-.modal-content { padding: 2rem 2rem 2.5rem; }
-.modal-meta {
-  font-family: 'Cinzel', serif; font-size: 0.7rem;
-  letter-spacing: 0.15em; color: var(--gold);
-  margin-bottom: 0.75rem; display: flex; gap: 1.5rem; flex-wrap: wrap;
+.modal-content { padding: 1.75rem 2rem 2rem; }
+.modal-category {
+  font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.15em;
+  text-transform:uppercase; color: var(--gold-dark); margin-bottom:0.5rem;
 }
 .modal-title {
-  font-family: 'Cinzel', serif; font-size: clamp(1.3rem, 3vw, 1.9rem);
-  font-weight: 700; color: var(--cream); line-height: 1.3;
-  margin-bottom: 1rem;
+  font-family:'Cinzel',serif; font-size:clamp(1.3rem,3vw,1.8rem);
+  font-weight:700; color: var(--navy); line-height:1.3; margin-bottom:1rem;
 }
 .modal-details {
-  display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(201,168,76,0.15);
+  display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1.25rem;
+  padding-bottom:1.25rem; border-bottom:1px solid var(--border);
 }
-.detail-item {
-  display: flex; flex-direction: column; gap: 0.2rem;
-}
+.detail-item { display:flex; flex-direction:column; gap:0.2rem; }
 .detail-label {
-  font-family: 'Cinzel', serif; font-size: 0.6rem;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: rgba(240,232,208,0.4);
+  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.15em;
+  text-transform:uppercase; color: var(--text-mid);
 }
-.detail-value { font-size: 0.95rem; color: var(--cream); }
-.detail-value a { color: var(--gold); text-decoration: none; }
-.detail-value a:hover { text-decoration: underline; }
-.modal-body {
-  font-size: 1rem; color: rgba(240,232,208,0.85);
-  line-height: 1.8; margin-bottom: 1.5rem;
-}
-.modal-body p { margin-bottom: 0.75rem; }
-.modal-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-/* ── PHOTO GALLERY THUMBNAILS ─────────────────────────────────────────────── */
+.detail-value { font-size:0.95rem; color: var(--text); }
+.detail-value a { color: var(--navy); }
+.modal-body { font-size:1rem; color:var(--text-mid); line-height:1.8; margin-bottom:1.5rem; }
+.modal-body p { margin-bottom:0.75rem; }
+.modal-cta-row { display:flex; gap:1rem; flex-wrap:wrap; }
 .photo-thumbs {
-  display: flex; gap: 0.5rem; flex-wrap: wrap;
-  margin-top: 1.5rem; padding-top: 1.25rem;
-  border-top: 1px solid rgba(201,168,76,0.15);
+  display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;
+  padding-top:1.25rem; border-top:1px solid var(--border);
 }
 .photo-thumb {
-  width: 70px; height: 55px; border-radius: 2px; overflow: hidden;
-  cursor: pointer; border: 2px solid transparent;
-  transition: border-color 0.2s;
+  width:68px; height:52px; border-radius:4px; overflow:hidden;
+  cursor:pointer; border:2px solid transparent; transition:border-color 0.2s;
 }
 .photo-thumb.active { border-color: var(--gold); }
-.photo-thumb img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: sepia(15%) brightness(0.85);
-}
+.photo-thumb img { width:100%; height:100%; object-fit:cover; }
 
-/* ── NO EVENTS ───────────────────────────────────────────────────────────── */
+/* ── NO EVENTS ────────────────────────────────────────────────────────────── */
 .no-events {
-  text-align: center; padding: 4rem 2rem;
-  color: rgba(240,232,208,0.4); font-style: italic;
-  font-size: 1.05rem; grid-column: 1/-1;
+  text-align:center; padding:4rem 2rem; color:var(--text-mid);
+  font-style:italic; font-size:1.05rem; grid-column:1/-1;
 }
 
-/* ── FOOTER ──────────────────────────────────────────────────────────────── */
+/* ── FOOTER ───────────────────────────────────────────────────────────────── */
 .events-footer {
-  background: var(--navy-dark);
-  border-top: 1px solid rgba(201,168,76,0.2);
+  background: var(--navy); border-top: 3px solid var(--gold);
   padding: 2rem; text-align: center;
 }
 .footer-brand {
-  font-family: 'Cinzel', serif; font-size: 0.8rem;
-  letter-spacing: 0.12em; color: var(--gold); margin-bottom: 0.5rem;
+  font-family:'Cinzel',serif; font-size:0.8rem;
+  letter-spacing:0.1em; color:var(--gold); margin-bottom:0.5rem;
 }
-.footer-sub {
-  font-size: 0.85rem; color: rgba(240,232,208,0.4);
-}
-.footer-sub a { color: rgba(201,168,76,0.7); text-decoration: none; }
-.footer-sub a:hover { color: var(--gold); }
+.footer-sub { font-size:0.85rem; color:rgba(240,232,208,0.5); }
+.footer-sub a { color:rgba(201,168,76,0.7); text-decoration:none; }
+.footer-sub a:hover { color:var(--gold); }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .featured-card { grid-template-columns: 1fr; }
-  .featured-photo { aspect-ratio: 16/7; }
-  .header-nav { display: none; }
-  .modal-details { gap: 1rem; }
-  .events-main { padding: 2rem 1rem 4rem; }
-  .filter-bar { padding: 0.75rem 1rem; }
+@media(max-width:768px){
+  .featured-card { grid-template-columns:1fr; }
+  .featured-photo { aspect-ratio:16/7; }
+  .header-nav { display:none; }
+  .events-main { padding:1.5rem 1rem 4rem; }
 }
 </style>
 </head>
@@ -458,10 +355,7 @@ body {
 
 <header class="site-header">
   <a href="/" class="header-brand">
-    <div class="header-logo-text">
-      Tampa Rough Riders
-      <span>1st U.S. Volunteer Cavalry</span>
-    </div>
+    <div class="header-logo-text">Tampa Rough Riders<span>1st U.S. Volunteer Cavalry</span></div>
   </a>
   <nav class="header-nav">
     <a href="/">Home</a>
@@ -477,36 +371,35 @@ body {
   <div class="hero-label">Community &amp; Mission</div>
   <h1 class="hero-title">Upcoming Events</h1>
   <div class="hero-rule"></div>
-  <p class="hero-subtitle">Public events open to all. Members log in at tamparoughriders.org for member-only events and details.</p>
+  <p class="hero-subtitle">Public events open to all. Members log in at tamparoughriders.org for member-only events.</p>
 </section>
 
 <div class="filter-bar" id="filterBar">
   <button class="filter-btn active" data-cat="all" onclick="filterEvents('all',this)">All Events</button>
-  <!-- Category buttons injected by JS -->
 </div>
 
 <main class="events-main" id="eventsMain">
   <div class="state-msg" id="loadingMsg">
-    <div class="spinner"></div>
-    Loading events…
+    <div class="spinner"></div>Loading events…
   </div>
 </main>
 
 <!-- Detail Modal -->
 <div class="modal-overlay" id="eventModal" onclick="handleModalClick(event)">
   <div class="modal-box" id="modalBox">
+    <div class="modal-top-stripe"></div>
     <button class="modal-close" onclick="closeModal()">✕ Close</button>
     <div class="modal-photo-strip" id="modalPhotoStrip">
-      <div class="modal-photo-empty" id="modalPhotoEmpty" style="display:none"></div>
+      <div class="modal-photo-empty" id="modalPhotoEmpty"></div>
       <img id="modalPhotoImg" src="" alt="" style="display:none"/>
       <div class="modal-photo-nav" id="modalPhotoNav" style="display:none">
-        <button class="photo-nav-btn" onclick="changePhoto(-1)">‹</button>
-        <button class="photo-nav-btn" onclick="changePhoto(1)">›</button>
+        <button class="photo-nav-btn" onclick="changePhoto(-1)">&#8249;</button>
+        <button class="photo-nav-btn" onclick="changePhoto(1)">&#8250;</button>
       </div>
       <div class="photo-counter" id="photoCounter" style="display:none"></div>
     </div>
     <div class="modal-content">
-      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-category" id="modalCategory"></div>
       <h2 class="modal-title" id="modalTitle"></h2>
       <div class="modal-details" id="modalDetails"></div>
       <div class="modal-body" id="modalBody"></div>
@@ -518,290 +411,189 @@ body {
 
 <footer class="events-footer">
   <div class="footer-brand">1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc.</div>
-  <div class="footer-sub">
-    601 N. 19th St., Tampa, FL 33605 ·
-    <a href="https://tamparoughriders.org">tamparoughriders.org</a> ·
-    <a href="/">roughridersfishing.org</a>
-  </div>
+  <div class="footer-sub">601 N. 19th St., Tampa, FL 33605 · <a href="https://tamparoughriders.org">tamparoughriders.org</a></div>
 </footer>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────────────────────────
-// Public read: direct Supabase (anon key is safe for SELECT on public events)
-const SUPABASE_URL = 'https://qyoqyeaqacdjstvkonwx.supabase.co';
-const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY'; // replace with anon key from Supabase dashboard
+// Fetch through Netlify function (uses service key, bypasses RLS)
+const API = '/.netlify/functions/events-api';
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let allEvents    = [];
-let activeFilter = 'all';
-let modalEvent   = null;
-let photoIndex   = 0;
+let allEvents = [], activeFilter = 'all', modalEvent = null, photoIndex = 0;
 
-// ── FETCH EVENTS ──────────────────────────────────────────────────────────────
 async function loadEvents() {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/rr_events?is_active=eq.true&is_public=eq.true&order=date_start.asc.nullslast,created_at.asc`,
-      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
-    );
-    if (!res.ok) throw new Error('Failed to load events');
+    const res = await fetch(API);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     allEvents = await res.json();
-    buildFilterButtons();
+    buildFilters();
     renderEvents();
-  } catch (e) {
+  } catch(e) {
     document.getElementById('loadingMsg').innerHTML =
-      '<p style="color:rgba(240,232,208,0.4)">Could not load events. Please try again later.</p>';
+      '<p style="color:#888">Could not load events. Please try again later.</p>';
   }
 }
 
-// ── DATE FORMATTING ───────────────────────────────────────────────────────────
-function fmtDate(start, end) {
-  if (!start) return 'By Appointment';
-  const s = new Date(start + 'T12:00:00');
-  const opts = { month: 'long', day: 'numeric', year: 'numeric' };
-  if (end && end !== start) {
-    const e = new Date(end + 'T12:00:00');
-    const eo = { month: 'long', day: 'numeric', year: 'numeric' };
-    return s.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) +
-           ' – ' + e.toLocaleDateString('en-US', eo);
+function fmtDate(s, e) {
+  if (!s) return 'By Appointment';
+  const d = new Date(s + 'T12:00:00');
+  const opts = {month:'long',day:'numeric',year:'numeric'};
+  if (e && e !== s) {
+    const d2 = new Date(e + 'T12:00:00');
+    return d.toLocaleDateString('en-US',{month:'long',day:'numeric'}) +
+           ' \u2013 ' + d2.toLocaleDateString('en-US',opts);
   }
-  return s.toLocaleDateString('en-US', opts);
+  return d.toLocaleDateString('en-US', opts);
 }
-function fmtDateShort(start, end) {
-  if (!start) return 'By Appointment';
-  const s = new Date(start + 'T12:00:00');
-  if (end && end !== start) {
-    const e = new Date(end + 'T12:00:00');
-    return s.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
-           '–' + e.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+function fmtDateShort(s, e) {
+  if (!s) return 'By Appointment';
+  const d = new Date(s + 'T12:00:00');
+  if (e && e !== s) {
+    const d2 = new Date(e + 'T12:00:00');
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
+           '\u2013' + d2.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   }
-  return s.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 }
 
-// ── FILTER BUTTONS ────────────────────────────────────────────────────────────
-function buildFilterButtons() {
-  const cats = [...new Set(allEvents.map(e => e.category).filter(Boolean))];
+function buildFilters() {
+  const cats = [...new Set(allEvents.map(e=>e.category).filter(Boolean))];
   const bar = document.getElementById('filterBar');
   cats.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn';
-    btn.dataset.cat = cat;
-    btn.textContent = cat;
-    btn.onclick = () => filterEvents(cat, btn);
-    bar.appendChild(btn);
+    const b = document.createElement('button');
+    b.className = 'filter-btn'; b.dataset.cat = cat; b.textContent = cat;
+    b.onclick = () => filterEvents(cat, b);
+    bar.appendChild(b);
   });
 }
 
 function filterEvents(cat, btn) {
   activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderEvents();
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
 function renderEvents() {
   const main = document.getElementById('eventsMain');
   document.getElementById('loadingMsg')?.remove();
-
-  const filtered = activeFilter === 'all'
-    ? allEvents
-    : allEvents.filter(e => e.category === activeFilter);
-
-  const featured  = filtered.filter(e => e.is_featured);
-  const regular   = filtered.filter(e => !e.is_featured);
-
+  const list = activeFilter === 'all' ? allEvents : allEvents.filter(e=>e.category===activeFilter);
+  const featured = list.filter(e=>e.is_featured);
+  const regular  = list.filter(e=>!e.is_featured);
   let html = '';
-
   if (featured.length) {
-    html += '<div class="featured-section">';
-    html += '<div class="featured-label">Featured</div>';
-    featured.forEach(ev => { html += featuredCardHTML(ev); });
+    html += '<div class="featured-section"><div class="section-label">Featured</div>';
+    featured.forEach(ev => { html += featuredHTML(ev); });
     html += '</div>';
   }
-
   if (regular.length) {
-    if (featured.length) html += '<div class="section-divider">All Events</div>';
+    if (featured.length) html += '<div class="section-label" style="margin-bottom:1rem">All Events</div>';
     html += '<div class="events-grid">';
-    regular.forEach(ev => { html += eventCardHTML(ev); });
+    regular.forEach(ev => { html += cardHTML(ev); });
     html += '</div>';
   }
-
-  if (!filtered.length) {
-    html = '<div class="no-events">No events in this category right now. Check back soon.</div>';
-  }
-
+  if (!list.length) html = '<div class="no-events">No events in this category right now.</div>';
   main.innerHTML = html;
 }
 
-function photoOrEmoji(ev, size) {
-  const photos = ev.photo_urls || [];
-  const first = Array.isArray(photos) ? photos[0] : null;
-  if (first) {
-    return `<img src="${first}" alt="${ev.title}" loading="lazy"/>`;
-  }
-  return `<div class="${size === 'featured' ? 'featured-photo-empty' : 'card-photo-empty'}">${ev.emoji || '⭐'}</div>`;
+function photoEl(ev, cls) {
+  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+  if (photos.length) return `<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`;
+  return `<div class="${cls}">${ev.emoji||'⭐'}</div>`;
 }
 
-function featuredCardHTML(ev) {
-  const photos = ev.photo_urls || [];
-  const hasPhoto = Array.isArray(photos) && photos.length > 0;
-  return `
-  <div class="featured-card" onclick="openModal('${ev.id}')">
-    <div class="featured-photo">
-      ${hasPhoto
-        ? `<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`
-        : `<div class="featured-photo-empty">${ev.emoji || '⭐'}</div>`}
-    </div>
+function featuredHTML(ev) {
+  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+  return `<div class="featured-card" onclick="openModal('${ev.id}')">
+    <div class="featured-photo">${photoEl(ev,'featured-photo-empty')}</div>
     <div class="featured-body">
       <div>
-        <div class="featured-meta">${fmtDate(ev.date_start, ev.date_end)}${ev.time_display ? ' · ' + ev.time_display : ''}</div>
+        <div class="featured-meta">${fmtDate(ev.date_start,ev.date_end)}${ev.time_display?' · '+ev.time_display:''}</div>
         <h3 class="featured-title">${ev.title}</h3>
-        ${ev.location ? `<p style="font-size:0.85rem;color:rgba(240,232,208,0.55);margin-bottom:0.75rem">📍 ${ev.location}</p>` : ''}
-        <p class="featured-desc">${ev.description || ''}</p>
+        ${ev.location?`<div class="featured-location">&#128205; ${ev.location}</div>`:''}
+        <p class="featured-desc">${ev.description||''}</p>
       </div>
-      ${ev.rsvp_url && ev.rsvp_url !== '#'
-        ? `<a href="${ev.rsvp_url}" target="_blank" class="event-cta" onclick="event.stopPropagation()">${ev.emoji || '⭐'} ${ev.rsvp_label || 'View Details'}</a>`
-        : `<button class="event-cta" onclick="event.stopPropagation();openModal('${ev.id}')">View Details →</button>`}
+      ${ev.rsvp_url&&ev.rsvp_url!=='#'
+        ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta" onclick="event.stopPropagation()">${ev.emoji||''} ${ev.rsvp_label||'View Details'}</a>`
+        :`<button class="event-cta" onclick="event.stopPropagation();openModal('${ev.id}')">View Details &rarr;</button>`}
     </div>
   </div>`;
 }
 
-function eventCardHTML(ev) {
-  const photos = ev.photo_urls || [];
-  const hasPhoto = Array.isArray(photos) && photos.length > 0;
-  return `
-  <div class="event-card" onclick="openModal('${ev.id}')">
+function cardHTML(ev) {
+  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+  return `<div class="event-card" onclick="openModal('${ev.id}')">
     <div class="card-photo">
-      ${hasPhoto
-        ? `<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`
-        : `<div class="card-photo-empty">${ev.emoji || '⭐'}</div>`}
-      ${ev.category ? `<div class="card-category-badge">${ev.category}</div>` : ''}
+      ${photos.length?`<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`:`<div class="card-photo-empty">${ev.emoji||'⭐'}</div>`}
+      ${ev.category?`<div class="card-cat-badge">${ev.category}</div>`:''}
     </div>
+    <div class="card-top-stripe"></div>
     <div class="card-body">
-      <div class="card-date">${fmtDateShort(ev.date_start, ev.date_end)}</div>
+      <div class="card-date">${fmtDateShort(ev.date_start,ev.date_end)}</div>
       <h3 class="card-title">${ev.title}</h3>
-      ${ev.location ? `<div class="card-location">📍 ${ev.location}</div>` : ''}
-      <p class="card-desc">${ev.description || ''}</p>
-      <div class="card-footer">
-        <span class="card-btn">${ev.rsvp_label || 'View Details'} →</span>
-      </div>
+      ${ev.location?`<div class="card-location">&#128205; ${ev.location}</div>`:''}
+      <p class="card-desc">${ev.description||''}</p>
+      <button class="card-btn">${ev.rsvp_label||'View Details'} &rarr;</button>
     </div>
   </div>`;
 }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
 function openModal(id) {
-  modalEvent = allEvents.find(e => e.id === id);
+  modalEvent = allEvents.find(e=>e.id===id);
   if (!modalEvent) return;
   photoIndex = 0;
   populateModal(modalEvent);
   document.getElementById('eventModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeModal() {
   document.getElementById('eventModal').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-function handleModalClick(e) {
-  if (e.target === document.getElementById('eventModal')) closeModal();
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function handleModalClick(e) { if(e.target===document.getElementById('eventModal')) closeModal(); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 function populateModal(ev) {
   const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-
-  // Photo strip
   const img = document.getElementById('modalPhotoImg');
   const empty = document.getElementById('modalPhotoEmpty');
-  const nav = document.getElementById('modalPhotoNav');
-  const counter = document.getElementById('photoCounter');
-
   if (photos.length) {
-    img.src = photos[0]; img.style.display = 'block';
-    empty.style.display = 'none';
-    nav.style.display = photos.length > 1 ? 'flex' : 'none';
-    counter.style.display = photos.length > 1 ? 'block' : 'none';
-    counter.textContent = `1 / ${photos.length}`;
+    img.src = photos[0]; img.style.display='block'; empty.style.display='none';
+    const nav = document.getElementById('modalPhotoNav');
+    const ctr = document.getElementById('photoCounter');
+    nav.style.display = photos.length>1?'flex':'none';
+    ctr.style.display = photos.length>1?'block':'none';
+    if (photos.length>1) ctr.textContent = `1 / ${photos.length}`;
   } else {
-    img.style.display = 'none';
-    empty.style.display = 'flex';
-    empty.textContent = ev.emoji || '⭐';
-    nav.style.display = 'none';
-    counter.style.display = 'none';
+    img.style.display='none'; empty.style.display='flex'; empty.textContent=ev.emoji||'⭐';
+    document.getElementById('modalPhotoNav').style.display='none';
+    document.getElementById('photoCounter').style.display='none';
   }
-
-  // Thumbnails
-  const thumbs = document.getElementById('photoThumbs');
-  thumbs.innerHTML = photos.length > 1
-    ? photos.map((url, i) => `
-        <div class="photo-thumb ${i === 0 ? 'active' : ''}" onclick="setPhoto(${i})">
-          <img src="${url}" alt="Photo ${i+1}" loading="lazy"/>
-        </div>`).join('')
-    : '';
-
-  // Meta
-  document.getElementById('modalMeta').textContent = ev.category || '';
-
-  // Title
+  document.getElementById('photoThumbs').innerHTML = photos.length>1
+    ? photos.map((u,i)=>`<div class="photo-thumb ${i===0?'active':''}" onclick="setPhoto(${i})"><img src="${u}" loading="lazy"/></div>`).join('') : '';
+  document.getElementById('modalCategory').textContent = ev.category||'';
   document.getElementById('modalTitle').textContent = ev.title;
-
-  // Details row
-  let details = '';
-  if (ev.date_start || ev.time_display) {
-    details += `<div class="detail-item">
-      <span class="detail-label">Date</span>
-      <span class="detail-value">${fmtDate(ev.date_start, ev.date_end)}</span>
-    </div>`;
-  }
-  if (ev.time_display) {
-    details += `<div class="detail-item">
-      <span class="detail-label">Time</span>
-      <span class="detail-value">${ev.time_display}</span>
-    </div>`;
-  }
-  if (ev.location) {
-    details += `<div class="detail-item">
-      <span class="detail-label">Location</span>
-      <span class="detail-value">${ev.location_url
-        ? `<a href="${ev.location_url}" target="_blank">${ev.location}</a>`
-        : ev.location}</span>
-    </div>`;
-  }
-  document.getElementById('modalDetails').innerHTML = details;
-
-  // Body
-  document.getElementById('modalBody').innerHTML =
-    ev.body_html || `<p>${ev.description || ''}</p>`;
-
-  // CTA
-  let cta = '';
-  if (ev.rsvp_url && ev.rsvp_url !== '#') {
-    cta += `<a href="${ev.rsvp_url}" target="_blank" class="event-cta">${ev.emoji || '⭐'} ${ev.rsvp_label || 'Register'}</a>`;
-  }
-  document.getElementById('modalCta').innerHTML = cta;
+  let det='';
+  if(ev.date_start) det+=`<div class="detail-item"><span class="detail-label">Date</span><span class="detail-value">${fmtDate(ev.date_start,ev.date_end)}</span></div>`;
+  if(ev.time_display) det+=`<div class="detail-item"><span class="detail-label">Time</span><span class="detail-value">${ev.time_display}</span></div>`;
+  if(ev.location) det+=`<div class="detail-item"><span class="detail-label">Location</span><span class="detail-value">${ev.location_url?`<a href="${ev.location_url}" target="_blank">${ev.location}</a>`:ev.location}</span></div>`;
+  document.getElementById('modalDetails').innerHTML = det;
+  document.getElementById('modalBody').innerHTML = ev.body_html||`<p>${ev.description||''}</p>`;
+  document.getElementById('modalCta').innerHTML = (ev.rsvp_url&&ev.rsvp_url!=='#')
+    ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta">${ev.emoji||''} ${ev.rsvp_label||'Register'}</a>`:'';
 }
-
 function setPhoto(i) {
-  const photos = Array.isArray(modalEvent.photo_urls) ? modalEvent.photo_urls : [];
-  if (i < 0 || i >= photos.length) return;
-  photoIndex = i;
-  document.getElementById('modalPhotoImg').src = photos[i];
-  document.getElementById('photoCounter').textContent = `${i+1} / ${photos.length}`;
-  document.querySelectorAll('.photo-thumb').forEach((t, j) => {
-    t.classList.toggle('active', j === i);
-  });
+  const photos = Array.isArray(modalEvent.photo_urls)?modalEvent.photo_urls:[];
+  if(i<0||i>=photos.length) return;
+  photoIndex=i;
+  document.getElementById('modalPhotoImg').src=photos[i];
+  document.getElementById('photoCounter').textContent=`${i+1} / ${photos.length}`;
+  document.querySelectorAll('.photo-thumb').forEach((t,j)=>t.classList.toggle('active',j===i));
+}
+function changePhoto(d) {
+  const photos = Array.isArray(modalEvent.photo_urls)?modalEvent.photo_urls:[];
+  setPhoto((photoIndex+d+photos.length)%photos.length);
 }
 
-function changePhoto(dir) {
-  const photos = Array.isArray(modalEvent.photo_urls) ? modalEvent.photo_urls : [];
-  setPhoto((photoIndex + dir + photos.length) % photos.length);
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
 loadEvents();
 </script>
 </body>
