@@ -1,7 +1,7 @@
 // netlify/functions/events-api.js
 // CRUD for rr_events — public GET, admin-only POST/PUT/DELETE
 // Env vars needed:
-//   SUPABASE_URL        = https://qyoqyeaqacdjstvkonwx.supabase.co
+//   SUPABASE_URL        = set in Netlify environment variables
 //   SUPABASE_SERVICE_KEY = your service_role key (bypasses RLS)
 //   EVENTS_ADMIN_PASSWORD = your chosen admin password
 
