@@ -281,11 +281,11 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 <!-- ADMIN APP -->
 <div id="adminApp">
   <header class="admin-header">
-    <div class="admin-title">⭐ Rough Riders — Events CMS</div>
+    <div class="admin-title">&#11088; Rough Riders — Events CMS</div>
     <div class="admin-actions">
-      <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page ↗</a>
-      <button class="btn btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn btn-outline" onclick="openImport()">⬆ Import CSV</button>
+      <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page &#8599;</a>
+      <button class="btn btn-outline" onclick="exportCSV()">&#8595; Export CSV</button>
+      <button class="btn btn-outline" onclick="openImport()">&#8593; Import CSV</button>
       <button class="btn btn-primary" onclick="openForm()">+ New Event</button>
       <button class="btn btn-ghost" onclick="doLogout()">Sign Out</button>
     </div>
@@ -331,7 +331,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
   <div class="modal-box">
     <div class="modal-header">
       <div class="modal-header-title" id="formTitle">New Event</div>
-      <button class="btn btn-outline btn-sm" onclick="closeForm()">✕ Cancel</button>
+      <button class="btn btn-outline btn-sm" onclick="closeForm()">&#10005; Cancel</button>
     </div>
     <div class="modal-body-inner">
       <input type="hidden" id="fId"/>
@@ -404,7 +404,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
         <label class="form-label">Photos</label>
         <div class="photo-upload-zone" onclick="document.getElementById('photoFileInput').click()">
           <input type="file" id="photoFileInput" multiple accept="image/*" onchange="handlePhotoSelect(event)"/>
-          <div class="upload-label">📷 Click to upload photos (JPG, PNG, WebP)</div>
+          <div class="upload-label">&#128247; Click to upload photos (JPG, PNG, WebP)</div>
         </div>
         <div class="upload-progress" id="uploadProgress"></div>
         <div class="photo-preview-grid" id="photoPreviews"></div>
@@ -422,7 +422,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
   <div class="modal-box" style="max-width:600px">
     <div class="modal-header">
       <div class="modal-header-title">Import Events from CSV</div>
-      <button class="btn btn-outline btn-sm" onclick="closeImport()">✕ Cancel</button>
+      <button class="btn btn-outline btn-sm" onclick="closeImport()">&#10005; Cancel</button>
     </div>
     <div class="import-box">
       <p style="font-size:0.9rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.6">
@@ -437,7 +437,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
            ondrop="handleImportDrop(event)"
            onclick="document.getElementById('csvFileInput').click()">
         <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvSelect(event)"/>
-        <div style="font-size:2rem;margin-bottom:0.5rem">📂</div>
+        <div style="font-size:2rem;margin-bottom:0.5rem">&#128194;</div>
         <div style="font-size:0.9rem;color:var(--text-mid)">Click or drag &amp; drop a CSV file here</div>
       </div>
       <div class="import-preview" id="importPreview" style="display:none"></div>
@@ -445,7 +445,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeImport()">Cancel</button>
-      <button class="btn btn-success" id="importBtn" onclick="doImport()" style="display:none">⬆ Import Events</button>
+      <button class="btn btn-success" id="importBtn" onclick="doImport()" style="display:none">&#8593; Import Events</button>
     </div>
   </div>
 </div>
@@ -453,10 +453,12 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 <div class="toast" id="toast"></div>
 
 <script>
-const API_BASE  = '/.netlify/functions/events-api';
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const API_BASE   = '/.netlify/functions/admin-events';  // protected write endpoint
+const LOGIN_API  = '/.netlify/functions/admin-login';   // issues JWT
 const UPLOAD_API = '/.netlify/functions/upload-photo';
 
-let adminPass = '';
+let adminToken = '';   // holds the JWT (not the raw password)
 let allEvents = [];
 let editingId = null;
 let pendingPhotoUrls = [];
@@ -466,56 +468,87 @@ let searchQuery = '';
 let catQuery = '';
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-function doLogin() {
+async function doLogin() {
   const pass = document.getElementById('loginPass').value.trim();
   if (!pass) return;
-  fetch(`${API_BASE}?all=true`, { headers:{'Authorization':`Bearer ${pass}`} })
-    .then(r => {
-      if (r.ok) {
-        adminPass = pass;
-        sessionStorage.setItem('eventsAdminPass', pass);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminApp').style.display = 'block';
-        r.json().then(data => { allEvents = data; renderTable(); renderStats(); });
-      } else {
-        document.getElementById('loginErr').textContent = 'Incorrect password.';
-      }
-    }).catch(() => { document.getElementById('loginErr').textContent = 'Connection error.'; });
+  document.getElementById('loginErr').textContent = '';
+  try {
+    const r = await fetch(LOGIN_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
+    });
+    if (!r.ok) {
+      document.getElementById('loginErr').textContent = 'Incorrect password.';
+      return;
+    }
+    const { token } = await r.json();
+    adminToken = token;
+    sessionStorage.setItem('eventsAdminToken', token);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    await fetchEvents();
+  } catch (err) {
+    document.getElementById('loginErr').textContent = 'Connection error.';
+  }
 }
-function doLogout() { adminPass=''; sessionStorage.removeItem('eventsAdminPass'); location.reload(); }
+
+function doLogout() {
+  adminToken = '';
+  sessionStorage.removeItem('eventsAdminToken');
+  location.reload();
+}
+
+// Restore session on page load
 window.addEventListener('DOMContentLoaded', () => {
-  const s = sessionStorage.getItem('eventsAdminPass');
-  if (s) { document.getElementById('loginPass').value = s; doLogin(); }
+  const t = sessionStorage.getItem('eventsAdminToken');
+  if (t) {
+    adminToken = t;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    fetchEvents();
+  }
 });
 
+// Auth header helper — used on every fetch
+function authHeaders(extra) {
+  return Object.assign({ 'Authorization': `Bearer ${adminToken}` }, extra || {});
+}
+
 async function fetchEvents() {
-  const r = await fetch(`${API_BASE}?all=true`, { headers:{'Authorization':`Bearer ${adminPass}`} });
-  allEvents = await r.json();
-  renderTable(); renderStats();
+  try {
+    const r = await fetch(API_BASE, { headers: authHeaders() });
+    if (r.status === 401) { doLogout(); return; }
+    allEvents = await r.json();
+    renderTable();
+    renderStats();
+  } catch (err) {
+    toast('Failed to load events', true);
+  }
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function fmtDate(s, e) {
   if (!s) return 'By Appt';
   const d = new Date(s + 'T12:00:00');
-  const opts = {month:'short',day:'numeric',year:'numeric'};
+  const opts = { month:'short', day:'numeric', year:'numeric' };
   if (e && e !== s) {
-    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
-           ' \u2013 ' + new Date(e+'T12:00:00').toLocaleDateString('en-US',opts);
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) +
+           ' \u2013 ' + new Date(e + 'T12:00:00').toLocaleDateString('en-US', opts);
   }
   return d.toLocaleDateString('en-US', opts);
 }
 
 function searchEvents(q) { searchQuery = q.toLowerCase(); renderTable(); }
-function filterCat(v) { catQuery = v; renderTable(); }
+function filterCat(v)    { catQuery = v; renderTable(); }
 
 // ── STATS ─────────────────────────────────────────────────────────────────────
 function renderStats() {
   const total    = allEvents.length;
-  const active   = allEvents.filter(e=>e.is_active).length;
-  const featured = allEvents.filter(e=>e.is_featured).length;
-  const pub      = allEvents.filter(e=>e.is_public&&e.is_active).length;
-  const priv     = allEvents.filter(e=>!e.is_public&&e.is_active).length;
+  const active   = allEvents.filter(e => e.is_active).length;
+  const featured = allEvents.filter(e => e.is_featured).length;
+  const pub      = allEvents.filter(e => e.is_public && e.is_active).length;
+  const priv     = allEvents.filter(e => !e.is_public && e.is_active).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-pill"><strong>${total}</strong>Total</div>
     <div class="stat-pill"><strong>${active}</strong>Active</div>
@@ -531,12 +564,12 @@ function renderTable() {
     if (!showArch && !e.is_active) return false;
     if (catQuery && e.category !== catQuery) return false;
     if (searchQuery) {
-      const hay = (e.title+' '+(e.description||'')+' '+(e.location||'')).toLowerCase();
+      const hay = (e.title + ' ' + (e.description || '') + ' ' + (e.location || '')).toLowerCase();
       if (!hay.includes(searchQuery)) return false;
     }
     return true;
   });
-  list.sort((a,b) => {
+  list.sort((a, b) => {
     if (a.is_featured && !b.is_featured) return -1;
     if (!a.is_featured && b.is_featured) return 1;
     if (!a.date_start) return 1;
@@ -552,26 +585,26 @@ function renderTable() {
     const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
     const thumb = photos.length
       ? `<img class="event-thumb" src="${photos[0]}" alt=""/>`
-      : `<div class="event-emoji-thumb">${ev.emoji||'⭐'}</div>`;
+      : `<div class="event-emoji-thumb">${ev.emoji || '&#11088;'}</div>`;
     const visBadge = ev.is_public
       ? `<span class="badge badge-pub">Public</span>`
       : `<span class="badge badge-priv">Members</span>`;
     const extras = [
-      ev.is_featured ? `<span class="badge badge-feat">★ Featured</span>` : '',
+      ev.is_featured ? `<span class="badge badge-feat">&#9733; Featured</span>` : '',
       !ev.is_active  ? `<span class="badge badge-arch">Archived</span>` : ''
     ].filter(Boolean).join(' ');
-    return `<tr class="${ev.is_featured?'featured-row':''}">
+    return `<tr class="${ev.is_featured ? 'featured-row' : ''}">
       <td>${thumb}</td>
       <td>
         <strong style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--navy)">${ev.title}</strong>
-        <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.15rem">${(ev.description||'').slice(0,65)}${(ev.description||'').length>65?'…':''}</div>
+        <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.15rem">${(ev.description || '').slice(0, 65)}${(ev.description || '').length > 65 ? '…' : ''}</div>
       </td>
-      <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid)">${fmtDate(ev.date_start,ev.date_end)}</td>
-      <td><span class="badge badge-cat">${ev.category||'General'}</span></td>
+      <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid)">${fmtDate(ev.date_start, ev.date_end)}</td>
+      <td><span class="badge badge-cat">${ev.category || 'General'}</span></td>
       <td>${visBadge} ${extras}</td>
       <td><div class="row-actions">
-        <button class="icon-btn" onclick="openForm('${ev.id}')">✏ Edit</button>
-        <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g,"\\'")}')">🗑</button>
+        <button class="icon-btn" onclick="openForm('${ev.id}')">&#9998; Edit</button>
+        <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g, "\\'")}')">&#128465;</button>
       </div></td>
     </tr>`;
   }).join('');
@@ -579,44 +612,47 @@ function renderTable() {
 
 // ── FORM ──────────────────────────────────────────────────────────────────────
 function openForm(id) {
-  editingId = id||null;
-  pendingPhotoUrls = []; pendingPhotoFiles = [];
+  editingId = id || null;
+  pendingPhotoUrls = [];
+  pendingPhotoFiles = [];
   document.getElementById('photoPreviews').innerHTML = '';
   document.getElementById('uploadProgress').textContent = '';
   document.getElementById('formTitle').textContent = id ? 'Edit Event' : 'New Event';
   if (id) {
-    const ev = allEvents.find(e=>e.id===id);
+    const ev = allEvents.find(e => e.id === id);
     if (!ev) return;
-    document.getElementById('fId').value        = ev.id;
-    document.getElementById('fTitle').value     = ev.title||'';
-    document.getElementById('fDateStart').value = ev.date_start||'';
-    document.getElementById('fDateEnd').value   = ev.date_end||'';
-    document.getElementById('fTime').value      = ev.time_display||'';
-    document.getElementById('fLocation').value  = ev.location||'';
-    document.getElementById('fLocationUrl').value = ev.location_url||'';
-    document.getElementById('fCategory').value  = ev.category||'General';
-    document.getElementById('fEmoji').value     = ev.emoji||'';
-    document.getElementById('fDesc').value      = ev.description||'';
-    document.getElementById('fBody').value      = ev.body_html||'';
-    document.getElementById('fRsvpUrl').value   = ev.rsvp_url||'';
-    document.getElementById('fRsvpLabel').value = ev.rsvp_label||'';
-    document.getElementById('fPublic').checked  = ev.is_public!==false;
-    document.getElementById('fFeatured').checked= !!ev.is_featured;
-    document.getElementById('fActive').checked  = ev.is_active!==false;
+    document.getElementById('fId').value          = ev.id;
+    document.getElementById('fTitle').value       = ev.title || '';
+    document.getElementById('fDateStart').value   = ev.date_start || '';
+    document.getElementById('fDateEnd').value     = ev.date_end || '';
+    document.getElementById('fTime').value        = ev.time_display || '';
+    document.getElementById('fLocation').value    = ev.location || '';
+    document.getElementById('fLocationUrl').value = ev.location_url || '';
+    document.getElementById('fCategory').value    = ev.category || 'General';
+    document.getElementById('fEmoji').value       = ev.emoji || '';
+    document.getElementById('fDesc').value        = ev.description || '';
+    document.getElementById('fBody').value        = ev.body_html || '';
+    document.getElementById('fRsvpUrl').value     = ev.rsvp_url || '';
+    document.getElementById('fRsvpLabel').value   = ev.rsvp_label || '';
+    document.getElementById('fPublic').checked    = ev.is_public !== false;
+    document.getElementById('fFeatured').checked  = !!ev.is_featured;
+    document.getElementById('fActive').checked    = ev.is_active !== false;
     pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
     renderPhotoPreviews();
   } else {
-    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fLocationUrl','fDesc','fBody','fRsvpUrl'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fCategory').value  = 'General';
-    document.getElementById('fEmoji').value     = '⭐';
-    document.getElementById('fRsvpLabel').value = 'View Details';
-    document.getElementById('fPublic').checked  = true;
-    document.getElementById('fFeatured').checked= false;
-    document.getElementById('fActive').checked  = true;
+    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fLocationUrl','fDesc','fBody','fRsvpUrl']
+      .forEach(fid => document.getElementById(fid).value = '');
+    document.getElementById('fCategory').value   = 'General';
+    document.getElementById('fEmoji').value      = '&#11088;';
+    document.getElementById('fRsvpLabel').value  = 'View Details';
+    document.getElementById('fPublic').checked   = true;
+    document.getElementById('fFeatured').checked = false;
+    document.getElementById('fActive').checked   = true;
   }
   document.getElementById('formModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeForm() {
   document.getElementById('formModal').classList.remove('open');
   document.body.style.overflow = '';
@@ -627,39 +663,42 @@ function handlePhotoSelect(e) {
   pendingPhotoFiles = [...pendingPhotoFiles, ...Array.from(e.target.files)];
   renderPhotoPreviews();
 }
+
 function renderPhotoPreviews() {
   const grid = document.getElementById('photoPreviews');
-  const up = pendingPhotoUrls.map((url,i) =>
-    `<div class="photo-prev"><img src="${url}"/><button class="photo-prev-del" onclick="removeExisting(${i})">✕</button></div>`
+  const up = pendingPhotoUrls.map((url, i) =>
+    `<div class="photo-prev"><img src="${url}"/><button class="photo-prev-del" onclick="removeExisting(${i})">&#10005;</button></div>`
   ).join('');
-  const st = pendingPhotoFiles.map((f,i) => {
+  const st = pendingPhotoFiles.map((f, i) => {
     const obj = URL.createObjectURL(f);
-    return `<div class="photo-prev"><img src="${obj}"/><button class="photo-prev-del" onclick="removeStaged(${i})">✕</button></div>`;
+    return `<div class="photo-prev"><img src="${obj}"/><button class="photo-prev-del" onclick="removeStaged(${i})">&#10005;</button></div>`;
   }).join('');
   grid.innerHTML = up + st;
 }
-function removeExisting(i) { pendingPhotoUrls.splice(i,1); renderPhotoPreviews(); }
-function removeStaged(i)   { pendingPhotoFiles.splice(i,1); renderPhotoPreviews(); }
+
+function removeExisting(i) { pendingPhotoUrls.splice(i, 1); renderPhotoPreviews(); }
+function removeStaged(i)   { pendingPhotoFiles.splice(i, 1); renderPhotoPreviews(); }
 
 async function uploadStagedPhotos() {
   if (!pendingPhotoFiles.length) return pendingPhotoUrls;
   const prog = document.getElementById('uploadProgress');
   const uploaded = [...pendingPhotoUrls];
-  for (let i=0; i<pendingPhotoFiles.length; i++) {
+  for (let i = 0; i < pendingPhotoFiles.length; i++) {
     const file = pendingPhotoFiles[i];
-    prog.textContent = `Uploading photo ${i+1} of ${pendingPhotoFiles.length}…`;
-    const b64 = await new Promise((res,rej) => {
+    prog.textContent = `Uploading photo ${i + 1} of ${pendingPhotoFiles.length}…`;
+    const b64 = await new Promise((res, rej) => {
       const r = new FileReader();
       r.onload = () => res(r.result.split(',')[1]);
-      r.onerror = rej; r.readAsDataURL(file);
+      r.onerror = rej;
+      r.readAsDataURL(file);
     });
     const resp = await fetch(UPLOAD_API, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${adminPass}`},
-      body:JSON.stringify({filename:file.name,contentType:file.type||'image/jpeg',data:b64})
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ filename: file.name, contentType: file.type || 'image/jpeg', data: b64 })
     });
-    if (resp.ok) { const {url} = await resp.json(); uploaded.push(url); }
-    else throw new Error(`Photo upload failed`);
+    if (resp.ok) { const { url } = await resp.json(); uploaded.push(url); }
+    else throw new Error('Photo upload failed');
   }
   prog.textContent = '';
   return uploaded;
@@ -668,43 +707,60 @@ async function uploadStagedPhotos() {
 // ── SAVE ──────────────────────────────────────────────────────────────────────
 async function saveEvent() {
   const title = document.getElementById('fTitle').value.trim();
-  if (!title) { toast('Title is required',true); return; }
+  if (!title) { toast('Title is required', true); return; }
   const btn = document.getElementById('saveBtn');
-  btn.disabled=true; btn.textContent='Saving…';
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
   try {
     const finalPhotos = await uploadStagedPhotos();
     const payload = {
       title,
-      date_start:   document.getElementById('fDateStart').value||null,
-      date_end:     document.getElementById('fDateEnd').value||null,
-      time_display: document.getElementById('fTime').value.trim()||null,
-      location:     document.getElementById('fLocation').value.trim()||null,
-      location_url: document.getElementById('fLocationUrl').value.trim()||null,
+      date_start:   document.getElementById('fDateStart').value || null,
+      date_end:     document.getElementById('fDateEnd').value || null,
+      time_display: document.getElementById('fTime').value.trim() || null,
+      location:     document.getElementById('fLocation').value.trim() || null,
+      location_url: document.getElementById('fLocationUrl').value.trim() || null,
       category:     document.getElementById('fCategory').value,
-      emoji:        document.getElementById('fEmoji').value.trim()||'⭐',
-      description:  document.getElementById('fDesc').value.trim()||null,
-      body_html:    document.getElementById('fBody').value.trim()||null,
-      rsvp_url:     document.getElementById('fRsvpUrl').value.trim()||null,
-      rsvp_label:   document.getElementById('fRsvpLabel').value.trim()||'View Details',
+      emoji:        document.getElementById('fEmoji').value.trim() || '⭐',
+      description:  document.getElementById('fDesc').value.trim() || null,
+      body_html:    document.getElementById('fBody').value.trim() || null,
+      rsvp_url:     document.getElementById('fRsvpUrl').value.trim() || null,
+      rsvp_label:   document.getElementById('fRsvpLabel').value.trim() || 'View Details',
       is_public:    document.getElementById('fPublic').checked,
       is_featured:  document.getElementById('fFeatured').checked,
       is_active:    document.getElementById('fActive').checked,
       photo_urls:   finalPhotos
     };
     const method = editingId ? 'PUT' : 'POST';
-    const url    = editingId ? `${API_BASE}?id=${editingId}` : API_BASE;
-    const r = await fetch(url,{method,headers:{'Content-Type':'application/json','Authorization':`Bearer ${adminPass}`},body:JSON.stringify(payload)});
+    if (editingId) payload.id = editingId;
+    const r = await fetch(API_BASE, {
+      method,
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(payload)
+    });
+    if (r.status === 401) { doLogout(); return; }
     if (!r.ok) throw new Error(`Save failed: ${r.status}`);
-    closeForm(); await fetchEvents(); toast(editingId?'Event updated ✓':'Event created ✓','ok');
-  } catch(err) { toast(err.message,true); }
-  finally { btn.disabled=false; btn.textContent='Save Event'; }
+    closeForm();
+    await fetchEvents();
+    toast(editingId ? 'Event updated ✓' : 'Event created ✓', 'ok');
+  } catch (err) {
+    toast(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Event';
+  }
 }
 
 async function archiveEvent(id, title) {
   if (!confirm(`Archive "${title}"?\n\nHidden from public but not deleted.`)) return;
-  const r = await fetch(`${API_BASE}?id=${id}`,{method:'DELETE',headers:{'Authorization':`Bearer ${adminPass}`}});
-  if (r.ok) { await fetchEvents(); toast('Event archived','ok'); }
-  else toast('Archive failed',true);
+  const r = await fetch(API_BASE, {
+    method: 'DELETE',
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ id })
+  });
+  if (r.status === 401) { doLogout(); return; }
+  if (r.ok) { await fetchEvents(); toast('Event archived', 'ok'); }
+  else toast('Archive failed', true);
 }
 
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
@@ -713,21 +769,19 @@ function exportCSV() {
                 'category','emoji','description','body_html','rsvp_url','rsvp_label',
                 'is_public','is_featured','is_active'];
   const esc = v => {
-    if (v===null||v===undefined) return '';
+    if (v === null || v === undefined) return '';
     const s = String(v);
     return s.includes(',') || s.includes('"') || s.includes('\n')
-      ? '"' + s.replace(/"/g,'""') + '"' : s;
+      ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
   const rows = [cols.join(',')];
-  allEvents.forEach(ev => {
-    rows.push(cols.map(c => esc(ev[c])).join(','));
-  });
-  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+  allEvents.forEach(ev => rows.push(cols.map(c => esc(ev[c])).join(',')));
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `rr-events-${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `rr-events-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
-  toast(`Exported ${allEvents.length} events ✓`,'ok');
+  toast(`Exported ${allEvents.length} events ✓`, 'ok');
 }
 
 // ── IMPORT CSV ────────────────────────────────────────────────────────────────
@@ -740,45 +794,48 @@ function openImport() {
   document.getElementById('importModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeImport() {
   document.getElementById('importModal').classList.remove('open');
   document.body.style.overflow = '';
 }
+
 function handleImportDrop(e) {
   e.preventDefault();
   document.getElementById('importDrop').classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
   if (file) processCSVFile(file);
 }
+
 function handleCsvSelect(e) {
   const file = e.target.files[0];
   if (file) processCSVFile(file);
 }
 
 function parseCSV(text) {
-  const lines = text.split('\n').filter(l=>l.trim());
+  const lines = text.split('\n').filter(l => l.trim());
   if (!lines.length) return [];
-  const headers = parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase());
+  const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
   return lines.slice(1).map(line => {
     const vals = parseCSVLine(line);
     const obj = {};
-    headers.forEach((h,i) => { obj[h] = vals[i]||''; });
+    headers.forEach((h, i) => { obj[h] = vals[i] || ''; });
     return obj;
-  }).filter(r=>r.title);
+  }).filter(r => r.title);
 }
 
 function parseCSVLine(line) {
-  const result = []; let cur=''; let inQ=false;
-  for (let i=0; i<line.length; i++) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
     const ch = line[i];
-    if (ch==='"') {
-      if (inQ && line[i+1]==='"') { cur+='"'; i++; }
-      else inQ=!inQ;
-    } else if (ch===',' && !inQ) { result.push(cur); cur=''; }
-    else cur+=ch;
+    if (ch === '"') {
+      if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else cur += ch;
   }
   result.push(cur);
-  return result.map(v=>v.trim());
+  return result.map(v => v.trim());
 }
 
 function processCSVFile(file) {
@@ -786,19 +843,20 @@ function processCSVFile(file) {
   reader.onload = e => {
     const text = e.target.result;
     parsedImportRows = parseCSV(text);
-    const prev = document.getElementById('importPreview');
+    const prev  = document.getElementById('importPreview');
     const stats = document.getElementById('importStats');
     if (!parsedImportRows.length) {
       stats.textContent = 'No valid rows found. Make sure the CSV has a title column.';
-      document.getElementById('importBtn').style.display='none';
+      document.getElementById('importBtn').style.display = 'none';
       return;
     }
-    prev.style.display='block';
-    prev.innerHTML = parsedImportRows.slice(0,5).map(r =>
-      `<div style="padding:0.25rem 0;border-bottom:1px solid var(--border)">${r.title} — ${r.date_start||'No date'} — ${r.category||'General'}</div>`
-    ).join('') + (parsedImportRows.length>5 ? `<div style="color:#9ca3af;padding-top:0.25rem">…and ${parsedImportRows.length-5} more</div>` : '');
+    prev.style.display = 'block';
+    prev.innerHTML = parsedImportRows.slice(0, 5).map(r =>
+      `<div style="padding:0.25rem 0;border-bottom:1px solid var(--border)">${r.title} — ${r.date_start || 'No date'} — ${r.category || 'General'}</div>`
+    ).join('') + (parsedImportRows.length > 5
+      ? `<div style="color:#9ca3af;padding-top:0.25rem">…and ${parsedImportRows.length - 5} more</div>` : '');
     stats.innerHTML = `<strong>${parsedImportRows.length} events</strong> ready to import. Existing events will not be duplicated by title.`;
-    document.getElementById('importBtn').style.display='inline-block';
+    document.getElementById('importBtn').style.display = 'inline-block';
   };
   reader.readAsText(file);
 }
@@ -806,43 +864,50 @@ function processCSVFile(file) {
 async function doImport() {
   if (!parsedImportRows.length) return;
   const btn = document.getElementById('importBtn');
-  btn.disabled=true; btn.textContent='Importing…';
-  let created=0, skipped=0;
-  const existingTitles = new Set(allEvents.map(e=>e.title.trim().toLowerCase()));
+  btn.disabled = true;
+  btn.textContent = 'Importing…';
+  let created = 0, skipped = 0;
+  const existingTitles = new Set(allEvents.map(e => e.title.trim().toLowerCase()));
   for (const row of parsedImportRows) {
     if (existingTitles.has(row.title.trim().toLowerCase())) { skipped++; continue; }
     const payload = {
       title:        row.title.trim(),
-      date_start:   row.date_start||null,
-      date_end:     row.date_end||null,
-      time_display: row.time_display||null,
-      location:     row.location||null,
-      location_url: row.location_url||null,
-      category:     row.category||'General',
-      emoji:        row.emoji||'⭐',
-      description:  row.description||null,
-      body_html:    row.body_html||null,
-      rsvp_url:     row.rsvp_url||null,
-      rsvp_label:   row.rsvp_label||'View Details',
-      is_public:    row.is_public!=='false'&&row.is_public!=='FALSE'&&row.is_public!=='0',
-      is_featured:  row.is_featured==='true'||row.is_featured==='TRUE'||row.is_featured==='1',
-      is_active:    row.is_active!=='false'&&row.is_active!=='FALSE'&&row.is_active!=='0',
+      date_start:   row.date_start || null,
+      date_end:     row.date_end || null,
+      time_display: row.time_display || null,
+      location:     row.location || null,
+      location_url: row.location_url || null,
+      category:     row.category || 'General',
+      emoji:        row.emoji || '⭐',
+      description:  row.description || null,
+      body_html:    row.body_html || null,
+      rsvp_url:     row.rsvp_url || null,
+      rsvp_label:   row.rsvp_label || 'View Details',
+      is_public:    row.is_public !== 'false' && row.is_public !== 'FALSE' && row.is_public !== '0',
+      is_featured:  row.is_featured === 'true' || row.is_featured === 'TRUE' || row.is_featured === '1',
+      is_active:    row.is_active !== 'false' && row.is_active !== 'FALSE' && row.is_active !== '0',
       photo_urls:   []
     };
-    const r = await fetch(API_BASE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${adminPass}`},body:JSON.stringify(payload)});
+    const r = await fetch(API_BASE, {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(payload)
+    });
     if (r.ok) created++; else skipped++;
   }
-  closeImport(); await fetchEvents();
-  toast(`Imported ${created} events${skipped?' ('+skipped+' skipped)':''}`, 'ok');
-  btn.disabled=false; btn.textContent='⬆ Import Events';
+  closeImport();
+  await fetchEvents();
+  toast(`Imported ${created} events${skipped ? ' (' + skipped + ' skipped)' : ''}`, 'ok');
+  btn.disabled = false;
+  btn.textContent = '&#8593; Import Events';
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 function toast(msg, type) {
   const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'toast show' + (type==='ok'?' ok':type===true?' err':'');
-  setTimeout(()=>{ el.className='toast'; }, 3200);
+  el.className = 'toast show' + (type === 'ok' ? ' ok' : type === true ? ' err' : '');
+  setTimeout(() => { el.className = 'toast'; }, 3200);
 }
 </script>
 </body>
