@@ -7,7 +7,7 @@
 # Tell Netlify secrets scanner that the Supabase URL in HTML files is intentional
 # (anon key + URL are public-read only — safe to be in frontend code)
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html"
+ SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html"
 
 [[redirects]]
   from = "/events-admin"
