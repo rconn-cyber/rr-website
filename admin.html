@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Tampa Rough Riders</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1f3c;
+    --navy-light: #152a4e;
+    --navy-mid: #1a3460;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --gold-dim: rgba(201,168,76,0.15);
+    --burgundy: #6B1A1A;
+    --white: #f5f0e8;
+    --muted: rgba(245,240,232,0.55);
+    --danger: #c0392b;
+    --success: #27ae60;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN OVERLAY ── */
+  #loginOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.4s;
+  }
+  #loginOverlay.hidden { opacity: 0; pointer-events: none; }
+
+  .login-box {
+    text-align: center;
+    padding: 3rem 2.5rem;
+    border: 1px solid var(--border);
+    background: var(--navy-light);
+    max-width: 380px; width: 100%;
+  }
+  .login-box .crest { font-size: 2.5rem; margin-bottom: 1rem; }
+  .login-box h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .login-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 2rem; }
+  .login-box input {
+    width: 100%; padding: 0.75rem 1rem;
+    background: var(--navy-mid); border: 1px solid var(--border);
+    color: var(--white); font-size: 1rem; font-family: inherit;
+    letter-spacing: 0.15em; outline: none; margin-bottom: 1rem;
+  }
+  .login-box input:focus { border-color: var(--gold); }
+  .login-box button {
+    width: 100%; padding: 0.8rem;
+    background: var(--gold); color: var(--navy);
+    font-family: 'Cinzel', serif; font-size: 0.85rem;
+    letter-spacing: 0.15em; font-weight: 700;
+    border: none; cursor: pointer; transition: background 0.2s;
+  }
+  .login-box button:hover { background: var(--gold-light); }
+  #loginError {
+    color: #e74c3c; font-size: 0.8rem; margin-top: 0.75rem;
+    min-height: 1.2em;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy-light);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+  .header-left a {
+    color: var(--muted); font-size: 0.8rem; text-decoration: none;
+    letter-spacing: 0.08em; transition: color 0.2s;
+  }
+  .header-left a:hover { color: var(--gold); }
+  .header-title {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+  }
+  .header-badge {
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--navy-light);
+    padding: 0 2rem;
+  }
+  .tab-btn {
+    padding: 0.9rem 1.5rem;
+    background: none; border: none;
+    color: var(--muted); font-family: 'Cinzel', serif;
+    font-size: 0.78rem; letter-spacing: 0.12em;
+    cursor: pointer; position: relative;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--gold-light); }
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem; color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+  .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 1.2rem 1.5rem;
+  }
+  .stat-card .stat-label {
+    font-size: 0.7rem; letter-spacing: 0.12em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .stat-card .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem; color: var(--gold);
+    line-height: 1;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative; flex: 1; min-width: 220px;
+  }
+  .search-wrap input {
+    width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem;
+    background: var(--navy-light); border: 1px solid var(--border);
+    color: var(--white); font-family: inherit; font-size: 0.9rem;
+    outline: none;
+  }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap .search-icon {
+    position: absolute; left: 0.8rem; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted); font-size: 0.9rem; pointer-events: none;
+  }
+  .filter-select {
+    padding: 0.65rem 1rem;
+    background: var(--navy-light); border: 1px solid var(--border);
+    color: var(--white); font-family: inherit; font-size: 0.85rem;
+    outline: none; cursor: pointer;
+  }
+  .filter-select:focus { border-color: var(--gold); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 0.65rem 1.2rem;
+    font-family: 'Cinzel', serif; font-size: 0.75rem;
+    letter-spacing: 0.1em; cursor: pointer;
+    border: none; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-gold { background: var(--gold); color: var(--navy); font-weight: 700; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #e74c3c; }
+  .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.7rem; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  thead {
+    background: rgba(201,168,76,0.08);
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.1em; color: var(--gold);
+    white-space: nowrap;
+  }
+  td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(201,168,76,0.04); }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.68rem; letter-spacing: 0.08em;
+    font-weight: 600; text-transform: uppercase;
+  }
+  .status-active { background: rgba(39,174,96,0.15); color: #2ecc71; }
+  .status-lapsed { background: rgba(192,57,43,0.15); color: #e74c3c; }
+  .status-pending { background: rgba(243,156,18,0.15); color: #f39c12; }
+  .status-leave { background: rgba(142,68,173,0.15); color: #9b59b6; }
+
+  .action-btns { display: flex; gap: 0.4rem; }
+
+  /* ── PAGINATION ── */
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .page-controls { display: flex; gap: 0.4rem; }
+  .page-btn {
+    width: 30px; height: 30px;
+    background: var(--navy); border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .page-btn:hover, .page-btn.active { border-color: var(--gold); color: var(--gold); }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5,12,25,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    width: 90%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+    transform: translateY(10px);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem; color: var(--gold); letter-spacing: 0.08em;
+  }
+  .modal-close {
+    background: none; border: none;
+    color: var(--muted); cursor: pointer; font-size: 1.3rem;
+    line-height: 1; transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--white); }
+  .modal-body { padding: 1.5rem; }
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 0.75rem;
+  }
+
+  /* ── FORM ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label {
+    font-size: 0.72rem; letter-spacing: 0.1em;
+    color: var(--gold); text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.65rem 0.9rem;
+    background: var(--navy-mid); border: 1px solid var(--border);
+    color: var(--white); font-family: inherit; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--gold); }
+  .form-group select option { background: var(--navy-mid); }
+
+  /* ── EVENTS TAB ── */
+  .events-redirect {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 3rem;
+    text-align: center;
+  }
+  .events-redirect .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
+  .events-redirect h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold); font-size: 1.1rem;
+    letter-spacing: 0.1em; margin-bottom: 0.5rem;
+  }
+  .events-redirect p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--navy-light); border: 1px solid var(--border);
+    padding: 0.8rem 1.2rem; font-size: 0.85rem;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; z-index: 600;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { border-color: var(--success); }
+  #toast.error { border-color: var(--danger); }
+
+  /* ── LOADING ── */
+  .loading-row td {
+    text-align: center; padding: 3rem;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 0.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    text-align: center; padding: 3rem;
+    color: var(--muted); font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: 1; }
+    main { padding: 1rem; }
+    .tabs { padding: 0 1rem; }
+    .tab-btn { padding: 0.8rem 1rem; font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="crest">⚔️</div>
+    <h1>ADMIN ACCESS</h1>
+    <p>Tampa Rough Riders — Restricted Area</p>
+    <input type="password" id="pwInput" placeholder="Enter password" autocomplete="current-password">
+    <button onclick="checkLogin()">ENTER</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <a href="index.html">← Back to Site</a>
+    <span class="header-title">ADMIN PANEL</span>
+    <span class="header-badge">RESTRICTED</span>
+  </div>
+  <div style="font-size:0.75rem;color:var(--muted);letter-spacing:0.08em;">
+    1st U.S. Volunteer Cavalry Regiment
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab('membership', this)">MEMBERSHIP</button>
+  <button class="tab-btn" onclick="switchTab('events', this)">EVENTS</button>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- MEMBERSHIP TAB -->
+  <div id="tab-membership" class="tab-panel active">
+    <div class="page-header">
+      <div>
+        <h2>Membership Registry</h2>
+        <p>View, edit, add, and remove members from the Supabase roster</p>
+      </div>
+      <button class="btn btn-gold" onclick="openAddModal()">+ ADD MEMBER</button>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-label">Total Members</div>
+        <div class="stat-value" id="statTotal">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active</div>
+        <div class="stat-value" id="statActive">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Lapsed</div>
+        <div class="stat-value" id="statLapsed">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="statPending">—</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by name, email, or member #…"
+               oninput="onSearch()">
+      </div>
+      <select class="filter-select" id="statusFilter" onchange="onSearch()">
+        <option value="">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Lapsed">Lapsed</option>
+        <option value="Pending - New Member">Pending</option>
+        <option value="Leave of Absence">Leave of Absence</option>
+      </select>
+      <select class="filter-select" id="typeFilter" onchange="onSearch()">
+        <option value="">All Types</option>
+        <option value="Full Member">Full Member</option>
+        <option value="Non-Resident Member">Non-Resident</option>
+        <option value="Associate Member">Associate</option>
+        <option value="Honorary Member">Honorary</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Renewed</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="memberTableBody">
+          <tr class="loading-row">
+            <td colspan="7"><span class="spinner"></span> Loading members…</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pagination" style="display:none;">
+        <span id="paginationInfo"></span>
+        <div class="page-controls" id="pageControls"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENTS TAB -->
+  <div id="tab-events" class="tab-panel">
+    <div class="page-header">
+      <div>
+        <h2>Events Management</h2>
+        <p>Manage public and member-only events</p>
+      </div>
+    </div>
+    <div class="events-redirect">
+      <div class="icon">📅</div>
+      <h3>EVENTS ADMIN</h3>
+      <p>Full event management is available in the dedicated Events Admin panel.</p>
+      <a href="events-admin.html" class="btn btn-gold" style="display:inline-block;text-decoration:none;">
+        OPEN EVENTS ADMIN →
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">ADD MEMBER</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" id="fFirst" placeholder="First">
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" id="fLast" placeholder="Last">
+        </div>
+        <div class="form-group full">
+          <label>Email</label>
+          <input type="email" id="fEmail" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Member #</label>
+          <input type="text" id="fMemberNum" placeholder="e.g. 1042">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="fPhone" placeholder="(813) 555-0000">
+        </div>
+        <div class="form-group">
+          <label>Member Type</label>
+          <select id="fType">
+            <option value="Full Member">Full Member</option>
+            <option value="Non-Resident Member">Non-Resident Member</option>
+            <option value="Associate Member">Associate Member</option>
+            <option value="Honorary Member">Honorary Member</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="Active">Active</option>
+            <option value="Lapsed">Lapsed</option>
+            <option value="Pending - New Member">Pending - New Member</option>
+            <option value="Leave of Absence">Leave of Absence</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Address</label>
+          <input type="text" id="fAddress" placeholder="Street address">
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="fCity">
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" id="fState" placeholder="FL" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Zip</label>
+          <input type="text" id="fZip" placeholder="33605">
+        </div>
+        <div class="form-group">
+          <label>Renewal Date</label>
+          <input type="date" id="fRenewal">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">CANCEL</button>
+      <button class="btn btn-gold" onclick="saveMember()">SAVE MEMBER</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3>CONFIRM DELETE</h3>
+      <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;">
+        Are you sure you want to remove <strong id="deleteName" style="color:var(--white);"></strong> from the registry? This cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">CANCEL</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">DELETE MEMBER</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://qyoqyeaqacdjstvkonwx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5b3F5ZWFxYWNkanN0dmtvbnd4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjc2NTMzMywiZXhwIjoyMDg4MzQxMzMzfQ.uP4Kkn-sV245uad4i6PuOmzz-AwXEPPc5o00BeMAHJ8';
+const TABLE = 'rr_members';
+const PAGE_SIZE = 25;
+const PASSWORD = 'bullyjudge';
+
+let allMembers = [];
+let filteredMembers = [];
+let currentPage = 1;
+let editingId = null;
+let deleteId = null;
+
+// ── AUTH ──
+function checkLogin() {
+  const val = document.getElementById('pwInput').value;
+  if (val === PASSWORD) {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    loadMembers();
+  } else {
+    document.getElementById('loginError').textContent = 'Incorrect password.';
+  }
+}
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkLogin();
+});
+
+// ── TABS ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── SUPABASE HELPERS ──
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// ── LOAD MEMBERS ──
+async function loadMembers() {
+  try {
+    const data = await sbFetch(TABLE + '?select=*&order=last_name.asc');
+    allMembers = data || [];
+    updateStats();
+    onSearch();
+  } catch (e) {
+    console.error(e);
+    // Try alternate column names if needed
+    document.getElementById('memberTableBody').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading members. Check console for details.</td></tr>';
+    showToast('Failed to load members: ' + e.message, 'error');
+  }
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allMembers.length;
+  document.getElementById('statActive').textContent =
+    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('active')).length;
+  document.getElementById('statLapsed').textContent =
+    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('lapsed')).length;
+  document.getElementById('statPending').textContent =
+    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('pending')).length;
+}
+
+// ── SEARCH / FILTER ──
+function onSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const statusF = document.getElementById('statusFilter').value;
+  const typeF = document.getElementById('typeFilter').value;
+
+  filteredMembers = allMembers.filter(m => {
+    const first = (m.first_name || m['First name'] || m.firstName || '').toString();
+    const last  = (m.last_name  || m['Last name']  || m.lastName  || '').toString();
+    const email = (m.email || m.Email || '').toString();
+    const num   = (m.member_number || m['Member ID'] || m.id || '').toString();
+    const status= (m.status || m.Status || '').toString();
+    const type  = (m.member_type || m['Member type'] || m.memberType || '').toString();
+
+    const matchQ = !q || [first, last, email, num].some(v => v.toLowerCase().includes(q));
+    const matchS = !statusF || status.includes(statusF);
+    const matchT = !typeF || type.includes(typeF);
+    return matchQ && matchS && matchT;
+  });
+
+  currentPage = 1;
+  renderTable();
+}
+
+// ── RENDER TABLE ──
+function renderTable() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = filteredMembers.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('memberTableBody');
+
+  if (filteredMembers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No members found.</td></tr>';
+    document.getElementById('pagination').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = page.map(m => {
+    const first  = m.first_name  || m['First name']  || m.firstName  || '';
+    const last   = m.last_name   || m['Last name']   || m.lastName   || '';
+    const email  = m.email       || m.Email          || '';
+    const num    = m.member_number|| m['Member ID']  || m.id         || '';
+    const status = m.status      || m.Status         || '';
+    const type   = m.member_type || m['Member type'] || m.memberType || '';
+    const renewed= m.renewal_date|| m['Renewal due'] || m.renewalDate|| '';
+
+    const statusClass = status.toLowerCase().includes('active') ? 'status-active'
+                      : status.toLowerCase().includes('lapsed') ? 'status-lapsed'
+                      : status.toLowerCase().includes('pending') ? 'status-pending'
+                      : status.toLowerCase().includes('leave') ? 'status-leave'
+                      : '';
+
+    const renewedStr = renewed ? new Date(renewed).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '—';
+
+    return `<tr>
+      <td style="color:var(--muted);font-size:0.8rem;">${num}</td>
+      <td><strong>${last}</strong>, ${first}</td>
+      <td style="color:var(--muted);font-size:0.82rem;">${email}</td>
+      <td style="font-size:0.8rem;">${type}</td>
+      <td><span class="status-badge ${statusClass}">${status || '—'}</span></td>
+      <td style="font-size:0.8rem;color:var(--muted);">${renewedStr}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id || m.Id},'${(last+', '+first).replace(/'/g,"\\'")}')">Del</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = filteredMembers.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE + 1;
+  const end   = Math.min(currentPage * PAGE_SIZE, total);
+
+  document.getElementById('pagination').style.display = 'flex';
+  document.getElementById('paginationInfo').textContent =
+    `Showing ${start}–${end} of ${total} members`;
+
+  const ctrl = document.getElementById('pageControls');
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  for (let i = 1; i <= pages; i++) {
+    if (pages <= 7 || Math.abs(i - currentPage) <= 2 || i === 1 || i === pages) {
+      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    } else if (Math.abs(i - currentPage) === 3) {
+      html += `<span style="padding:0 0.3rem;color:var(--muted);">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  ctrl.innerHTML = html;
+}
+
+function goPage(p) {
+  const pages = Math.ceil(filteredMembers.length / PAGE_SIZE);
+  if (p < 1 || p > pages) return;
+  currentPage = p;
+  renderTable();
+}
+
+// ── ADD / EDIT MODAL ──
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'ADD MEMBER';
+  clearForm();
+  document.getElementById('memberModal').classList.add('open');
+}
+
+function openEditModal(m) {
+  editingId = m.id || m.Id;
+  document.getElementById('modalTitle').textContent = 'EDIT MEMBER';
+  document.getElementById('fFirst').value    = m.first_name  || m['First name']  || '';
+  document.getElementById('fLast').value     = m.last_name   || m['Last name']   || '';
+  document.getElementById('fEmail').value    = m.email       || m.Email          || '';
+  document.getElementById('fMemberNum').value= m.member_number||m['Member ID']   || '';
+  document.getElementById('fPhone').value    = m.phone       || m.Phone          || '';
+  document.getElementById('fAddress').value  = m.address     || m.Address        || '';
+  document.getElementById('fCity').value     = m.city        || m.City           || '';
+  document.getElementById('fState').value    = m.state       || m.State          || '';
+  document.getElementById('fZip').value      = m.zip         || m.Zip            || '';
+  const statusEl = document.getElementById('fStatus');
+  const typeEl   = document.getElementById('fType');
+  const st = m.status || m.Status || '';
+  const ty = m.member_type || m['Member type'] || '';
+  [...statusEl.options].forEach(o => { if (st.includes(o.value)) statusEl.value = o.value; });
+  [...typeEl.options].forEach(o =>   { if (ty.includes(o.value)) typeEl.value   = o.value; });
+  const renewed = m.renewal_date || m['Renewal due'] || '';
+  document.getElementById('fRenewal').value = renewed ? renewed.substring(0,10) : '';
+  document.getElementById('memberModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('memberModal').classList.remove('open');
+  editingId = null;
+}
+
+function clearForm() {
+  ['fFirst','fLast','fEmail','fMemberNum','fPhone','fAddress','fCity','fState','fZip','fRenewal']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fStatus').value = 'Active';
+  document.getElementById('fType').value = 'Full Member';
+}
+
+async function saveMember() {
+  const payload = {
+    first_name:    document.getElementById('fFirst').value.trim(),
+    last_name:     document.getElementById('fLast').value.trim(),
+    email:         document.getElementById('fEmail').value.trim(),
+    member_number: document.getElementById('fMemberNum').value.trim(),
+    phone:         document.getElementById('fPhone').value.trim(),
+    address:       document.getElementById('fAddress').value.trim(),
+    city:          document.getElementById('fCity').value.trim(),
+    state:         document.getElementById('fState').value.trim(),
+    zip:           document.getElementById('fZip').value.trim(),
+    status:        document.getElementById('fStatus').value,
+    member_type:   document.getElementById('fType').value,
+    renewal_date:  document.getElementById('fRenewal').value || null,
+  };
+
+  if (!payload.first_name || !payload.last_name) {
+    showToast('First and last name are required.', 'error'); return;
+  }
+
+  try {
+    if (editingId) {
+      await sbFetch(TABLE + '?id=eq.' + editingId, {
+        method: 'PATCH',
+        body: JSON.stringify(payload)
+      });
+      const idx = allMembers.findIndex(m => (m.id || m.Id) == editingId);
+      if (idx > -1) allMembers[idx] = { ...allMembers[idx], ...payload };
+      showToast('Member updated successfully.', 'success');
+    } else {
+      const result = await sbFetch(TABLE, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      if (result && result[0]) allMembers.push(result[0]);
+      showToast('Member added successfully.', 'success');
+    }
+    updateStats();
+    onSearch();
+    closeModal();
+  } catch (e) {
+    showToast('Error saving member: ' + e.message, 'error');
+  }
+}
+
+// ── DELETE ──
+function openDeleteModal(id, name) {
+  deleteId = id;
+  document.getElementById('deleteName').textContent = name;
+  document.getElementById('deleteModal').classList.add('open');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('open');
+  deleteId = null;
+}
+async function confirmDelete() {
+  if (!deleteId) return;
+  try {
+    await sbFetch(TABLE + '?id=eq.' + deleteId, { method: 'DELETE' });
+    allMembers = allMembers.filter(m => (m.id || m.Id) != deleteId);
+    updateStats();
+    onSearch();
+    closeDeleteModal();
+    showToast('Member removed.', 'success');
+  } catch (e) {
+    showToast('Error deleting member: ' + e.message, 'error');
+  }
+}
+
+// ── TOAST ──
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.innerHTML = (type === 'success' ? '✓ ' : '✗ ') + msg;
+  t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 3500);
+}
+
+// close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) {
+      el.classList.remove('open');
+      editingId = null; deleteId = null;
+    }
+  });
+});
+</script>
+</body>
+</html>
