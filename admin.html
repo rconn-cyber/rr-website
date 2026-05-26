@@ -830,7 +830,6 @@ function parseWAcsv(text) {
       membership_level: get('Membership level') || null,
       rank:             get('2025-2026 Rank') || null,
       notes:            get('Notes') || null,
-      status:           'Active',
       date_joined:      (yr && /^\d{4}$/.test(yr)) ? yr + '-01-01' : null,
     };
     if (row.last_name) rows.push(row);
@@ -1191,7 +1190,6 @@ async function saveMember() {
     city:          document.getElementById('fCity').value.trim(),
     state:         document.getElementById('fState').value.trim(),
     zip:           document.getElementById('fZip').value.trim(),
-    status:        document.getElementById('fStatus').value,
     membership_level: document.getElementById('fType').value,
     date_joined:     document.getElementById('fDateJoined').value || null,
     rank:            document.getElementById('fRank').value.trim(),
