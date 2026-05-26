@@ -217,7 +217,7 @@ body {
   display: grid; grid-template-columns: 1.1fr 1fr;
   box-shadow: 0 4px 20px var(--shadow);
   transition: box-shadow 0.2s, transform 0.2s;
-  cursor: pointer;
+  cursor: pointer; margin-bottom: 0.5rem;
 }
 .featured-card:hover {
   box-shadow: 0 8px 32px rgba(13,31,60,0.15);
@@ -579,23 +579,14 @@ function filterEvents(cat, btn) {
 function renderEvents() {
   const main = document.getElementById('eventsMain');
   document.getElementById('loadingMsg')?.remove();
-  const list = activeFilter === 'all' ? allEvents : allEvents.filter(e=>e.category===activeFilter);
-  const featured = list.filter(e=>e.is_featured);
-  const regular  = list.filter(e=>!e.is_featured);
-  let html = '';
-  if (featured.length) {
-    html += '<div class="featured-section"><div class="section-label">Featured</div>';
-    featured.forEach(ev => { html += featuredHTML(ev); });
-    html += '</div>';
-  }
-  if (regular.length) {
-    if (featured.length) html += '<div class="section-label" style="margin-bottom:1rem">All Events</div>';
-    html += '<div class="events-list">';
-    regular.forEach(ev => { html += listItemHTML(ev); });
-    html += '</div>';
-  }
-  if (!list.length) html = '<div class="no-events">No events in this category right now.</div>';
-  main.innerHTML = html;
+  const list = (activeFilter === 'all' ? allEvents : allEvents.filter(e=>e.category===activeFilter))
+    .slice().sort((a, b) => {
+      if (!a.date_start) return 1;
+      if (!b.date_start) return -1;
+      return a.date_start.localeCompare(b.date_start);
+    });
+  if (!list.length) { main.innerHTML = '<div class="no-events">No events in this category right now.</div>'; return; }
+  main.innerHTML = list.map(ev => ev.is_featured ? featuredHTML(ev) : listItemHTML(ev)).join('');
 }
 
 function photoEl(ev, cls) {
