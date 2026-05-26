@@ -564,23 +564,41 @@
         <option value="Honorary Member">Honorary</option>
       </select>
     </div>
+    <div style="margin-bottom:0.75rem;">
+      <button class="btn btn-outline btn-sm" onclick="toggleColChooser()" style="font-size:0.72rem;">&#9638; COLUMNS</button>
+      <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;display:none;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> #</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="status" checked onchange="applyColVisibility()"> Status</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="rank" onchange="applyColVisibility()"> Rank</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="phone" onchange="applyColVisibility()"> Phone</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="city" onchange="applyColVisibility()"> City</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="joined" onchange="applyColVisibility()"> Date Joined</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="actions" checked onchange="applyColVisibility()"> Actions</label>
+      </div>
+    </div>
 
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Renewed</th>
-            <th>Actions</th>
+            <th data-col="num">#</th>
+            <th data-col="name">Name</th>
+            <th data-col="email">Email</th>
+            <th data-col="type">Type</th>
+            <th data-col="status">Status</th>
+            <th data-col="rank" style="display:none;">Rank</th>
+            <th data-col="phone" style="display:none;">Phone</th>
+            <th data-col="city" style="display:none;">City</th>
+            <th data-col="joined">Date Joined</th>
+            <th data-col="actions">Actions</th>
           </tr>
         </thead>
         <tbody id="memberTableBody">
           <tr class="loading-row">
-            <td colspan="7"><span class="spinner"></span> Loading members…</td>
+            <td colspan="10"><span class="spinner"></span> Loading members…</td>
           </tr>
         </tbody>
       </table>
@@ -854,6 +872,11 @@ async function confirmImport() {
   btn.textContent = 'Importing…';
   const BATCH = 50;
   let done = 0;
+  // Skip rows with no member_number
+  const validRows = pendingImportRows.filter(r => r.member_number && r.member_number.trim());
+  const skipped = pendingImportRows.length - validRows.length;
+  if (skipped > 0) status.textContent = `Skipping ${skipped} rows with no member number…`;
+  pendingImportRows = validRows;
   try {
     for (let i = 0; i < pendingImportRows.length; i += BATCH) {
       const batch = pendingImportRows.slice(i, i + BATCH);
@@ -969,13 +992,31 @@ function onSearch() {
 }
 
 // ── RENDER TABLE ──
+
+// ── COLUMN VISIBILITY ──
+let colChooserOpen = false;
+function toggleColChooser() {
+  const el = document.getElementById('colChooser');
+  colChooserOpen = !colChooserOpen;
+  el.style.display = colChooserOpen ? 'flex' : 'none';
+}
+function applyColVisibility() {
+  document.querySelectorAll('#colChooser input[data-col]').forEach(cb => {
+    const col = cb.dataset.col;
+    const show = cb.checked;
+    document.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
+  });
+}
+
 function renderTable() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = filteredMembers.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('memberTableBody');
 
   if (filteredMembers.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No members found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No members found.</td></tr>';
     document.getElementById('pagination').style.display = 'none';
     return;
   }
@@ -997,14 +1038,20 @@ function renderTable() {
 
     const renewedStr = renewed ? new Date(renewed).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '—';
 
+    const rank   = m.rank   || '';
+    const phone  = m.phone  || '';
+    const city   = m.city   || '';
     return `<tr>
-      <td style="color:var(--muted);font-size:0.8rem;">${num}</td>
-      <td><strong>${last}</strong>, ${first}</td>
-      <td style="color:var(--muted);font-size:0.82rem;">${email}</td>
-      <td style="font-size:0.8rem;">${type}</td>
-      <td><span class="status-badge ${statusClass}">${status || '—'}</span></td>
-      <td style="font-size:0.8rem;color:var(--muted);">${renewedStr}</td>
-      <td>
+      <td data-col="num" style="color:var(--muted);font-size:0.8rem;">${num}</td>
+      <td data-col="name"><strong>${last}</strong>, ${first}</td>
+      <td data-col="email" style="font-size:0.82rem;">${email}</td>
+      <td data-col="type" style="font-size:0.8rem;">${type}</td>
+      <td data-col="status"><span class="status-badge ${statusClass}">${status || '—'}</span></td>
+      <td data-col="rank" style="font-size:0.8rem;display:none;">${rank}</td>
+      <td data-col="phone" style="font-size:0.82rem;display:none;">${phone}</td>
+      <td data-col="city" style="font-size:0.82rem;display:none;">${city}</td>
+      <td data-col="joined" style="font-size:0.8rem;color:var(--muted);">${renewedStr}</td>
+      <td data-col="actions">
         <div class="action-btns">
           <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id || m.Id},'${(last+', '+first).replace(/'/g,"\\'")}')">Del</button>
