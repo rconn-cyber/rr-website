@@ -29,6 +29,81 @@
     color: var(--white);
     min-height: 100vh;
   }
+  /* ── TOPBAR (shared header) ── */
+#topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 1000;
+  border-bottom: 2px solid var(--gold);
+}
+.logo-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--gold);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+#topbar nav a {
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+#topbar nav a:hover { color: var(--gold); }
+.member-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 0.4rem 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.member-btn:hover { background: var(--gold); color: var(--navy); }
+.cta-btn {
+  background: var(--gold);
+  color: var(--navy);
+  padding: 0.5rem 1.4rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.cta-btn:hover { background: var(--gold-light); }
+.nav-toggle { display: none; }
+@media (max-width: 768px) {
+  #topbar nav { display: none; }
+  .nav-toggle {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointe
 
   /* ── LOGIN OVERLAY ── */
   #loginOverlay {
