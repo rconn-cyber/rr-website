@@ -1151,8 +1151,8 @@ function closeModal() {
 
 function clearForm() {
   ['fFirst','fLast','fEmail','fMemberNum','fPhone','fAddress','fCity','fState','fZip','fDateJoined','fRank','fNotes']
-  document.getElementById('fAdminType').value = 'None';
     .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fAdminType').value = 'None';
   document.getElementById('fStatus').value = 'Active';
   document.getElementById('fType').value = 'Full Member';
 }
