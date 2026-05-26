@@ -272,7 +272,10 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
   <div class="login-box">
     <div class="login-logo">Tampa Rough Riders</div>
     <div class="login-sub">Events CMS — Admin Access</div>
-    <input type="password" id="loginPass" class="login-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div style="position:relative;">
+      <input type="password" id="loginPass" class="login-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:2.5rem;width:100%;"/>
+      <span id="pwToggle" onclick="var i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;">👁</span>
+    </div>
     <button class="login-btn" onclick="doLogin()">Sign In</button>
     <div class="login-err" id="loginErr"></div>
   </div>
