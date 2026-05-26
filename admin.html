@@ -571,7 +571,7 @@
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="status" checked onchange="applyColVisibility()"> Status</label>
+        
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="rank" onchange="applyColVisibility()"> Rank</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="phone" onchange="applyColVisibility()"> Phone</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="city" onchange="applyColVisibility()"> City</label>
@@ -588,7 +588,7 @@
             <th data-col="name">Name</th>
             <th data-col="email">Email</th>
             <th data-col="type">Type</th>
-            <th data-col="status">Status</th>
+            <th data-col="status" style="display:none;">Status</th>
             <th data-col="rank" style="display:none;">Rank</th>
             <th data-col="phone" style="display:none;">Phone</th>
             <th data-col="city" style="display:none;">City</th>
@@ -1046,7 +1046,7 @@ function renderTable() {
       <td data-col="name"><strong>${last}</strong>, ${first}</td>
       <td data-col="email" style="font-size:0.82rem;">${email}</td>
       <td data-col="type" style="font-size:0.8rem;">${type}</td>
-      <td data-col="status"><span class="status-badge ${statusClass}">${status || '—'}</span></td>
+      <td data-col="status" style="display:none;"><span class="status-badge ${statusClass}">${status || '—'}</span></td>
       <td data-col="rank" style="font-size:0.8rem;display:none;">${rank}</td>
       <td data-col="phone" style="font-size:0.82rem;display:none;">${phone}</td>
       <td data-col="city" style="font-size:0.82rem;display:none;">${city}</td>
