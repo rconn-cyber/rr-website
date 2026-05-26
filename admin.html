@@ -777,64 +777,66 @@ function importCSV(input) {
 }
 
 function parseWAcsv(text) {
-  // Remove BOM if present
-  text = text.replace(/^﻿/, '');
-  const lines = text.split(/\r?\n/);
-  if (lines.length < 2) return [];
-  // Parse header
-  const headers = parseCSVLine(lines[0]);
+  text = text.replace(/^\uFEFF/, '');
+  const tokens = tokenizeCSV(text);
+  if (tokens.length < 2) return [];
+  const headers = tokens[0].map(h => h.trim());
   const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const cols = parseCSVLine(line);
-    if (cols.length < 3) continue;
-    const get = (name) => {
-      const idx = headers.findIndex(h => h.trim().toLowerCase() === name.toLowerCase());
+  for (let i = 1; i < tokens.length; i++) {
+    const cols = tokens[i];
+    if (cols.every(c => !c.trim())) continue;
+    const get = name => {
+      const idx = headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
       return idx >= 0 ? (cols[idx] || '').trim() : '';
     };
-    // Map WA columns -> rr_members columns
-    const row = {
-      first_name:       get('First name'),
-      last_name:        get('Last name'),
-      email:            get('Email'),
-      phone:            get('Phone'),
-      address:          get('Address'),
-      city:             get('City'),
-      state:            get('State'),
-      zip:              get('Zip'),
-      member_number:    get('Member #'),
-      membership_level: get('Membership level'),
-      rank:             get('2025-2026 Rank'),
-      notes:            get('Notes'),
-      status:           'Active',
-    };
-    // date_joined from Year Admitted (just use Jan 1 of that year)
     const yr = get('Year Admitted');
-    if (yr && /^\d{4}$/.test(yr)) row.date_joined = `${yr}-01-01`;
-    // Only include rows with at least a last name
+    const row = {
+      first_name:       get('First name') || null,
+      last_name:        get('Last name') || null,
+      email:            get('Email') || null,
+      phone:            get('Phone') || null,
+      address:          get('Address') || null,
+      city:             get('City') || null,
+      state:            get('State') || null,
+      zip:              get('Zip') || null,
+      member_number:    get('Member #') || null,
+      membership_level: get('Membership level') || null,
+      rank:             get('2025-2026 Rank') || null,
+      notes:            get('Notes') || null,
+      status:           'Active',
+      date_joined:      (yr && /^\d{4}$/.test(yr)) ? yr + '-01-01' : null,
+    };
     if (row.last_name) rows.push(row);
   }
   return rows;
 }
 
-function parseCSVLine(line) {
-  const result = [];
+function tokenizeCSV(text) {
+  const rows = [];
+  let row = [];
   let cur = '';
   let inQuote = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const nx = text[i + 1];
     if (ch === '"') {
-      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+      if (inQuote && nx === '"') { cur += '"'; i++; }
       else inQuote = !inQuote;
     } else if (ch === ',' && !inQuote) {
-      result.push(cur); cur = '';
+      row.push(cur); cur = '';
+    } else if (ch === '\n' && !inQuote) {
+      row.push(cur); cur = '';
+      rows.push(row); row = [];
+    } else if (ch === '\r' && nx === '\n' && !inQuote) {
+      row.push(cur); cur = '';
+      rows.push(row); row = [];
+      i++;
     } else {
       cur += ch;
     }
   }
-  result.push(cur);
-  return result;
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  return rows;
 }
 
 function closeImportModal() {
