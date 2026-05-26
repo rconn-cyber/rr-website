@@ -524,23 +524,12 @@
       </div>
     </div>
 
-    <div class="stats-row" id="statsRow">
+    <div class="stats-row" id="statsRow" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
       <div class="stat-card">
         <div class="stat-label">Total Members</div>
         <div class="stat-value" id="statTotal">—</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Active</div>
-        <div class="stat-value" id="statActive">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Lapsed</div>
-        <div class="stat-value" id="statLapsed">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Pending</div>
-        <div class="stat-value" id="statPending">—</div>
-      </div>
+      <div id="levelBreakdown" style="display:contents;"></div>
     </div>
 
     <div class="toolbar">
@@ -549,13 +538,7 @@
         <input type="text" id="searchInput" placeholder="Search by name, email, or member #…"
                oninput="onSearch()">
       </div>
-      <select class="filter-select" id="statusFilter" onchange="onSearch()">
-        <option value="">All Statuses</option>
-        <option value="Active">Active</option>
-        <option value="Lapsed">Lapsed</option>
-        <option value="Pending - New Member">Pending</option>
-        <option value="Leave of Absence">Leave of Absence</option>
-      </select>
+
       <select class="filter-select" id="typeFilter" onchange="onSearch()">
         <option value="">All Types</option>
         <option value="Full Member">Full Member</option>
@@ -584,10 +567,10 @@
       <table>
         <thead>
           <tr>
-            <th data-col="num">#</th>
+            <th data-col="num">Member #</th>
             <th data-col="name">Name</th>
             <th data-col="email">Email</th>
-            <th data-col="type">Type</th>
+            <th data-col="type">Level</th>
             <th data-col="status" style="display:none;">Status</th>
             <th data-col="rank" style="display:none;">Rank</th>
             <th data-col="phone" style="display:none;">Phone</th>
@@ -959,18 +942,41 @@ async function loadMembers() {
 
 function updateStats() {
   document.getElementById('statTotal').textContent = allMembers.length;
-  document.getElementById('statActive').textContent =
-    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('active')).length;
-  document.getElementById('statLapsed').textContent =
-    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('lapsed')).length;
-  document.getElementById('statPending').textContent =
-    allMembers.filter(m => (m.status || m.Status || '').toLowerCase().includes('pending')).length;
+  // Count by membership level
+  const levelMap = {};
+  allMembers.forEach(m => {
+    let lvl = (m.membership_level || '').trim();
+    // Clean up level names: remove leading codes like "3 - " or "2a - "
+    lvl = lvl.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if (!lvl) lvl = 'Unknown';
+    levelMap[lvl] = (levelMap[lvl] || 0) + 1;
+  });
+  const sorted = Object.entries(levelMap).sort((a,b) => b[1]-a[1]);
+  const breakdown = document.getElementById('levelBreakdown');
+  breakdown.innerHTML = sorted.map(([lvl, cnt]) =>
+    `<div class="stat-card" style="cursor:pointer;" onclick="filterByLevel('${lvl.replace(/'/g,"\\'")}')">
+      <div class="stat-label" style="white-space:normal;line-height:1.3;">${lvl}</div>
+      <div class="stat-value">${cnt}</div>
+    </div>`
+  ).join('');
+}
+
+function filterByLevel(lvl) {
+  // Set search to filter by this level
+  document.getElementById('searchInput').value = '';
+  // Use the type filter if it matches, else do a direct filter
+  filteredMembers = allMembers.filter(m => {
+    let ml = (m.membership_level || '').trim();
+    ml = ml.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    return ml === lvl;
+  });
+  currentPage = 1;
+  renderTable();
 }
 
 // ── SEARCH / FILTER ──
 function onSearch() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const statusF = document.getElementById('statusFilter').value;
   const typeF = document.getElementById('typeFilter').value;
 
   filteredMembers = allMembers.filter(m => {
@@ -978,13 +984,11 @@ function onSearch() {
     const last  = (m.last_name  || m['Last name']  || m.lastName  || '').toString();
     const email = (m.email || m.Email || '').toString();
     const num   = (m.member_number || m['Member ID'] || m.id || '').toString();
-    const status= (m.status || m.Status || '').toString();
     const type  = (m.membership_level || m['Membership Level'] || m.memberType || '').toString();
 
     const matchQ = !q || [first, last, email, num].some(v => v.toLowerCase().includes(q));
-    const matchS = !statusF || status.includes(statusF);
-    const matchT = !typeF || type.includes(typeF);
-    return matchQ && matchS && matchT;
+    const matchT = !typeF || type.toLowerCase().includes(typeF.toLowerCase());
+    return matchQ && matchT;
   });
 
   currentPage = 1;
@@ -1027,7 +1031,8 @@ function renderTable() {
     const email  = m.email       || m.Email          || '';
     const num    = m.member_number|| m['Member ID']  || m.id         || '';
     const status = m.status      || m.Status         || '';
-    const type   = m.membership_level || m['Membership Level'] || m.memberType || '';
+    const typeRaw  = m.membership_level || m['Membership Level'] || m.memberType || '';
+    const type     = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
     const renewed= m.date_joined || m['Date Joined'] || '';
 
     const statusClass = status.toLowerCase().includes('active') ? 'status-active'
