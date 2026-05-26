@@ -6,6 +6,7 @@
 <title>Events CMS – Rough Riders Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet"/>
 <style>
 :root {
   --navy:     #0d1f3c;
@@ -333,6 +334,37 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
 .empty-state { text-align:center; padding:3rem 2rem; color:var(--text-mid); font-style:italic; }
 
+/* QUILL RICH TEXT EDITOR */
+.quill-wrapper {
+  border:1px solid var(--border); border-radius:4px; overflow:hidden;
+  background:var(--bg2); transition:border-color 0.2s;
+}
+.quill-wrapper:focus-within { border-color:var(--gold); }
+.quill-wrapper .ql-toolbar {
+  border:none; border-bottom:1px solid var(--border);
+  background:var(--bg); padding:6px 8px;
+  font-family:'Crimson Pro',serif;
+}
+.quill-wrapper .ql-container {
+  border:none; font-family:'Crimson Pro',Georgia,serif;
+  font-size:0.95rem; color:var(--text);
+}
+.quill-wrapper .ql-editor {
+  min-height:150px; max-height:320px; overflow-y:auto;
+  padding:0.65rem 0.75rem;
+}
+.quill-wrapper .ql-editor.ql-blank::before {
+  color:#9ca3af; font-style:italic;
+  content:attr(data-placeholder);
+}
+.ql-toolbar .ql-stroke { stroke:var(--text-mid); }
+.ql-toolbar .ql-fill  { fill:var(--text-mid); }
+.ql-toolbar .ql-picker-label { color:var(--text-mid); }
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button.ql-active .ql-stroke { stroke:var(--navy); }
+.ql-toolbar button:hover .ql-fill,
+.ql-toolbar button.ql-active .ql-fill   { fill:var(--navy); }
+
 @media(max-width:640px){
   .form-grid,.form-grid-3{ grid-template-columns:1fr; }
   .form-full{ grid-column:auto; }
@@ -461,8 +493,10 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
         <textarea id="fDesc" class="form-textarea" placeholder="1–2 sentence teaser shown on the event card…"></textarea>
       </div>
       <div class="form-group" style="margin-bottom:1rem">
-        <label class="form-label">Full Detail Body (HTML supported)</label>
-        <textarea id="fBody" class="form-textarea form-textarea-lg" placeholder="Full event details. Use &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;, &lt;a href&gt; etc."></textarea>
+        <label class="form-label">Full Detail Body (Rich Text)</label>
+        <div class="quill-wrapper">
+          <div id="fBodyEditor"></div>
+        </div>
         <div class="form-hint">Shown in the event detail popup. Leave blank to show just the short description.</div>
       </div>
       <div class="form-grid" style="margin-bottom:1rem">
@@ -532,6 +566,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
 const API_BASE   = '/.netlify/functions/admin-events';  // protected write endpoint
@@ -588,6 +623,24 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adminApp').style.display = 'block';
     fetchEvents();
   }
+});
+
+// ── QUILL INIT ────────────────────────────────────────────────────────────────
+let quillBody = null;
+window.addEventListener('DOMContentLoaded', () => {
+  quillBody = new Quill('#fBodyEditor', {
+    theme: 'snow',
+    placeholder: 'Full event details — bold headings, bullet lists, links…',
+    modules: {
+      toolbar: [
+        [{ header: [2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link'],
+        ['clean']
+      ]
+    }
+  });
 });
 
 // Auth header helper — used on every fetch
@@ -711,7 +764,7 @@ function openForm(id) {
     document.getElementById('fCategory').value    = ev.category || 'General';
     document.getElementById('fEmoji').value       = ev.emoji || '';
     document.getElementById('fDesc').value        = ev.description || '';
-    document.getElementById('fBody').value        = ev.body_html || '';
+    if (quillBody) quillBody.root.innerHTML       = ev.body_html || '';
     document.getElementById('fRsvpUrl').value     = ev.rsvp_url || '';
     document.getElementById('fRsvpLabel').value   = ev.rsvp_label || '';
     document.getElementById('fPublic').checked    = ev.is_public !== false;
@@ -720,8 +773,9 @@ function openForm(id) {
     pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
     renderPhotoPreviews();
   } else {
-    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fLocationUrl','fDesc','fBody','fRsvpUrl']
+    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fLocationUrl','fDesc','fRsvpUrl']
       .forEach(fid => document.getElementById(fid).value = '');
+    if (quillBody) quillBody.root.innerHTML = '';
     document.getElementById('fCategory').value   = 'General';
     document.getElementById('fEmoji').value      = '&#11088;';
     document.getElementById('fRsvpLabel').value  = 'View Details';
@@ -803,7 +857,7 @@ async function saveEvent() {
       category:     document.getElementById('fCategory').value,
       emoji:        document.getElementById('fEmoji').value.trim() || '⭐',
       description:  document.getElementById('fDesc').value.trim() || null,
-      body_html:    document.getElementById('fBody').value.trim() || null,
+      body_html:    (quillBody && quillBody.root.innerHTML.trim() !== '<p><br></p>' ? quillBody.root.innerHTML.trim() : null),
       rsvp_url:     document.getElementById('fRsvpUrl').value.trim() || null,
       rsvp_label:   document.getElementById('fRsvpLabel').value.trim() || 'View Details',
       is_public:    document.getElementById('fPublic').checked,
@@ -993,3 +1047,4 @@ function toast(msg, type) {
 <script src="header.js"></script>
 </body>
 </html>
+
