@@ -505,6 +505,11 @@
 <!-- MAIN -->
 <main id="adminMain" style="display:none;">
 
+<nav style="display:flex;align-items:center;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#ffffff;position:sticky;top:64px;z-index:100;">
+  <button class="tab-btn active" onclick="switchTab('membership',this)">MEMBERSHIP</button>
+  <button class="tab-btn" onclick="switchTab('events',this)">EVENTS</button>
+</nav>
+
   <!-- MEMBERSHIP TAB -->
   <div id="tab-membership" class="tab-panel active">
     <div class="page-header">
