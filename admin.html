@@ -412,7 +412,10 @@
     <div class="crest">⚔️</div>
     <h1>ADMIN ACCESS</h1>
     <p>Tampa Rough Riders — Restricted Area</p>
-    <input type="password" id="pwInput" placeholder="Enter password" autocomplete="current-password">
+    <div style="position:relative;margin-bottom:1rem;">
+      <input type="password" id="pwInput" placeholder="Enter password" autocomplete="current-password" style="margin-bottom:0;padding-right:2.8rem;">
+      <span id="pwEye" onclick="var i=document.getElementById('pwInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;line-height:1;">👁</span>
+    </div>
     <button onclick="checkLogin()">ENTER</button>
     <div id="loginError"></div>
   </div>
