@@ -517,7 +517,11 @@
         <h2>Membership Registry</h2>
         <p>View, edit, add, and remove members from the Supabase roster</p>
       </div>
-      <button class="btn btn-gold" onclick="openAddModal()">+ ADD MEMBER</button>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <button class="btn btn-gold" onclick="openAddModal()">+ ADD MEMBER</button>
+        <button class="btn btn-outline" onclick="document.getElementById('csvFileInput').click()">&#8593; IMPORT CSV</button>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="importCSV(this)">
+      </div>
     </div>
 
     <div class="stats-row" id="statsRow">
@@ -606,6 +610,24 @@
   </div>
 
 </main>
+
+<!-- IMPORT CSV MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h3>IMPORT MEMBERS FROM CSV</h3>
+      <button class="modal-close" onclick="closeImportModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div id="importStatus" style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;"></div>
+      <div id="importPreview" style="font-size:0.85rem;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeImportModal()">CANCEL</button>
+      <button class="btn btn-gold" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">IMPORT ALL</button>
+    </div>
+  </div>
+</div>
 
 <!-- ADD / EDIT MODAL -->
 <div class="modal-overlay" id="memberModal">
@@ -725,6 +747,131 @@ let filteredMembers = [];
 let currentPage = 1;
 let editingId = null;
 let deleteId = null;
+
+
+// ── CSV IMPORT ──────────────────────────────────────────────────────────────
+let pendingImportRows = [];
+
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    pendingImportRows = parseWAcsv(text);
+    const modal = document.getElementById('importModal');
+    const status = document.getElementById('importStatus');
+    const preview = document.getElementById('importPreview');
+    const btn = document.getElementById('importConfirmBtn');
+    status.textContent = `Found ${pendingImportRows.length} members. Click IMPORT ALL to upsert into Supabase (existing members matched by member_number will be updated).`;
+    // Show first 5 as preview
+    const sample = pendingImportRows.slice(0, 5).map(r =>
+      `<div style="padding:0.3rem 0;border-bottom:1px solid #eee;">${r.member_number || '—'} &nbsp; ${r.last_name}, ${r.first_name} &nbsp; <span style="color:#6b7280;">${r.membership_level || ''}</span></div>`
+    ).join('');
+    preview.innerHTML = `<div style="margin-bottom:0.5rem;font-weight:600;">Preview (first 5):</div>${sample}${pendingImportRows.length > 5 ? `<div style="color:#6b7280;margin-top:0.3rem;">…and ${pendingImportRows.length - 5} more</div>` : ''}`;
+    btn.style.display = 'inline-block';
+    modal.classList.add('open');
+  };
+  reader.readAsText(file);
+}
+
+function parseWAcsv(text) {
+  // Remove BOM if present
+  text = text.replace(/^﻿/, '');
+  const lines = text.split(/\r?\n/);
+  if (lines.length < 2) return [];
+  // Parse header
+  const headers = parseCSVLine(lines[0]);
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const cols = parseCSVLine(line);
+    if (cols.length < 3) continue;
+    const get = (name) => {
+      const idx = headers.findIndex(h => h.trim().toLowerCase() === name.toLowerCase());
+      return idx >= 0 ? (cols[idx] || '').trim() : '';
+    };
+    // Map WA columns -> rr_members columns
+    const row = {
+      first_name:       get('First name'),
+      last_name:        get('Last name'),
+      email:            get('Email'),
+      phone:            get('Phone'),
+      address:          get('Address'),
+      city:             get('City'),
+      state:            get('State'),
+      zip:              get('Zip'),
+      member_number:    get('Member #'),
+      membership_level: get('Membership level'),
+      rank:             get('2025-2026 Rank'),
+      notes:            get('Notes'),
+      status:           'Active',
+    };
+    // date_joined from Year Admitted (just use Jan 1 of that year)
+    const yr = get('Year Admitted');
+    if (yr && /^\d{4}$/.test(yr)) row.date_joined = `${yr}-01-01`;
+    // Only include rows with at least a last name
+    if (row.last_name) rows.push(row);
+  }
+  return rows;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '';
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (ch === ',' && !inQuote) {
+      result.push(cur); cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+  pendingImportRows = [];
+  document.getElementById('importStatus').textContent = '';
+  document.getElementById('importPreview').innerHTML = '';
+  document.getElementById('importConfirmBtn').style.display = 'none';
+}
+
+async function confirmImport() {
+  const btn = document.getElementById('importConfirmBtn');
+  const status = document.getElementById('importStatus');
+  btn.disabled = true;
+  btn.textContent = 'Importing…';
+  const BATCH = 50;
+  let done = 0;
+  try {
+    for (let i = 0; i < pendingImportRows.length; i += BATCH) {
+      const batch = pendingImportRows.slice(i, i + BATCH);
+      const res = await sbFetch(TABLE + '?on_conflict=member_number', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify(batch)
+      });
+      done += batch.length;
+      status.textContent = `Importing… ${done} / ${pendingImportRows.length}`;
+    }
+    showToast(`Imported ${pendingImportRows.length} members successfully.`, 'success');
+    closeImportModal();
+    loadMembers();
+  } catch(err) {
+    status.textContent = 'Error: ' + err.message;
+    btn.disabled = false;
+    btn.textContent = 'RETRY';
+  }
+}
 
 // ── AUTH ──
 function checkLogin() {
