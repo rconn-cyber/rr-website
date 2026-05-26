@@ -428,7 +428,8 @@ body {
 .detail-value { font-size:0.95rem; color: var(--text); }
 .detail-value a { color: var(--navy); }
 .modal-body { font-size:1rem; color:var(--text-mid); line-height:1.8; margin-bottom:1.5rem; }
-.modal-body p { margin-bottom:0.75rem; }
+.modal-body p { margin-bottom:0.85rem; }
+.modal-body p:last-child { margin-bottom:0; }
 /* Quill rich-text rendering inside modal */
 .modal-body h2 { font-family:'Cinzel',serif; font-size:1.15rem; font-weight:700; color:var(--navy); margin:1.25rem 0 0.5rem; }
 .modal-body h3 { font-family:'Cinzel',serif; font-size:1rem; font-weight:600; color:var(--navy); margin:1rem 0 0.4rem; }
@@ -439,6 +440,8 @@ body {
 .modal-body ol li { list-style:decimal; margin-bottom:0.25rem; }
 .modal-body a { color:var(--navy); text-decoration:underline; }
 .modal-body a:hover { color:var(--gold-dark); }
+/* Override Quill Snow's p { margin: 0 } reset */
+.ql-snow .ql-editor p, .modal-body p { margin-bottom:0.85rem; }
 .modal-cta-row { display:flex; gap:1rem; flex-wrap:wrap; }
 .photo-thumbs {
   display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;
