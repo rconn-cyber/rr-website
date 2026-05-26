@@ -379,7 +379,7 @@
   }
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal-header {
-    padding: 1.2rem 1.5rem;
+    padding: 1.8rem 1.5rem 1.2rem;
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
@@ -685,15 +685,7 @@
             <option value="3 - Bookkeeper/Administrator">Bookkeeper/Administrator</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="fStatus">
-            <option value="Active">Active</option>
-            <option value="Lapsed">Lapsed</option>
-            <option value="Pending - New Member">Pending - New Member</option>
-            <option value="Leave of Absence">Leave of Absence</option>
-          </select>
-        </div>
+
         <div class="form-group full">
           <label>Address</label>
           <input type="text" id="fAddress" placeholder="Street address">
@@ -1145,7 +1137,6 @@ function openEditModal(m) {
   document.getElementById('fCity').value     = m.city        || m.City           || '';
   document.getElementById('fState').value    = m.state       || m.State          || '';
   document.getElementById('fZip').value      = m.zip         || m.Zip            || '';
-  const statusEl = document.getElementById('fStatus');
   const typeEl   = document.getElementById('fType');
   const st = m.status || m.Status || '';
   const ty = m.membership_level || m['Membership Level'] || '';
@@ -1168,7 +1159,6 @@ function clearForm() {
   ['fFirst','fLast','fEmail','fMemberNum','fPhone','fAddress','fCity','fState','fZip','fDateJoined','fRank','fNotes']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('fAdminType').value = 'None';
-  document.getElementById('fStatus').value = 'Active';
   document.getElementById('fType').value = 'Full Member';
 }
 
@@ -1183,7 +1173,6 @@ async function saveMember() {
     city:          document.getElementById('fCity').value.trim(),
     state:         document.getElementById('fState').value.trim(),
     zip:           document.getElementById('fZip').value.trim(),
-    status:        document.getElementById('fStatus').value,
     membership_level: document.getElementById('fType').value,
     date_joined:     document.getElementById('fDateJoined').value || null,
     rank:            document.getElementById('fRank').value.trim(),
