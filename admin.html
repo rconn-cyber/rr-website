@@ -501,7 +501,7 @@
 
 <div id="site-header"></div>
 <!-- MAIN -->
-<main>
+<main id="adminMain" style="display:none;">
 
   <!-- MEMBERSHIP TAB -->
   <div id="tab-membership" class="tab-panel active">
@@ -724,6 +724,7 @@ function checkLogin() {
   const val = document.getElementById('pwInput').value;
   if (val === PASSWORD) {
     document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('adminMain').style.display = 'block';
     loadMembers();
   } else {
     document.getElementById('loginError').textContent = 'Incorrect password.';
