@@ -555,7 +555,7 @@
     </div>
     <div style="margin-bottom:0.75rem;">
       <button class="btn btn-outline btn-sm" onclick="toggleColChooser()" style="font-size:0.72rem;">&#9638; COLUMNS</button>
-      <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;display:none;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+      <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> #</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
@@ -913,7 +913,7 @@ function checkLogin() {
   if (val === PASSWORD) {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('adminMain').style.display = 'block';
-    loadMembers();
+    loadMembers().then(() => applyColVisibility());
   } else {
     document.getElementById('loginError').textContent = 'Incorrect password.';
   }
@@ -1031,12 +1031,23 @@ function toggleColChooser() {
   el.style.display = colChooserOpen ? 'flex' : 'none';
 }
 function applyColVisibility() {
+  // Default visible cols (always show unless unchecked)
+  const defaults = ['num','name','email','type','joined','actions'];
   document.querySelectorAll('#colChooser input[data-col]').forEach(cb => {
     const col = cb.dataset.col;
     const show = cb.checked;
     document.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
       el.style.display = show ? '' : 'none';
     });
+  });
+  // Always ensure default cols are visible if no checkbox overrides them
+  defaults.forEach(col => {
+    const cb = document.querySelector(`#colChooser input[data-col="${col}"]`);
+    if (!cb || cb.checked) {
+      document.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
+        el.style.display = '';
+      });
+    }
   });
 }
 
