@@ -318,6 +318,44 @@ body {
 }
 .card-btn:hover { background: var(--navy); color: var(--gold); }
 
+/* ── LIST ITEM (non-featured events) ─────────────────────────────────────── */
+.events-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.event-list-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px; cursor: pointer;
+  display: flex; align-items: center; gap: 1.25rem;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 1px 4px var(--shadow);
+  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.event-list-item:hover {
+  background: #fffbf0;
+  box-shadow: 0 3px 12px rgba(13,31,60,0.12);
+  transform: translateX(2px);
+}
+.list-item-date {
+  font-family: 'Cinzel', serif; font-size: 0.62rem;
+  letter-spacing: 0.1em; color: var(--gold-dark);
+  white-space: nowrap; min-width: 110px;
+}
+.list-item-title {
+  font-family: 'Cinzel', serif; font-size: 0.88rem;
+  font-weight: 600; color: var(--navy); flex: 1; line-height: 1.3;
+}
+.list-item-location {
+  font-size: 0.82rem; color: var(--text-mid);
+  white-space: nowrap; display: flex; align-items: center; gap: 0.3rem;
+}
+.list-item-arrow {
+  font-size: 0.8rem; color: var(--gold-dark); flex-shrink: 0;
+}
+@media(max-width:600px) {
+  .event-list-item { flex-wrap: wrap; gap: 0.35rem; }
+  .list-item-date  { min-width: auto; }
+  .list-item-location { display: none; }
+}
+
 /* ── MODAL ────────────────────────────────────────────────────────────────── */
 .modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 500;
@@ -552,8 +590,8 @@ function renderEvents() {
   }
   if (regular.length) {
     if (featured.length) html += '<div class="section-label" style="margin-bottom:1rem">All Events</div>';
-    html += '<div class="events-grid">';
-    regular.forEach(ev => { html += cardHTML(ev); });
+    html += '<div class="events-list">';
+    regular.forEach(ev => { html += listItemHTML(ev); });
     html += '</div>';
   }
   if (!list.length) html = '<div class="no-events">No events in this category right now.</div>';
@@ -581,6 +619,15 @@ function featuredHTML(ev) {
         ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta" onclick="event.stopPropagation()">${ev.emoji||''} ${ev.rsvp_label||'View Details'}</a>`
         :`<button class="event-cta" onclick="event.stopPropagation();openModal('${ev.id}')">View Details &rarr;</button>`}
     </div>
+  </div>`;
+}
+
+function listItemHTML(ev) {
+  return `<div class="event-list-item" onclick="openModal('${ev.id}')">
+    <div class="list-item-date">${fmtDateShort(ev.date_start, ev.date_end)}</div>
+    <div class="list-item-title">${ev.title}</div>
+    ${ev.location ? `<div class="list-item-location">&#128205; ${ev.location}</div>` : ''}
+    <div class="list-item-arrow">&#8250;</div>
   </div>`;
 }
 
