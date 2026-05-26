@@ -1,7 +1,9 @@
 // netlify/functions/admin-login.js
-// Accepts { password } in POST body, returns { token } if correct.
-// Token is simply the password itself used as a Bearer token —
-// matches the checkAdmin() pattern in events-api.js.
+// Verifies password, returns a signed token that admin-events.js verifyToken() accepts.
+// Token format: base64url(payload).hmac-sha256(payload, SESSION_SECRET)
+// Payload: { exp: <8hr from now> }
+
+const crypto = require('crypto');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -21,17 +23,31 @@ exports.handler = async (event) => {
 
   try {
     const { password } = JSON.parse(event.body || '{}');
-    const ADMIN_PASS = process.env.EVENTS_ADMIN_PASSWORD;
+    const ADMIN_PASS    = process.env.EVENTS_ADMIN_PASSWORD;
+    const SESSION_SECRET = process.env.SESSION_SECRET;
 
     if (!password || !ADMIN_PASS || password.trim() !== ADMIN_PASS.trim()) {
       return { statusCode: 401, headers, body: JSON.stringify({ error: 'Incorrect password' }) };
     }
 
-    // Token = the password itself; events-api.js checks Bearer === ADMIN_PASS
+    // Build token exactly as verifyToken() in admin-events.js expects:
+    // payload = base64url({ exp: now + 8hr })
+    // token   = payload + '.' + HMAC-SHA256(payload, SESSION_SECRET)
+    const payload = Buffer.from(JSON.stringify({
+      exp: Date.now() + 8 * 60 * 60 * 1000
+    })).toString('base64url');
+
+    const sig = crypto
+      .createHmac('sha256', SESSION_SECRET)
+      .update(payload)
+      .digest('base64url');
+
+    const token = `${payload}.${sig}`;
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ token: ADMIN_PASS })
+      body: JSON.stringify({ token })
     };
 
   } catch (err) {
