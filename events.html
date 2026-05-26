@@ -442,6 +442,7 @@ body {
 .modal-body a:hover { color:var(--gold-dark); }
 /* Override Quill Snow's p { margin: 0 } reset */
 .ql-snow .ql-editor p, .modal-body p { margin-bottom:0.85rem; }
+.modal-body p { margin-bottom:0.9rem !important; margin-top:0 !important; }
 .modal-cta-row { display:flex; gap:1rem; flex-wrap:wrap; }
 .photo-thumbs {
   display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;
@@ -695,7 +696,11 @@ function populateModal(ev) {
   if(ev.time_display) det+=`<div class="detail-item"><span class="detail-label">Time</span><span class="detail-value">${ev.time_display}</span></div>`;
   if(ev.location) det+=`<div class="detail-item"><span class="detail-label">Location</span><span class="detail-value">${ev.location_url?`<a href="${ev.location_url}" target="_blank">${ev.location}</a>`:ev.location}</span></div>`;
   document.getElementById('modalDetails').innerHTML = det;
-  document.getElementById('modalBody').innerHTML = ev.body_html||`<p>${ev.description||''}</p>`;
+  const bodyHtml = ev.body_html || `<p>${ev.description||''}</p>`;
+  const modalBody = document.getElementById('modalBody');
+  modalBody.innerHTML = bodyHtml;
+  // Ensure Quill paragraph spacing renders correctly regardless of CSS cascade
+  modalBody.querySelectorAll('p').forEach(p => { p.style.marginBottom = '0.9rem'; });
   document.getElementById('modalCta').innerHTML = (ev.rsvp_url&&ev.rsvp_url!=='#')
     ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta">${ev.emoji||''} ${ev.rsvp_label||'Register'}</a>`:'';
 }
