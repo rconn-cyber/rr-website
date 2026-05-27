@@ -181,7 +181,7 @@
     btn.outerHTML = '<div id="memberHeaderWrap" style="display:flex;align-items:center;gap:0.75rem;">'
       + adminLink
       + '<div style="position:relative;">'
-      + '<button class="member-btn" id="memberNameBtn" onclick="toggleMemberMenu()"'
+      + '<button class="member-btn-active" id="memberNameBtn" onclick="toggleMemberMenu()"'
       + ' style="background:#c9a84c;color:#0d1f3c;font-weight:700;border:none;">'
       + '&#9733; ' + name
       + '</button>'
