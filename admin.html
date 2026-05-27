@@ -237,16 +237,16 @@
   .stat-card {
     background: #ffffff;
     border: 1px solid var(--border);
-    padding: 1.2rem 1.5rem;
+    padding: 0.6rem 0.75rem;
   }
   .stat-card .stat-label {
-    font-size: 0.7rem; letter-spacing: 0.12em;
+    font-size: 0.62rem; letter-spacing: 0.08em;
     color: #6b7280; text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.2rem; white-space:normal; line-height:1.2;
   }
   .stat-card .stat-value {
     font-family: 'Cinzel', serif;
-    font-size: 2rem; color: var(--gold);
+    font-size: 1rem; color: #444;
     line-height: 1;
   }
 
@@ -964,6 +964,7 @@ function updateStats() {
     let lvl = (m.membership_level || '').trim();
     // Clean up level names: remove leading codes like "3 - " or "2a - "
     lvl = lvl.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if (lvl === 'Bookkeeper/Administrator') lvl = 'Bookkeeper';
     if (!lvl) lvl = 'Unknown';
     levelMap[lvl] = (levelMap[lvl] || 0) + 1;
   });
@@ -984,6 +985,7 @@ function filterByLevel(lvl) {
   filteredMembers = allMembers.filter(m => {
     let ml = (m.membership_level || '').trim();
     ml = ml.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if (ml === 'Bookkeeper/Administrator') ml = 'Bookkeeper';
     return ml === lvl;
   });
   currentPage = 1;
@@ -1059,7 +1061,8 @@ function renderTable() {
     const num    = m.member_number|| m['Member ID']  || m.id         || '';
     const status = m.status      || m.Status         || '';
     const typeRaw  = m.membership_level || m['Membership Level'] || m.memberType || '';
-    const type     = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    let type       = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if (type === 'Bookkeeper/Administrator') type = 'Bookkeeper';
     const renewed= m.date_joined || m['Date Joined'] || '';
 
     const statusClass = status.toLowerCase().includes('active') ? 'status-active'
