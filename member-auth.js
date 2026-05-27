@@ -40,9 +40,21 @@
     }
     if (page === 'events-admin.html' && (t === 'Full Access' || t === 'Events')) {
       document.addEventListener('DOMContentLoaded', function () {
-        const overlay = document.getElementById('loginOverlay');
-        if (overlay) { overlay.classList.add('hidden'); overlay.style.display = 'none'; }
-        if (typeof initApp === 'function') initApp();
+        // events-admin uses loginScreen + adminApp + eventsAdminToken
+        const screen = document.getElementById('loginScreen');
+        const app    = document.getElementById('adminApp');
+        // Reuse existing token if available, otherwise use a bypass flag
+        let token = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
+        if (!token) {
+          // Generate a temporary bypass token so adminToken var is truthy
+          token = 'member-bypass-' + Date.now();
+          sessionStorage.setItem('eventsAdminToken', token);
+        }
+        // Set the adminToken variable in page scope
+        if (typeof window.adminToken !== 'undefined') window.adminToken = token;
+        if (screen) screen.style.display = 'none';
+        if (app)    app.style.display    = 'block';
+        if (typeof fetchEvents === 'function') fetchEvents();
       });
     }
   }
@@ -181,7 +193,7 @@
     btn.outerHTML = '<div id="memberHeaderWrap" style="display:flex;align-items:center;gap:0.75rem;">'
       + adminLink
       + '<div style="position:relative;">'
-      + '<button class="member-btn-active" id="memberNameBtn" onclick="toggleMemberMenu()"'
+      + '<button class="member-btn" id="memberNameBtn" onclick="toggleMemberMenu()"'
       + ' style="background:#c9a84c;color:#0d1f3c;font-weight:700;border:none;">'
       + '&#9733; ' + name
       + '</button>'
