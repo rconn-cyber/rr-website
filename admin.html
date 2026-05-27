@@ -706,7 +706,8 @@
     <div style="margin-bottom:0.75rem;">
       <button class="btn btn-outline btn-sm" onclick="toggleColChooser()" style="font-size:0.72rem;">&#9638; COLUMNS</button>
       <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> #</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="waid" checked onchange="applyColVisibility()"> WA ID</label>
+        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> Member #</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
@@ -723,6 +724,7 @@
       <table>
         <thead>
           <tr>
+            <th data-col="waid">WA ID</th>
             <th data-col="num">Member #</th>
             <th data-col="name">Name</th>
             <th data-col="email">Email</th>
@@ -738,7 +740,7 @@
         </thead>
         <tbody id="memberTableBody">
           <tr class="loading-row">
-            <td colspan="10"><span class="spinner"></span> Loading members…</td>
+            <td colspan="11"><span class="spinner"></span> Loading members…</td>
           </tr>
         </tbody>
       </table>
@@ -1155,7 +1157,7 @@ async function loadMembers() {
   } catch (e) {
     console.error(e);
     document.getElementById('memberTableBody').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading members. Check console for details.</td></tr>';
+      '<tr><td colspan="11" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading members. Check console for details.</td></tr>';
     showToast('Failed to load members: ' + e.message, 'error');
   }
 }
@@ -1218,7 +1220,7 @@ function toggleColChooser() {
   el.style.display = colChooserOpen ? 'flex' : 'none';
 }
 function applyColVisibility() {
-  const defaults = ['num','name','email','type','joined','actions'];
+  const defaults = ['waid','num','name','email','type','joined','actions'];
   document.querySelectorAll('#colChooser input[data-col]').forEach(cb => {
     const col = cb.dataset.col;
     const show = cb.checked;
@@ -1243,7 +1245,7 @@ function renderTable() {
   const tbody = document.getElementById('memberTableBody');
 
   if (filteredMembers.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No members found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">No members found.</td></tr>';
     document.getElementById('pagination').style.display = 'none';
     return;
   }
@@ -1267,7 +1269,8 @@ function renderTable() {
     const phone = m.phone || '';
     const city  = m.city  || '';
     return `<tr>
-      <td data-col="num" style="color:#6b7280;font-size:0.8rem;">${num}</td>
+      <td data-col="waid" style="color:#6b7280;font-size:0.8rem;">${m.id || ''}</td>
+      <td data-col="num" style="color:#444;font-size:0.8rem;font-weight:600;">${num}</td>
       <td data-col="name"><strong>${last}</strong>, ${first}</td>
       <td data-col="email" style="font-size:0.82rem;">${email}</td>
       <td data-col="type" style="font-size:0.8rem;">${type}</td>
