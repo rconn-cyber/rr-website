@@ -1267,7 +1267,7 @@ function renderTable() {
     const phone = m.phone || '';
     const city  = m.city  || '';
     return `<tr>
-      <td data-col="num" style="color:var(--muted);font-size:0.8rem;">${num}</td>
+      <td data-col="num" style="color:#6b7280;font-size:0.8rem;">${num}</td>
       <td data-col="name"><strong>${last}</strong>, ${first}</td>
       <td data-col="email" style="font-size:0.82rem;">${email}</td>
       <td data-col="type" style="font-size:0.8rem;">${type}</td>
@@ -1276,7 +1276,7 @@ function renderTable() {
       <td data-col="phone" style="font-size:0.82rem;display:none;">${phone}</td>
       <td data-col="city" style="font-size:0.82rem;display:none;">${city}</td>
       <td data-col="admintype" style="font-size:0.8rem;display:none;">${m.admin_type && m.admin_type !== 'None' ? m.admin_type : '—'}</td>
-      <td data-col="joined" style="font-size:0.8rem;color:var(--muted);">${renewedStr}</td>
+      <td data-col="joined" style="font-size:0.8rem;color:#6b7280;">${renewedStr}</td>
       <td data-col="actions">
         <div class="action-btns">
           <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
