@@ -24,7 +24,7 @@
     + '</a>'
     + '<nav>'
     + anchor('#history', 'History')
-    + anchor('#gallery', 'Gallery')
+    + anchor('#gallery', 'Tampa 1898')
     + anchor('#museum', 'Museum')
     + pageLink('events.html', 'Events')
     + anchor('#donate', 'Donate')
