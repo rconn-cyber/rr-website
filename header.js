@@ -17,8 +17,6 @@
     return '<a href="' + href + '"' + active + '>' + label + '</a>';
   }
 
-  const tourHref = onIndex ? '#museum' : 'index.html#museum';
-
   const html = '<header id="topbar">'
     + '<a href="index.html" class="logo-nav">'
     + '<img src="logo.png" alt="Tampa Rough Riders Logo" style="width:48px;height:48px;object-fit:contain;flex-shrink:0;"/>'
@@ -31,7 +29,6 @@
     + pageLink('events.html', 'Events')
     + anchor('#donate', 'Donate')
     + '<button class="member-btn" onclick="openMemberModal()">Member Login</button>'
-    + '<a href="' + tourHref + '" class="cta-btn">Tour</a>'
     + '<a href="admin.html" title="Admin Panel"'
     + ' style="color:rgba(201,168,76,0.4);font-size:2.2rem;text-decoration:none;padding:0 0.3rem;transition:color 0.2s;"'
     + ' onmouseover="this.style.color=\'#c9a84c\'"'
