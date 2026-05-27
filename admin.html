@@ -29,83 +29,84 @@
     color: #1a1a2e;
     min-height: 100vh;
   }
-  /* ── TOPBAR (shared header) ── */
-#topbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
-  background: var(--navy);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  z-index: 1000;
-  border-bottom: 2px solid var(--gold);
-}
-.logo-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  color: var(--gold);
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-#topbar nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-#topbar nav a {
-  color: #fff;
-  text-decoration: none;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-#topbar nav a:hover { color: var(--gold); }
-.member-btn {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  padding: 0.4rem 1rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.member-btn:hover { background: var(--gold); color: var(--navy); }
-.cta-btn {
-  background: var(--gold);
-  color: var(--navy);
-  padding: 0.5rem 1.4rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-weight: 700;
-  transition: background 0.2s;
-}
-.cta-btn:hover { background: var(--gold-light); }
-.nav-toggle { display: none; }
-@media (max-width: 768px) {
-  #topbar nav { display: none; }
-  .nav-toggle {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--gold);
-    font-size: 1.5rem;
-    cursor: pointer;
+
+  /* ── TOPBAR ── */
+  #topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 64px;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+    border-bottom: 2px solid var(--gold);
   }
-}
+  .logo-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--gold);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  #topbar nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  #topbar nav a {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  #topbar nav a:hover { color: var(--gold); }
+  .member-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.4rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .member-btn:hover { background: var(--gold); color: var(--navy); }
+  .cta-btn {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 0.5rem 1.4rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.2s;
+  }
+  .cta-btn:hover { background: var(--gold-light); }
+  .nav-toggle { display: none; }
+  @media (max-width: 768px) {
+    #topbar nav { display: none; }
+    .nav-toggle {
+      display: block;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
 
   /* ── LOGIN OVERLAY ── */
   #loginOverlay {
@@ -440,6 +441,155 @@
   }
   .events-redirect p { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
 
+  /* ── SYNC TAB ── */
+  .sync-panel {
+    max-width: 680px;
+  }
+  .sync-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .sync-card h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .sync-card p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+  .sync-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .sync-meta-item {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+  .sync-meta-item strong {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  #syncBtn {
+    background: var(--navy);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.75rem 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  #syncBtn:hover:not(:disabled) {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  #syncBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .sync-status-box {
+    margin-top: 1.5rem;
+    display: none;
+  }
+  .sync-spinner-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-style: italic;
+    padding: 1rem;
+    background: #f7f8fa;
+    border: 1px solid var(--border);
+  }
+  .sync-results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+  .sync-results-table th {
+    background: var(--navy);
+    color: var(--gold);
+    padding: 0.5rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .sync-results-table th:first-child { text-align: left; }
+  .sync-results-table td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    text-align: center;
+    color: #444;
+  }
+  .sync-results-table td:first-child { text-align: left; font-weight: 600; }
+  .sync-success-banner {
+    background: rgba(39,174,96,0.08);
+    border: 1px solid rgba(39,174,96,0.3);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+  }
+  .sync-error-banner {
+    background: rgba(192,57,43,0.08);
+    border: 1px solid rgba(192,57,43,0.3);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--danger);
+    margin-top: 0.75rem;
+  }
+  .sync-error-banner ul {
+    margin: 0.4rem 0 0 1rem;
+    font-size: 0.8rem;
+  }
+  .sync-info-card {
+    background: rgba(201,168,76,0.06);
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.25rem;
+  }
+  .sync-info-card strong {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .sync-info-card p {
+    margin: 0;
+    font-size: 0.825rem;
+    color: #555;
+    line-height: 1.5;
+  }
+  .sync-last-run {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-top: 0.75rem;
+    font-style: italic;
+  }
+
   /* ── TOAST ── */
   #toast {
     position: fixed; bottom: 2rem; right: 2rem;
@@ -479,6 +629,7 @@
     main { padding: 5rem 1rem 1rem; }
     .tabs { padding: 0 1rem; }
     .tab-btn { padding: 0.8rem 1rem; font-size: 0.72rem; }
+    .sync-meta { gap: 1rem; }
   }
 </style>
 </head>
@@ -499,18 +650,18 @@
   </div>
 </div>
 
-<!-- HEADER -->
-
 <div id="site-header"></div>
+
 <!-- MAIN -->
 <main id="adminMain" style="display:none;">
 
 <nav style="display:flex;align-items:center;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#ffffff;position:sticky;top:64px;z-index:100;">
   <button class="tab-btn active" onclick="switchTab('membership',this)">MEMBERSHIP</button>
   <button class="tab-btn" onclick="switchTab('events',this)">EVENTS</button>
+  <button class="tab-btn" onclick="switchTab('sync',this)">🔄 WA SYNC</button>
 </nav>
 
-  <!-- MEMBERSHIP TAB -->
+  <!-- ══ MEMBERSHIP TAB ══ -->
   <div id="tab-membership" class="tab-panel active">
     <div class="page-header">
       <div>
@@ -535,10 +686,8 @@
     <div class="toolbar">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search by name, email, or member #…"
-               oninput="onSearch()">
+        <input type="text" id="searchInput" placeholder="Search by name, email, or member #…" oninput="onSearch()">
       </div>
-
       <select class="filter-select" id="typeFilter" onchange="onSearch()">
         <option value="">All Levels</option>
         <option value="Full Members">Full Members</option>
@@ -553,6 +702,7 @@
         <option value="Resigned">Resigned</option>
       </select>
     </div>
+
     <div style="margin-bottom:0.75rem;">
       <button class="btn btn-outline btn-sm" onclick="toggleColChooser()" style="font-size:0.72rem;">&#9638; COLUMNS</button>
       <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
@@ -560,7 +710,6 @@
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
-        
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="rank" onchange="applyColVisibility()"> Rank</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="phone" onchange="applyColVisibility()"> Phone</label>
         <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="city" onchange="applyColVisibility()"> City</label>
@@ -600,7 +749,7 @@
     </div>
   </div>
 
-  <!-- EVENTS TAB -->
+  <!-- ══ EVENTS TAB ══ -->
   <div id="tab-events" class="tab-panel">
     <div class="page-header">
       <div>
@@ -615,6 +764,65 @@
       <a href="events-admin.html" class="btn btn-gold" style="display:inline-block;text-decoration:none;">
         OPEN EVENTS ADMIN →
       </a>
+    </div>
+  </div>
+
+  <!-- ══ WA SYNC TAB ══ -->
+  <div id="tab-sync" class="tab-panel">
+    <div class="page-header">
+      <div>
+        <h2>Wild Apricot Sync</h2>
+        <p>Bidirectional sync between Wild Apricot and Supabase — members and events</p>
+      </div>
+    </div>
+
+    <div class="sync-panel">
+
+      <div class="sync-card">
+        <h3>MANUAL SYNC</h3>
+        <p>Syncs all members and events between Wild Apricot and Supabase in both directions. When the same record has been updated in both places, the most recently modified version wins.</p>
+
+        <div class="sync-meta">
+          <div class="sync-meta-item">
+            <strong>Direction</strong>
+            WA ↔ Supabase (bidirectional)
+          </div>
+          <div class="sync-meta-item">
+            <strong>Data</strong>
+            Members + Events
+          </div>
+          <div class="sync-meta-item">
+            <strong>Conflict Resolution</strong>
+            Most recent wins
+          </div>
+          <div class="sync-meta-item">
+            <strong>Scheduled</strong>
+            Every hour (automatic)
+          </div>
+        </div>
+
+        <button id="syncBtn" onclick="runSync()">🔄 RUN SYNC NOW</button>
+        <div id="syncLastRun" class="sync-last-run" style="display:none;"></div>
+
+        <div class="sync-status-box" id="syncStatusBox">
+          <div class="sync-spinner-row" id="syncSpinner">
+            <span class="spinner"></span>
+            Syncing members and events… this may take 15–30 seconds.
+          </div>
+          <div id="syncResults"></div>
+        </div>
+      </div>
+
+      <div class="sync-info-card">
+        <strong>HOW IT WORKS</strong>
+        <p>
+          Wild Apricot is the primary source for member status, level, and billing data.
+          Supabase is the primary source for website-specific fields like <em>rank</em>, <em>admin_type</em>, and <em>photo_url</em>.
+          Events created in Wild Apricot sync into Supabase automatically. Events created directly in Supabase are pushed to Wild Apricot as new events.
+          The scheduled sync runs every hour via Netlify. Check Netlify function logs for sync history.
+        </p>
+      </div>
+
     </div>
   </div>
 
@@ -739,8 +947,8 @@
       <button class="modal-close" onclick="closeDeleteModal()">✕</button>
     </div>
     <div class="modal-body">
-      <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;">
-        Are you sure you want to remove <strong id="deleteName" style="color:var(--white);"></strong> from the registry? This cannot be undone.
+      <p style="color:#444;font-size:0.9rem;line-height:1.6;">
+        Are you sure you want to remove <strong id="deleteName" style="color:var(--navy);"></strong> from the registry? This cannot be undone.
       </p>
     </div>
     <div class="modal-footer">
@@ -766,8 +974,7 @@ let currentPage = 1;
 let editingId = null;
 let deleteId = null;
 
-
-// ── CSV IMPORT ──────────────────────────────────────────────────────────────
+// ── CSV IMPORT ──
 let pendingImportRows = [];
 
 function importCSV(input) {
@@ -783,7 +990,6 @@ function importCSV(input) {
     const preview = document.getElementById('importPreview');
     const btn = document.getElementById('importConfirmBtn');
     status.textContent = `Found ${pendingImportRows.length} members. Click IMPORT ALL to upsert into Supabase (existing members matched by member_number will be updated).`;
-    // Show first 5 as preview
     const sample = pendingImportRows.slice(0, 5).map(r =>
       `<div style="padding:0.3rem 0;border-bottom:1px solid #eee;">${r.member_number || '—'} &nbsp; ${r.last_name}, ${r.first_name} &nbsp; <span style="color:#6b7280;">${r.membership_level || ''}</span></div>`
     ).join('');
@@ -871,7 +1077,6 @@ async function confirmImport() {
   btn.textContent = 'Importing…';
   const BATCH = 50;
   let done = 0;
-  // Skip rows with no member_number
   const validRows = pendingImportRows.filter(r => r.member_number && r.member_number.trim());
   const skipped = pendingImportRows.length - validRows.length;
   if (skipped > 0) status.textContent = `Skipping ${skipped} rows with no member number…`;
@@ -949,7 +1154,6 @@ async function loadMembers() {
     onSearch();
   } catch (e) {
     console.error(e);
-    // Try alternate column names if needed
     document.getElementById('memberTableBody').innerHTML =
       '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading members. Check console for details.</td></tr>';
     showToast('Failed to load members: ' + e.message, 'error');
@@ -958,11 +1162,9 @@ async function loadMembers() {
 
 function updateStats() {
   document.getElementById('statTotal').textContent = allMembers.length;
-  // Count by membership level
   const levelMap = {};
   allMembers.forEach(m => {
     let lvl = (m.membership_level || '').trim();
-    // Clean up level names: remove leading codes like "3 - " or "2a - "
     lvl = lvl.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
     if (lvl === 'Bookkeeper/Administrator') lvl = 'Bookkeeper';
     if (!lvl) lvl = 'Unknown';
@@ -979,9 +1181,7 @@ function updateStats() {
 }
 
 function filterByLevel(lvl) {
-  // Set search to filter by this level
   document.getElementById('searchInput').value = '';
-  // Use the type filter if it matches, else do a direct filter
   filteredMembers = allMembers.filter(m => {
     let ml = (m.membership_level || '').trim();
     ml = ml.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
@@ -996,24 +1196,19 @@ function filterByLevel(lvl) {
 function onSearch() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   const typeF = document.getElementById('typeFilter').value;
-
   filteredMembers = allMembers.filter(m => {
-    const first = (m.first_name || m['First name'] || m.firstName || '').toString();
-    const last  = (m.last_name  || m['Last name']  || m.lastName  || '').toString();
-    const email = (m.email || m.Email || '').toString();
-    const num   = (m.member_number || m['Member ID'] || m.id || '').toString();
-    const type  = (m.membership_level || m['Membership Level'] || m.memberType || '').toString();
-
+    const first = (m.first_name || '').toString();
+    const last  = (m.last_name  || '').toString();
+    const email = (m.email      || '').toString();
+    const num   = (m.member_number || '').toString();
+    const type  = (m.membership_level || '').toString();
     const matchQ = !q || [first, last, email, num].some(v => v.toLowerCase().includes(q));
     const matchT = !typeF || type.toLowerCase().includes(typeF.toLowerCase());
     return matchQ && matchT;
   });
-
   currentPage = 1;
   renderTable();
 }
-
-// ── RENDER TABLE ──
 
 // ── COLUMN VISIBILITY ──
 let colChooserOpen = false;
@@ -1023,7 +1218,6 @@ function toggleColChooser() {
   el.style.display = colChooserOpen ? 'flex' : 'none';
 }
 function applyColVisibility() {
-  // Default visible cols (always show unless unchecked)
   const defaults = ['num','name','email','type','joined','actions'];
   document.querySelectorAll('#colChooser input[data-col]').forEach(cb => {
     const col = cb.dataset.col;
@@ -1032,7 +1226,6 @@ function applyColVisibility() {
       el.style.display = show ? '' : 'none';
     });
   });
-  // Always ensure default cols are visible if no checkbox overrides them
   defaults.forEach(col => {
     const cb = document.querySelector(`#colChooser input[data-col="${col}"]`);
     if (!cb || cb.checked) {
@@ -1043,6 +1236,7 @@ function applyColVisibility() {
   });
 }
 
+// ── RENDER TABLE ──
 function renderTable() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = filteredMembers.slice(start, start + PAGE_SIZE);
@@ -1055,27 +1249,23 @@ function renderTable() {
   }
 
   tbody.innerHTML = page.map(m => {
-    const first  = m.first_name  || m['First name']  || m.firstName  || '';
-    const last   = m.last_name   || m['Last name']   || m.lastName   || '';
-    const email  = m.email       || m.Email          || '';
-    const num    = m.member_number|| m['Member ID']  || m.id         || '';
-    const status = m.status      || m.Status         || '';
-    const typeRaw  = m.membership_level || m['Membership Level'] || m.memberType || '';
-    let type       = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    const first  = m.first_name  || '';
+    const last   = m.last_name   || '';
+    const email  = m.email       || '';
+    const num    = m.member_number || '';
+    const status = m.status      || '';
+    const typeRaw  = m.membership_level || '';
+    let type = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
     if (type === 'Bookkeeper/Administrator') type = 'Bookkeeper';
-    const renewed= m.date_joined || m['Date Joined'] || '';
-
+    const renewed = m.date_joined || '';
     const statusClass = status.toLowerCase().includes('active') ? 'status-active'
                       : status.toLowerCase().includes('lapsed') ? 'status-lapsed'
                       : status.toLowerCase().includes('pending') ? 'status-pending'
-                      : status.toLowerCase().includes('leave') ? 'status-leave'
-                      : '';
-
+                      : status.toLowerCase().includes('leave') ? 'status-leave' : '';
     const renewedStr = renewed ? new Date(renewed).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '—';
-
-    const rank   = m.rank   || '';
-    const phone  = m.phone  || '';
-    const city   = m.city   || '';
+    const rank  = m.rank  || '';
+    const phone = m.phone || '';
+    const city  = m.city  || '';
     return `<tr>
       <td data-col="num" style="color:var(--muted);font-size:0.8rem;">${num}</td>
       <td data-col="name"><strong>${last}</strong>, ${first}</td>
@@ -1090,7 +1280,7 @@ function renderTable() {
       <td data-col="actions">
         <div class="action-btns">
           <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id || m.Id},'${(last+', '+first).replace(/'/g,"\\'")}')">Del</button>
+          <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id},'${(last+', '+first).replace(/'/g,"\\'")}')">Del</button>
         </div>
       </td>
     </tr>`;
@@ -1105,11 +1295,8 @@ function renderPagination() {
   const pages = Math.ceil(total / PAGE_SIZE);
   const start = (currentPage - 1) * PAGE_SIZE + 1;
   const end   = Math.min(currentPage * PAGE_SIZE, total);
-
   document.getElementById('pagination').style.display = 'flex';
-  document.getElementById('paginationInfo').textContent =
-    `Showing ${start}–${end} of ${total} members`;
-
+  document.getElementById('paginationInfo').textContent = `Showing ${start}–${end} of ${total} members`;
   const ctrl = document.getElementById('pageControls');
   let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
   for (let i = 1; i <= pages; i++) {
@@ -1139,25 +1326,25 @@ function openAddModal() {
 }
 
 function openEditModal(m) {
-  editingId = m.id || m.Id;
+  editingId = m.id;
   document.getElementById('modalTitle').textContent = 'EDIT MEMBER';
-  document.getElementById('fFirst').value    = m.first_name  || m['First name']  || '';
-  document.getElementById('fLast').value     = m.last_name   || m['Last name']   || '';
-  document.getElementById('fEmail').value    = m.email       || m.Email          || '';
-  document.getElementById('fMemberNum').value= m.member_number||m['Member ID']   || '';
-  document.getElementById('fPhone').value    = m.phone       || m.Phone          || '';
-  document.getElementById('fAddress').value  = m.address     || m.Address        || '';
-  document.getElementById('fCity').value     = m.city        || m.City           || '';
-  document.getElementById('fState').value    = m.state       || m.State          || '';
-  document.getElementById('fZip').value      = m.zip         || m.Zip            || '';
-  const typeEl   = document.getElementById('fType');
-  const ty = m.membership_level || m['Membership Level'] || '';
+  document.getElementById('fFirst').value     = m.first_name  || '';
+  document.getElementById('fLast').value      = m.last_name   || '';
+  document.getElementById('fEmail').value     = m.email       || '';
+  document.getElementById('fMemberNum').value = m.member_number || '';
+  document.getElementById('fPhone').value     = m.phone       || '';
+  document.getElementById('fAddress').value   = m.address     || '';
+  document.getElementById('fCity').value      = m.city        || '';
+  document.getElementById('fState').value     = m.state       || '';
+  document.getElementById('fZip').value       = m.zip         || '';
+  const typeEl = document.getElementById('fType');
+  const ty = m.membership_level || '';
   [...typeEl.options].forEach(o => { if (ty === o.value) typeEl.value = o.value; });
-  const renewed = m.date_joined || m['Date Joined'] || '';
+  const renewed = m.date_joined || '';
   document.getElementById('fDateJoined').value = renewed ? renewed.substring(0,10) : '';
-  document.getElementById('fRank').value      = m.rank       || '';
-  document.getElementById('fAdminType').value = m.admin_type  || 'None';
-  document.getElementById('fNotes').value     = m.notes       || '';
+  document.getElementById('fRank').value       = m.rank       || '';
+  document.getElementById('fAdminType').value  = m.admin_type || 'None';
+  document.getElementById('fNotes').value      = m.notes      || '';
   document.getElementById('memberModal').classList.add('open');
 }
 
@@ -1175,20 +1362,21 @@ function clearForm() {
 
 async function saveMember() {
   const payload = {
-    first_name:    document.getElementById('fFirst').value.trim(),
-    last_name:     document.getElementById('fLast').value.trim(),
-    email:         document.getElementById('fEmail').value.trim(),
-    member_number: document.getElementById('fMemberNum').value.trim(),
-    phone:         document.getElementById('fPhone').value.trim(),
-    address:       document.getElementById('fAddress').value.trim(),
-    city:          document.getElementById('fCity').value.trim(),
-    state:         document.getElementById('fState').value.trim(),
-    zip:           document.getElementById('fZip').value.trim(),
+    first_name:       document.getElementById('fFirst').value.trim(),
+    last_name:        document.getElementById('fLast').value.trim(),
+    email:            document.getElementById('fEmail').value.trim(),
+    member_number:    document.getElementById('fMemberNum').value.trim(),
+    phone:            document.getElementById('fPhone').value.trim(),
+    address:          document.getElementById('fAddress').value.trim(),
+    city:             document.getElementById('fCity').value.trim(),
+    state:            document.getElementById('fState').value.trim(),
+    zip:              document.getElementById('fZip').value.trim(),
     membership_level: document.getElementById('fType').value,
-    date_joined:     document.getElementById('fDateJoined').value || null,
-    rank:            document.getElementById('fRank').value.trim(),
-    admin_type:      document.getElementById('fAdminType').value,
-    notes:           document.getElementById('fNotes').value.trim(),
+    date_joined:      document.getElementById('fDateJoined').value || null,
+    rank:             document.getElementById('fRank').value.trim(),
+    admin_type:       document.getElementById('fAdminType').value,
+    notes:            document.getElementById('fNotes').value.trim(),
+    updated_at:       new Date().toISOString(),
   };
 
   if (!payload.first_name || !payload.last_name) {
@@ -1201,7 +1389,7 @@ async function saveMember() {
         method: 'PATCH',
         body: JSON.stringify(payload)
       });
-      const idx = allMembers.findIndex(m => (m.id || m.Id) == editingId);
+      const idx = allMembers.findIndex(m => m.id == editingId);
       if (idx > -1) allMembers[idx] = { ...allMembers[idx], ...payload };
       showToast('Member updated successfully.', 'success');
     } else {
@@ -1234,7 +1422,7 @@ async function confirmDelete() {
   if (!deleteId) return;
   try {
     await sbFetch(TABLE + '?id=eq.' + deleteId, { method: 'DELETE' });
-    allMembers = allMembers.filter(m => (m.id || m.Id) != deleteId);
+    allMembers = allMembers.filter(m => m.id != deleteId);
     updateStats();
     onSearch();
     closeDeleteModal();
@@ -1242,6 +1430,94 @@ async function confirmDelete() {
   } catch (e) {
     showToast('Error deleting member: ' + e.message, 'error');
   }
+}
+
+// ── WA SYNC ──
+async function runSync() {
+  const btn = document.getElementById('syncBtn');
+  const statusBox = document.getElementById('syncStatusBox');
+  const spinner = document.getElementById('syncSpinner');
+  const results = document.getElementById('syncResults');
+  const lastRun = document.getElementById('syncLastRun');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ SYNCING…';
+  statusBox.style.display = 'block';
+  spinner.style.display = 'flex';
+  results.innerHTML = '';
+
+  try {
+    const resp = await fetch('/.netlify/functions/sync-wa-supabase', { method: 'POST' });
+    const data = await resp.json();
+
+    spinner.style.display = 'none';
+
+    if (data.success) {
+      const m = data.members;
+      const e = data.events;
+      const allErrors = [...(m.errors || []), ...(e.errors || [])];
+
+      results.innerHTML = `
+        <div class="sync-success-banner">
+          ✅ Sync completed successfully
+          <span style="margin-left:auto;font-size:0.75rem;opacity:0.7;">${new Date(data.timestamp).toLocaleString()}</span>
+        </div>
+        <table class="sync-results-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>WA → Supabase</th>
+              <th>Supabase → WA</th>
+              <th>Skipped</th>
+              <th>Errors</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>👥 Members</td>
+              <td>${m.wa_to_sb}</td>
+              <td>${m.sb_to_wa}</td>
+              <td>${m.skipped}</td>
+              <td style="color:${m.errors.length ? 'var(--danger)' : 'var(--success)'};">${m.errors.length}</td>
+            </tr>
+            <tr>
+              <td>📅 Events</td>
+              <td>${e.wa_to_sb}</td>
+              <td>${e.sb_to_wa}</td>
+              <td>${e.skipped}</td>
+              <td style="color:${e.errors.length ? 'var(--danger)' : 'var(--success)'};">${e.errors.length}</td>
+            </tr>
+          </tbody>
+        </table>
+        ${allErrors.length > 0 ? `
+          <div class="sync-error-banner">
+            <strong>Errors encountered:</strong>
+            <ul>${allErrors.map(err => `<li>${err}</li>`).join('')}</ul>
+          </div>` : ''}
+      `;
+
+      lastRun.textContent = 'Last run: ' + new Date(data.timestamp).toLocaleString();
+      lastRun.style.display = 'block';
+
+      // Reload member table with fresh data
+      loadMembers();
+
+    } else {
+      results.innerHTML = `
+        <div class="sync-error-banner">
+          <strong>❌ Sync failed:</strong> ${data.error}
+        </div>`;
+    }
+  } catch (err) {
+    spinner.style.display = 'none';
+    results.innerHTML = `
+      <div class="sync-error-banner">
+        <strong>❌ Network error:</strong> ${err.message}
+      </div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🔄 RUN SYNC NOW';
 }
 
 // ── TOAST ──
@@ -1262,7 +1538,7 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
   });
 });
 </script>
-<div id="site-header"></div>
+
 <script src="header.js"></script>
 <script src="member-auth.js"></script>
 </body>
