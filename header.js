@@ -28,7 +28,7 @@
     + anchor('#museum', 'Museum')
     + pageLink('events.html', 'Events')
     + anchor('#donate', 'Donate')
-    + '<button class="member-btn" onclick="openMemberModal()">Member Login</button>'
+    + '<button class="member-btn" onclick="typeof openMemberModal===\'function\'?openMemberModal():null">Member Login</button>'
     + '<a href="admin.html" title="Admin Panel"'
     + ' style="color:rgba(201,168,76,0.4);font-size:2.2rem;text-decoration:none;padding:0 0.3rem;transition:color 0.2s;"'
     + ' onmouseover="this.style.color=\'#c9a84c\'"'
@@ -42,11 +42,12 @@
   if (target) { target.outerHTML = html; }
   else { document.body.insertAdjacentHTML('afterbegin', html); }
 
-  // Load member auth system
+  // Load member auth system synchronously
   if (!document.getElementById('memberAuthScript')) {
     const s = document.createElement('script');
     s.id = 'memberAuthScript';
     s.src = 'member-auth.js';
-    document.body.appendChild(s);
+    s.async = false;
+    (document.head || document.body).appendChild(s);
   }
 })();
