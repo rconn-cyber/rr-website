@@ -7,13 +7,13 @@
   const SESSION_KEY = 'rr_member_session';
 
   function getSession() {
-    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; }
+    try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; }
   }
   function setSession(data) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
   }
   function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(SESSION_KEY);
   }
 
   // ── ADMIN AUTO-BYPASS ────────────────────────────────────────────────────
