@@ -42,9 +42,14 @@
     + '</header>';
 
   const target = document.getElementById('site-header');
-  if (target) {
-    target.outerHTML = html;
-  } else {
-    document.body.insertAdjacentHTML('afterbegin', html);
+  if (target) { target.outerHTML = html; }
+  else { document.body.insertAdjacentHTML('afterbegin', html); }
+
+  // Load member auth system
+  if (!document.getElementById('memberAuthScript')) {
+    const s = document.createElement('script');
+    s.id = 'memberAuthScript';
+    s.src = 'member-auth.js';
+    document.body.appendChild(s);
   }
 })();
