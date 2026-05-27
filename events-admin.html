@@ -602,6 +602,7 @@ async function doLogin() {
     const { token } = await r.json();
     adminToken = token;
     sessionStorage.setItem('eventsAdminToken', token);
+    localStorage.setItem('eventsAdminToken', token);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     await fetchEvents();
@@ -613,14 +614,16 @@ async function doLogin() {
 function doLogout() {
   adminToken = '';
   sessionStorage.removeItem('eventsAdminToken');
+  localStorage.removeItem('eventsAdminToken');
   location.reload();
 }
 
 // Restore session on page load
 window.addEventListener('DOMContentLoaded', () => {
-  const t = sessionStorage.getItem('eventsAdminToken');
+  const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
   if (t) {
     adminToken = t;
+    sessionStorage.setItem('eventsAdminToken', t);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     fetchEvents();
