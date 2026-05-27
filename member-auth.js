@@ -1,6 +1,5 @@
 // member-auth.js — Member portal login system
-// Include on every page: <script src="member-auth.js"></script>
-// Requires header.js to already be loaded (uses #topbar)
+// Include on every page via header.js
 
 (function () {
 
@@ -15,6 +14,46 @@
   }
   function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  // ── ADMIN AUTO-BYPASS ────────────────────────────────────────────────────
+  // If on admin.html or events-admin.html and session has admin rights, skip password
+  const page = window.location.pathname.split('/').pop() || '';
+  const s = getSession();
+
+  if (page === 'admin.html' && s) {
+    const t = s.admin_type || '';
+    if (t === 'Full Access' || t === 'Membership') {
+      // Hide login overlay immediately and show admin content
+      window.addEventListener('DOMContentLoaded', function () {
+        const overlay = document.getElementById('loginOverlay');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.style.display = 'none';
+        }
+        const main = document.getElementById('adminMain');
+        if (main) {
+          main.style.display = 'block';
+          if (typeof loadMembers === 'function') loadMembers();
+        }
+      });
+    }
+  }
+
+  if (page === 'events-admin.html' && s) {
+    const t = s.admin_type || '';
+    if (t === 'Full Access' || t === 'Events') {
+      window.addEventListener('DOMContentLoaded', function () {
+        const overlay = document.getElementById('loginOverlay');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.style.display = 'none';
+        }
+        const app = document.getElementById('adminApp');
+        if (app) app.style.display = 'block';
+        if (typeof initApp === 'function') initApp();
+      });
+    }
   }
 
   // ── MODAL HTML ────────────────────────────────────────────────────────────
@@ -38,14 +77,16 @@
       View your membership status, update contact information, access member-only events, and manage your account.
     </p>
     <input id="mlEmail" type="email" placeholder="Email address"
+      autocomplete="off"
       style="width:100%;padding:0.8rem;margin-bottom:0.75rem;background:#fff;border:none;font-size:0.95rem;box-sizing:border-box;"
       onkeydown="if(event.key==='Enter')document.getElementById('mlPass').focus()">
     <div style="position:relative;margin-bottom:1.5rem;">
-      <input id="mlPass" type="password" placeholder="Member # or password"
+      <input id="mlPass" type="password" placeholder="Member number (e.g. 1023)"
+        autocomplete="new-password"
         style="width:100%;padding:0.8rem;padding-right:2.8rem;background:#fff;border:none;font-size:0.95rem;box-sizing:border-box;"
         onkeydown="if(event.key==='Enter')doMemberLogin()">
       <span onclick="var i=document.getElementById('mlPass');i.type=i.type==='password'?'text':'password';"
-        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;color:#666;">👁</span>
+        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;color:#666;user-select:none;">👁</span>
     </div>
     <div id="mlError" style="color:#e74c3c;font-size:0.82rem;margin-bottom:0.75rem;text-align:center;min-height:1.2rem;"></div>
     <div style="display:flex;gap:1rem;">
@@ -72,21 +113,37 @@
 </div>`;
 
   // ── INJECT MODAL ─────────────────────────────────────────────────────────
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.addEventListener('DOMContentLoaded', function () {
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const sess = getSession();
+    if (sess) updateHeaderForMember(sess);
+  });
 
   // ── PUBLIC FUNCTIONS ─────────────────────────────────────────────────────
   window.openMemberModal = function () {
-    const s = getSession();
-    if (s) { showMemberMenu(s); return; }
+    const sess = getSession();
+    if (sess) { toggleMemberMenu(); return; }
     const el = document.getElementById('memberLoginOverlay');
+    if (!el) return;
+    // Clear fields — never pre-fill
+    document.getElementById('mlEmail').value = '';
+    document.getElementById('mlPass').value = '';
+    document.getElementById('mlError').textContent = '';
     el.style.display = 'flex';
     setTimeout(() => document.getElementById('mlEmail').focus(), 50);
   };
 
   window.closeMemberModal = function () {
-    document.getElementById('memberLoginOverlay').style.display = 'none';
+    const el = document.getElementById('memberLoginOverlay');
+    if (el) el.style.display = 'none';
     document.getElementById('mlError').textContent = '';
   };
+
+  // Close on backdrop click
+  document.addEventListener('click', function (e) {
+    const overlay = document.getElementById('memberLoginOverlay');
+    if (overlay && e.target === overlay) closeMemberModal();
+  });
 
   window.doMemberLogin = async function () {
     const email    = document.getElementById('mlEmail').value.trim();
@@ -125,37 +182,42 @@
 
   window.memberLogout = function () {
     clearSession();
-    updateHeaderForGuest();
+    location.reload();
   };
 
   // ── HEADER STATE ─────────────────────────────────────────────────────────
   function updateHeaderForMember(member) {
     const btn = document.querySelector('#topbar .member-btn');
     if (!btn) return;
-    const name = member.first_name || member.email || 'Member';
+    const name = (member.first_name || member.email || 'Member').toUpperCase();
     const adminType = member.admin_type || 'None';
 
     let adminLink = '';
     if (adminType === 'Full Access' || adminType === 'Membership') {
-      adminLink = '<a href="admin.html" style="color:#c9a84c;font-size:0.72rem;font-family:Cinzel,serif;letter-spacing:0.08em;text-decoration:none;">ADMIN</a>';
-    }
-    if (adminType === 'Events') {
-      adminLink = '<a href="events-admin.html" style="color:#c9a84c;font-size:0.72rem;font-family:Cinzel,serif;letter-spacing:0.08em;text-decoration:none;">EVENTS</a>';
+      adminLink = '<a href="admin.html" style="color:#c9a84c;font-size:0.72rem;font-family:Cinzel,serif;letter-spacing:0.08em;text-decoration:none;white-space:nowrap;">ADMIN</a>';
+    } else if (adminType === 'Events') {
+      adminLink = '<a href="events-admin.html" style="color:#c9a84c;font-size:0.72rem;font-family:Cinzel,serif;letter-spacing:0.08em;text-decoration:none;white-space:nowrap;">EVENTS</a>';
     }
 
-    btn.outerHTML = `<div style="display:flex;align-items:center;gap:0.75rem;">
+    btn.outerHTML = `<div id="memberHeaderWrap" style="display:flex;align-items:center;gap:0.75rem;">
       ${adminLink}
       <div style="position:relative;">
-        <button class="member-btn" onclick="toggleMemberMenu()" style="background:#c9a84c;color:#0d1f3c;">
-          ★ ${name.toUpperCase()}
+        <button class="member-btn" id="memberNameBtn"
+          onclick="toggleMemberMenu()"
+          style="background:#c9a84c;color:#0d1f3c;font-weight:700;border:none;">
+          &#9733; ${name}
         </button>
         <div id="memberDropdown" style="
           display:none;position:absolute;right:0;top:calc(100% + 4px);
           background:#0d1f3c;border:1px solid rgba(201,168,76,0.3);
-          min-width:180px;z-index:500;padding:0.5rem 0;">
+          min-width:160px;z-index:1500;padding:0.5rem 0;">
+          <div style="padding:0.5rem 1.2rem;font-size:0.75rem;color:#9ca3af;border-bottom:1px solid rgba(201,168,76,0.15);margin-bottom:0.25rem;">
+            ${member.first_name} ${member.last_name || ''}<br>
+            <span style="color:#c9a84c;">#${member.member_number || ''}</span>
+          </div>
           <a href="#" onclick="memberLogout();return false;" style="
             display:block;padding:0.6rem 1.2rem;color:#fff;
-            font-family:'Cinzel',serif;font-size:0.72rem;
+            font-family:'Cinzel',serif;font-size:0.7rem;
             letter-spacing:0.08em;text-decoration:none;text-transform:uppercase;"
             onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#fff'">
             Sign Out
@@ -165,37 +227,18 @@
     </div>`;
   }
 
-  function updateHeaderForGuest() {
-    const dropdown = document.getElementById('memberDropdown');
-    if (dropdown) {
-      const wrap = dropdown.closest('div[style*="position:relative"]')?.parentElement;
-      if (wrap) {
-        wrap.outerHTML = '<button class="member-btn" onclick="openMemberModal()">Member Login</button>';
-      }
-    }
-  }
-
   window.toggleMemberMenu = function () {
     const d = document.getElementById('memberDropdown');
     if (d) d.style.display = d.style.display === 'none' ? 'block' : 'none';
   };
 
-  function showMemberMenu(s) {
-    updateHeaderForMember(s);
-  }
-
   // Close dropdown on outside click
   document.addEventListener('click', function (e) {
     const d = document.getElementById('memberDropdown');
-    if (d && !d.contains(e.target) && !e.target.closest('.member-btn')) {
+    const btn = document.getElementById('memberNameBtn');
+    if (d && !d.contains(e.target) && e.target !== btn) {
       d.style.display = 'none';
     }
-  });
-
-  // ── RESTORE SESSION ON LOAD ───────────────────────────────────────────────
-  window.addEventListener('load', function () {
-    const s = getSession();
-    if (s) updateHeaderForMember(s);
   });
 
 })();
