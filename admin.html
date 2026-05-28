@@ -1437,101 +1437,57 @@ async function confirmDelete() {
 
 // ── WA SYNC ──
 async function runSync() {
-  const btn = document.getElementById('syncBtn');
+  const btn       = document.getElementById('syncBtn');
   const statusBox = document.getElementById('syncStatusBox');
-  const spinner = document.getElementById('syncSpinner');
-  const results = document.getElementById('syncResults');
-  const lastRun = document.getElementById('syncLastRun');
+  const spinner   = document.getElementById('syncSpinner');
+  const results   = document.getElementById('syncResults');
+  const lastRun   = document.getElementById('syncLastRun');
 
   btn.disabled = true;
   btn.textContent = '⏳ SYNCING…';
   statusBox.style.display = 'block';
   spinner.style.display = 'flex';
-  results.innerHTML = '';
+  results.innerHTML = '<p style="color:var(--muted);font-size:0.9rem;">Sync triggered — this takes 20–60 seconds. Polling for results…</p>';
 
-  try {
-    // Run members and events sync in parallel
-await Promise.all([
-  fetch('/.netlify/functions/sync-members-background', { method: 'POST' }),
-  fetch('/.netlify/functions/sync-events-background',  { method: 'POST' })
-]);
-// Background functions return 202 with empty body — don't parse JSON
-    const data = {
-      success:   membersData.success && eventsData.success,
-      timestamp: new Date().toISOString(),
-      members:   membersData.members || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] },
-      events:    eventsData.events   || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] }
-    };
+  // Fire both background functions (they return 202 immediately, no body)
+  await Promise.all([
+    fetch('/.netlify/functions/sync-members-background', { method: 'POST' }),
+    fetch('/.netlify/functions/sync-events-background',  { method: 'POST' })
+  ]);
 
-    spinner.style.display = 'none';
+  // Poll sync-status every 5s for up to 90s
+  const startedAt = Date.now();
+  const poll = setInterval(async () => {
+    try {
+      const resp = await fetch('/.netlify/functions/sync-status');
+      const data = await resp.json();
+      const m = data.latest?.members;
+      const e = data.latest?.events;
 
-    if (data.success) {
-      const m = data.members;
-      const e = data.events;
-      const allErrors = [...(m.errors || []), ...(e.errors || [])];
+      const mDone = m && (m.status === 'complete' || m.status === 'error')
+                    && new Date(m.started_at) >= new Date(startedAt - 3000);
+      const eDone = e && (e.status === 'complete' || e.status === 'error')
+                    && new Date(e.started_at) >= new Date(startedAt - 3000);
 
-      results.innerHTML = `
-        <div class="sync-success-banner">
-          ✅ Sync completed successfully
-          <span style="margin-left:auto;font-size:0.75rem;opacity:0.7;">${new Date(data.timestamp).toLocaleString()}</span>
-        </div>
-        <table class="sync-results-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>WA → Supabase</th>
-              <th>Supabase → WA</th>
-              <th>Skipped</th>
-              <th>Errors</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>👥 Members</td>
-              <td>${m.wa_to_sb}</td>
-              <td>${m.sb_to_wa}</td>
-              <td>${m.skipped}</td>
-              <td style="color:${m.errors.length ? 'var(--danger)' : 'var(--success)'};">${m.errors.length}</td>
-            </tr>
-            <tr>
-              <td>📅 Events</td>
-              <td>${e.wa_to_sb}</td>
-              <td>${e.sb_to_wa}</td>
-              <td>${e.skipped}</td>
-              <td style="color:${e.errors.length ? 'var(--danger)' : 'var(--success)'};">${e.errors.length}</td>
-            </tr>
-          </tbody>
-        </table>
-        ${allErrors.length > 0 ? `
-          <div class="sync-error-banner">
-            <strong>Errors encountered:</strong>
-            <ul>${allErrors.map(err => `<li>${err}</li>`).join('')}</ul>
-          </div>` : ''}
-      `;
+      if (mDone && eDone) {
+        clearInterval(poll);
+        spinner.style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '🔄 RUN SYNC NOW';
 
-      lastRun.textContent = 'Last run: ' + new Date(data.timestamp).toLocaleString();
-      lastRun.style.display = 'block';
+        const mRes = m.results?.members || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] };
+        const eRes = e.results?.events  || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] };
+        const allErrors = [...(mRes.errors||[]), ...(eRes.errors||[])];
+        const success = m.status === 'complete' && e.status === 'complete';
 
-      // Reload member table with fresh data
-      loadMembers();
-
-    } else {
-      results.innerHTML = `
-        <div class="sync-error-banner">
-          <strong>❌ Sync failed:</strong> ${data.error}
-        </div>`;
-    }
-  } catch (err) {
-    spinner.style.display = 'none';
-    results.innerHTML = `
-      <div class="sync-error-banner">
-        <strong>❌ Network error:</strong> ${err.message}
-      </div>`;
-  }
-
-  btn.disabled = false;
-  btn.textContent = '🔄 RUN SYNC NOW';
-}
+        results.innerHTML = `
+          <div class="sync-success-banner" style="${success ? '' : 'background:var(--danger-light);'}">
+            ${success ? '✅ Sync completed successfully' : '⚠️ Sync completed with errors'}
+            <span style="margin-left:auto;font-size:0.75rem;opacity:0.7;">
+              ${new Date(m.finished_at).toLocaleString()}
+            </span>
+          </div>
+          <table class="sync-results-table">
 
 // ── TOAST ──
 function showToast(msg, type = 'success') {
