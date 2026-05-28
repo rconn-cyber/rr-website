@@ -3,11 +3,25 @@
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
 
-# Tell Netlify secrets scanner that the Supabase URL in HTML files is intentional
-# (anon key + URL are public-read only — safe to be in frontend code)
+# Increase timeout for long-running sync functions (26s = Pro plan max)
+[functions."sync-wa-supabase"]
+  timeout = 26
+
+[functions."sync-members"]
+  timeout = 26
+
+[functions."sync-events"]
+  timeout = 26
+
+[functions."sync-scheduled"]
+  schedule = "0 * * * *"
+
+# Secrets scanner exclusions
+# Supabase anon key + URL are safe in frontend (public-read only)
 [build.environment]
- SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html"
+  SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html,events-admin.html"
 
 [[redirects]]
   from = "/events-admin"
