@@ -116,23 +116,7 @@ async function syncMembers() {
     else results.wa_to_sb += batch.length;
   }
 
-  // Supabase → WA
-  const waByNum = {};
-  for (const m of waMembers) waByNum[String(m.Id)] = m;
-  for (const sbMember of sbMembers || []) {
-    try {
-      const waMatch = waByNum[String(sbMember.member_number)];
-      if (!waMatch) { results.skipped++; continue; }
-      const waTime = waMatch.LastUpdated ? new Date(waMatch.LastUpdated).getTime() : 0;
-      const sbTime = sbMember.updated_at ? new Date(sbMember.updated_at).getTime() : 0;
-      if (sbTime > waTime) {
-        const res = await pushMemberToWA(token, sbMember);
-        if (res.skipped) results.skipped++;
-        else if (res.ok)  results.sb_to_wa++;
-        else results.errors.push('SB→WA ' + sbMember.member_number + ': HTTP ' + res.status);
-      } else results.skipped++;
-    } catch (e) { results.errors.push('SB→WA error: ' + e.message); }
-  }
+ // Supabase → WA disabled — WA is source of truth for members
 
   return results;
 }
