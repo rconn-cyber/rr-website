@@ -41,10 +41,6 @@ function mapWAMemberToSupabase(m) {
   const fields = {};
   if (m.FieldValues) for (const f of m.FieldValues) fields[f.FieldName] = f.Value;
 
-  if (!mapWAMemberToSupabase._logged) {
-    mapWAMemberToSupabase._logged = true;
-    console.log('FIELD NAMES:', JSON.stringify(Object.keys(fields)));
-  }
 
   return {
     member_number:    fields['Member #'] || String(m.Id || ''),
