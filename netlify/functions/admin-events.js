@@ -123,12 +123,13 @@ async function createWAEvent(ev) {
       },
       body: JSON.stringify(mapToWA(ev))
     });
+    const responseText = await resp.text();
     if (!resp.ok) {
-      const err = await resp.text();
-      console.error('WA create event failed:', err);
+      console.error('WA create event failed:', responseText);
+      console.error('WA create event payload:', JSON.stringify(mapToWA(ev)));
       return null;
     }
-    const data = await resp.json();
+    const data = JSON.parse(responseText);
     return String(data.Id);
   } catch (e) {
     console.error('WA create event error:', e.message);
