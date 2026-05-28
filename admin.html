@@ -1450,8 +1450,19 @@ async function runSync() {
   results.innerHTML = '';
 
   try {
-    const resp = await fetch('/.netlify/functions/sync-wa-supabase', { method: 'POST' });
-    const data = await resp.json();
+    // Run members and events sync in parallel
+    const [membersResp, eventsResp] = await Promise.all([
+      fetch('/.netlify/functions/sync-members', { method: 'POST' }),
+      fetch('/.netlify/functions/sync-events',  { method: 'POST' })
+    ]);
+    const membersData = await membersResp.json();
+    const eventsData  = await eventsResp.json();
+    const data = {
+      success:   membersData.success && eventsData.success,
+      timestamp: new Date().toISOString(),
+      members:   membersData.members || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] },
+      events:    eventsData.events   || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] }
+    };
 
     spinner.style.display = 'none';
 
