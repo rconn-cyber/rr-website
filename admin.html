@@ -1461,6 +1461,7 @@ async function runSync() {
     try {
       const resp = await fetch('/.netlify/functions/sync-status');
       const data = await resp.json();
+      console.log('sync-status response:', JSON.stringify(data));
       const m = data.latest?.members;
       const e = data.latest?.events;
 
