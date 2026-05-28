@@ -69,22 +69,46 @@ async function getWAToken() {
   return waTokenCache;
 }
 
+// Convert date string to WA full ISO datetime
+function toWADate(d) {
+  if (!d) return null;
+  // If already has time component, return as-is
+  if (d.includes('T')) return d;
+  // WA requires full datetime
+  return d + 'T00:00:00';
+}
+
 // Map Supabase event → WA event body
 function mapToWA(ev) {
+  const startDate = toWADate(ev.date_start);
+  const endDate   = toWADate(ev.date_end || ev.date_start);
   const body = {
-    Name: ev.title,
-    StartDate: ev.date_start || null,
-    EndDate:   ev.date_end   || ev.date_start || null,
-    Location:  ev.location   || '',
-    Description: ev.body_html || '',
+    Name:        ev.title      || 'Untitled Event',
+    StartDate:   startDate,
+    EndDate:     endDate,
+    Location:    ev.location   || '',
+    Description: ev.body_html  || ev.description || '',
     AccessLevel: ev.is_public !== false ? 'Public' : 'AdminOnly',
-    IsDraft: ev.is_active === false,
+    IsDraft:     ev.is_active === false,
+    RegistrationEnabled: false,
   };
   // Tags: array of strings → WA Tags array of {Label}
   if (Array.isArray(ev.tags) && ev.tags.length) {
     body.Tags = ev.tags.map(t => ({ Label: t }));
   }
   return body;
+}
+
+// Look up WA event by title to find existing wa_id
+async function findWAEventByTitle(token, title) {
+  try {
+    const url = `${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events?$top=200&$async=false`;
+    const resp = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const match = (data.Events || []).find(e => e.Name === title);
+    return match ? String(match.Id) : null;
+  } catch { return null; }
 }
 
 // Create new WA event, return numeric WA ID
@@ -218,17 +242,30 @@ exports.handler = async (event) => {
       const savedEvent = Array.isArray(r.data) ? r.data[0] : r.data;
 
       // 2. Sync to WA
-      if (savedEvent?.wa_id) {
+      const token = await getWAToken();
+      let waId = savedEvent?.wa_id || updates.wa_id || null;
+
+      if (waId) {
         // Update existing WA event
-        await updateWAEvent(savedEvent.wa_id, updates);
-      } else if (updates.wa_id) {
-        await updateWAEvent(updates.wa_id, updates);
+        await updateWAEvent(waId, updates);
       } else {
-        // No wa_id yet — create in WA and store id
-        const waId = await createWAEvent(updates);
-        if (waId) {
+        // No wa_id — check if event already exists in WA by title before creating
+        const existingWaId = await findWAEventByTitle(token, updates.title || '');
+        if (existingWaId) {
+          // Found in WA — link and update
+          waId = existingWaId;
+          await updateWAEvent(waId, updates);
           await sbFetch('PATCH', `/rr_events?id=eq.${id}`, { wa_id: waId });
           if (savedEvent) savedEvent.wa_id = waId;
+          console.log('Linked existing WA event:', waId);
+        } else {
+          // Truly new — create in WA
+          const newWaId = await createWAEvent(updates);
+          if (newWaId) {
+            await sbFetch('PATCH', `/rr_events?id=eq.${id}`, { wa_id: newWaId });
+            if (savedEvent) savedEvent.wa_id = newWaId;
+            console.log('Created new WA event:', newWaId);
+          }
         }
       }
 
