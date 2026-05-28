@@ -41,7 +41,8 @@ function mapWAMemberToSupabase(m) {
   const fields = {};
   if (m.FieldValues) for (const f of m.FieldValues) fields[f.FieldName] = f.Value;
   return {
-    member_number:    String(m.Id || ''),
+    member_number:    fields['Member #'] || String(m.Id || ''),
+    wa_id:            String(m.Id || ''),
     first_name:       m.FirstName || '',
     last_name:        m.LastName  || '',
     email:            m.Email     || '',
