@@ -139,25 +139,8 @@ async function syncEvents() {
     } catch (e) { results.errors.push('WA→SB error: ' + e.message); }
   }
 
-  // Supabase → WA
-  for (const sbEvent of sbEvents || []) {
-    try {
-      const waMatch = sbEvent.wa_id ? waById[sbEvent.wa_id] : null;
-      const waTime  = waMatch?.LastUpdated ? new Date(waMatch.LastUpdated).getTime() : 0;
-      const sbTime  = sbEvent.updated_at ? new Date(sbEvent.updated_at).getTime() : 0;
-      if (!waMatch || sbTime > waTime) {
-        const res = await pushEventToWA(token, sbEvent);
-        if (res.ok) {
-          results.sb_to_wa++;
-          if (res.action === 'create' && res.newWaId) {
-            await supabase.from('rr_events').update({ wa_id: res.newWaId }).eq('id', sbEvent.id);
-          }
-        } else {
-          results.errors.push('SB→WA event ' + sbEvent.id + ': HTTP ' + res.status);
-        }
-      } else results.skipped++;
-    } catch (e) { results.errors.push('SB→WA error: ' + e.message); }
-  }
+ // Supabase → WA disabled — WA is source of truth for events
+  // New events created in events-admin.html push to WA directly via admin-events.js
 
   return results;
 }
