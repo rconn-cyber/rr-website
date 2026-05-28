@@ -162,14 +162,34 @@ async function syncEvents() {
   return results;
 }
 
-exports.handler = async () => {
+exports.handler = async (event) => {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const { data: logRow } = await supabase
+    .from('sync_log')
+    .insert({ sync_type: 'events', status: 'running' })
+    .select('id')
+    .single();
+  const logId = logRow?.id;
+
   try {
     const results = await syncEvents();
-    const summary = { success: true, timestamp: new Date().toISOString(), events: results };
-    console.log('Events sync complete:', JSON.stringify(summary));
-    return { statusCode: 200, headers, body: JSON.stringify(summary) };
+    if (logId) {
+      await supabase.from('sync_log').update({
+        status: 'complete',
+        results: { events: results },
+        finished_at: new Date().toISOString()
+      }).eq('id', logId);
+    }
+    console.log('Events sync complete:', JSON.stringify(results));
   } catch (err) {
     console.error('Events sync error:', err.message);
-    return { statusCode: 500, headers, body: JSON.stringify({ success: false, error: err.message }) };
+    if (logId) {
+      await supabase.from('sync_log').update({
+        status: 'error',
+        results: { error: err.message },
+        finished_at: new Date().toISOString()
+      }).eq('id', logId);
+    }
   }
 };
