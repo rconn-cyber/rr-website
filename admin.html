@@ -1514,7 +1514,7 @@ if (mDone && eDone && (m || e)) {
         if (success) loadMembers();
       }
 
-      if (Date.now() - startedAt > 90000) {
+     if (Date.now() - startedAt > 180000) {
         clearInterval(poll);
         spinner.style.display = 'none';
         btn.disabled = false;
