@@ -1452,8 +1452,8 @@ async function runSync() {
   try {
     // Run members and events sync in parallel
     const [membersResp, eventsResp] = await Promise.all([
-      fetch('/.netlify/functions/sync-members', { method: 'POST' }),
-      fetch('/.netlify/functions/sync-events',  { method: 'POST' })
+     fetch('/.netlify/functions/sync-members-background', { method: 'POST' }),
+fetch('/.netlify/functions/sync-events-background',  { method: 'POST' })
     ]);
     const membersData = await membersResp.json();
     const eventsData  = await eventsResp.json();
