@@ -1465,10 +1465,10 @@ async function runSync() {
       const m = data.latest?.members;
       const e = data.latest?.events;
 
-   const mDone = m && (m.status === 'complete' || m.status === 'error');
-const eDone = e && (e.status === 'complete' || e.status === 'error');
+   const mDone = !m || (m.status === 'complete' || m.status === 'error');
+const eDone = !e || (e.status === 'complete' || e.status === 'error');
 
-      if (mDone && eDone) {
+if (mDone && eDone && (m || e)) {
         clearInterval(poll);
         spinner.style.display = 'none';
         btn.disabled = false;
