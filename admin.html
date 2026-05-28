@@ -1464,10 +1464,8 @@ async function runSync() {
       const m = data.latest?.members;
       const e = data.latest?.events;
 
-      const mDone = m && (m.status === 'complete' || m.status === 'error')
-                    && new Date(m.started_at) >= new Date(startedAt - 3000);
-      const eDone = e && (e.status === 'complete' || e.status === 'error')
-                    && new Date(e.started_at) >= new Date(startedAt - 3000);
+   const mDone = m && (m.status === 'complete' || m.status === 'error');
+const eDone = e && (e.status === 'complete' || e.status === 'error');
 
       if (mDone && eDone) {
         clearInterval(poll);
