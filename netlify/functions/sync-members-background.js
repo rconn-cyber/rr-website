@@ -23,9 +23,10 @@ async function getWAToken() {
 async function fetchWAMembers(token) {
   let members = [], skip = 0;
   while (true) {
-    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/contacts?$top=100&$skip=${skip}&$async=false`, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    const resp = await fetch(
+  `${WA_BASE}/accounts/${WA_ACCOUNT_ID}/contacts?$top=100&$skip=${skip}&$async=false&$filter=Status+in+[Active,PendingRenewal,Lapsed]`,
+  { headers: { 'Authorization': 'Bearer ' + token } }
+);
     if (!resp.ok) throw new Error('WA members fetch failed: ' + resp.status);
     const data = await resp.json();
     const batch = data.Contacts || [];
