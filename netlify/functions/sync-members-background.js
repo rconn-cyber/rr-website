@@ -94,19 +94,24 @@ async function syncMembers() {
   const sbByNum = {};
   for (const m of sbMembers || []) sbByNum[String(m.member_number)] = m;
 
-  // WA → Supabase
+// WA → Supabase (batched)
+  const toUpsert = [];
   for (const waMember of waMembers) {
     try {
       const mapped   = mapWAMemberToSupabase(waMember);
       const existing = sbByNum[mapped.member_number];
       const waTime   = new Date(mapped.updated_at).getTime();
       const sbTime   = existing ? new Date(existing.updated_at).getTime() : 0;
-      if (!existing || waTime > sbTime) {
-        const { error } = await supabase.from('rr_members').upsert(mapped, { onConflict: 'member_number' });
-        if (error) results.errors.push('WA→SB ' + mapped.member_number + ': ' + error.message);
-        else results.wa_to_sb++;
-      } else results.skipped++;
-    } catch (e) { results.errors.push('WA→SB error: ' + e.message); }
+      if (!existing || waTime > sbTime) toUpsert.push(mapped);
+      else results.skipped++;
+    } catch (e) { results.errors.push('WA→SB map error: ' + e.message); }
+  }
+  // Upsert in batches of 50
+  for (let i = 0; i < toUpsert.length; i += 50) {
+    const batch = toUpsert.slice(i, i + 50);
+    const { error } = await supabase.from('rr_members').upsert(batch, { onConflict: 'member_number' });
+    if (error) results.errors.push('WA→SB batch ' + i + ': ' + error.message);
+    else results.wa_to_sb += batch.length;
   }
 
   // Supabase → WA
