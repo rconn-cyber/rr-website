@@ -1480,7 +1480,7 @@ async function runSync() {
         const allErrors = [...(mRes.errors||[]), ...(eRes.errors||[])];
         const success = m.status === 'complete' && e.status === 'complete';
 
-        results.innerHTML = `
+      results.innerHTML = `
           <div class="sync-success-banner" style="${success ? '' : 'background:var(--danger-light);'}">
             ${success ? '✅ Sync completed successfully' : '⚠️ Sync completed with errors'}
             <span style="margin-left:auto;font-size:0.75rem;opacity:0.7;">
@@ -1488,6 +1488,45 @@ async function runSync() {
             </span>
           </div>
           <table class="sync-results-table">
+            <thead>
+              <tr><th>Category</th><th>WA → Supabase</th><th>Supabase → WA</th><th>Skipped</th><th>Errors</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>👥 Members</td>
+                <td>${mRes.wa_to_sb}</td><td>${mRes.sb_to_wa}</td><td>${mRes.skipped}</td>
+                <td style="color:${mRes.errors?.length ? 'var(--danger)' : 'var(--success)'};">${mRes.errors?.length || 0}</td>
+              </tr>
+              <tr>
+                <td>📅 Events</td>
+                <td>${eRes.wa_to_sb}</td><td>${eRes.sb_to_wa}</td><td>${eRes.skipped}</td>
+                <td style="color:${eRes.errors?.length ? 'var(--danger)' : 'var(--success)'};">${eRes.errors?.length || 0}</td>
+              </tr>
+            </tbody>
+          </table>
+          ${allErrors.length ? `
+            <div class="sync-error-banner">
+              <strong>Errors:</strong>
+              <ul>${allErrors.map(e => `<li>${e}</li>`).join('')}</ul>
+            </div>` : ''}
+        `;
+        lastRun.textContent = 'Last run: ' + new Date(m.finished_at).toLocaleString();
+        lastRun.style.display = 'block';
+        if (success) loadMembers();
+      }
+
+      if (Date.now() - startedAt > 90000) {
+        clearInterval(poll);
+        spinner.style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '🔄 RUN SYNC NOW';
+        results.innerHTML = `<div class="sync-error-banner">⏱ Sync is taking longer than expected. Check Netlify function logs.</div>`;
+      }
+    } catch (err) {
+      // Keep polling on transient errors
+    }
+  }, 5000);
+}
 
 // ── TOAST ──
 function showToast(msg, type = 'success') {
