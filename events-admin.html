@@ -25,83 +25,26 @@
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; }
-/* ── TOPBAR (shared header) ── */
+
+/* TOPBAR */
 #topbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
-  background: var(--navy);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  z-index: 1000;
-  border-bottom: 2px solid var(--gold);
+  position:fixed; top:0; left:0; right:0; height:64px;
+  background:var(--navy); display:flex; align-items:center;
+  justify-content:space-between; padding:0 2rem;
+  z-index:1000; border-bottom:2px solid var(--gold);
 }
-.logo-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  color: var(--gold);
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1rem;
-  font-weight: 700;
-  white-space: nowrap;
+.logo-nav { display:flex; align-items:center; gap:0.75rem; text-decoration:none;
+  color:var(--gold); font-family:'Cinzel Decorative',serif; font-size:1rem; font-weight:700; white-space:nowrap; }
+#topbar nav { display:flex; align-items:center; gap:1.5rem; }
+#topbar nav a { color:#fff; text-decoration:none; font-family:'Cinzel',serif;
+  font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; transition:color 0.2s; }
+#topbar nav a:hover { color:var(--gold); }
+.nav-toggle { display:none; }
+@media(max-width:768px) {
+  #topbar nav { display:none; }
+  .nav-toggle { display:block; background:none; border:none; color:var(--gold); font-size:1.5rem; cursor:pointer; }
 }
-#topbar nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-#topbar nav a {
-  color: #fff;
-  text-decoration: none;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-#topbar nav a:hover { color: var(--gold); }
-.member-btn {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  padding: 0.4rem 1rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.member-btn:hover { background: var(--gold); color: var(--navy); }
-.cta-btn {
-  background: var(--gold);
-  color: var(--navy);
-  padding: 0.5rem 1.4rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-weight: 700;
-  transition: background 0.2s;
-}
-.cta-btn:hover { background: var(--gold-dk); }
-.nav-toggle { display: none; }
-@media (max-width: 768px) {
-  #topbar nav { display: none; }
-  .nav-toggle {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--gold);
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-}
+
 /* LOGIN */
 #loginScreen {
   min-height:100vh; display:flex; align-items:center; justify-content:center;
@@ -112,11 +55,8 @@ body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(
   padding:2.5rem; width:100%; max-width:360px; border-radius:6px;
   text-align:center; box-shadow:0 8px 32px var(--shadow);
 }
-.login-logo {
-  font-family:'Cinzel',serif; font-size:1.1rem; font-weight:700;
-  color:var(--navy); margin-bottom:0.25rem;
-}
-.login-sub { font-size:0.8rem; color:var(--text-mid); margin-bottom:1.75rem; letter-spacing:0.05em; }
+.login-logo { font-family:'Cinzel',serif; font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.25rem; }
+.login-sub  { font-size:0.8rem; color:var(--text-mid); margin-bottom:1.75rem; letter-spacing:0.05em; }
 .login-input {
   width:100%; padding:0.7rem 1rem; margin-bottom:1rem;
   background:var(--bg); border:1px solid var(--border);
@@ -134,12 +74,12 @@ body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(
 .login-err { color:#c0392b; font-size:0.85rem; margin-top:0.75rem; }
 
 /* LAYOUT */
-#adminApp { display:none; }
+#adminApp { display:none; padding-top:64px; }
 .admin-header {
   background:var(--navy); border-bottom:3px solid var(--gold);
   padding:0.75rem 1.5rem;
   display:flex; align-items:center; justify-content:space-between;
-  position:sticky; top:0; z-index:100;
+  position:sticky; top:64px; z-index:100;
   box-shadow:0 2px 12px var(--shadow);
 }
 .admin-title { font-family:'Cinzel',serif; font-size:0.88rem; color:var(--gold); letter-spacing:0.08em; }
@@ -159,8 +99,6 @@ body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(
 .btn-outline:hover { border-color:var(--navy); color:var(--navy); }
 .btn-success { background:#1a6b3a; color:#fff; }
 .btn-success:hover { filter:brightness(1.15); }
-.btn-warn { background:#b45309; color:#fff; }
-.btn-warn:hover { filter:brightness(1.15); }
 .btn-danger { background:var(--red); color:#fff; }
 .btn-danger:hover { filter:brightness(1.2); }
 .btn-sm { padding:0.3rem 0.65rem; font-size:0.58rem; }
@@ -173,12 +111,12 @@ body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(
   display:flex; gap:0.75rem; align-items:center; margin-bottom:1.25rem;
   flex-wrap:wrap; justify-content:space-between;
 }
-.toolbar-left { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
+.toolbar-left  { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
 .toolbar-right { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
 .search-input {
   padding:0.45rem 0.9rem; border:1px solid var(--border); border-radius:4px;
   background:var(--bg2); color:var(--text); font-family:'Crimson Pro',serif;
-  font-size:0.95rem; outline:none; width:200px; transition:border-color 0.2s;
+  font-size:0.95rem; outline:none; width:220px; transition:border-color 0.2s;
 }
 .search-input:focus { border-color:var(--gold); }
 
@@ -193,11 +131,7 @@ body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(
 .stat-pill strong { color:var(--navy); font-size:1.1rem; margin-right:0.3rem; }
 
 /* TABLE */
-.table-wrap {
-  background:var(--bg2); border:1px solid var(--border);
-  border-radius:6px; overflow:hidden;
-  box-shadow:0 2px 12px var(--shadow);
-}
+.table-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; box-shadow:0 2px 12px var(--shadow); }
 table { width:100%; border-collapse:collapse; }
 thead th {
   font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.12em;
@@ -207,22 +141,17 @@ thead th {
 }
 tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
 tbody tr:hover { background:#f0f4ff; }
-tbody tr.featured-row { background:#fffbf0; }
 td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 .event-thumb { width:48px; height:36px; object-fit:cover; border-radius:3px; border:1px solid var(--border); }
-.event-emoji-thumb {
-  width:48px; height:36px; display:inline-flex; align-items:center; justify-content:center;
-  font-size:1.3rem; background:var(--bg); border-radius:3px; border:1px solid var(--border);
-}
 .badge {
   font-family:'Cinzel',serif; font-size:0.55rem; letter-spacing:0.1em;
-  padding:0.18rem 0.5rem; border-radius:3px; display:inline-block;
+  padding:0.18rem 0.5rem; border-radius:3px; display:inline-block; margin:1px;
 }
-.badge-cat  { background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; }
+.badge-tag  { background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; }
 .badge-pub  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
 .badge-priv { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
-.badge-feat { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
 .badge-arch { background:#f9fafb; color:#9ca3af; border:1px solid #e5e7eb; }
+.badge-wa   { background:#fff7ed; color:#92400e; border:1px solid #fed7aa; }
 .row-actions { display:flex; gap:0.35rem; }
 .icon-btn {
   padding:0.28rem 0.6rem; border-radius:3px; cursor:pointer;
@@ -232,7 +161,32 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 .icon-btn:hover { border-color:var(--navy); color:var(--navy); background:#eef2ff; }
 .icon-btn-del:hover { border-color:var(--red); color:var(--red); background:#fef2f2; }
 
-/* FORM MODAL */
+/* TAGS INPUT */
+.tags-input-wrap {
+  display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center;
+  padding:0.45rem 0.6rem; border:1px solid var(--border);
+  border-radius:4px; background:var(--bg); min-height:2.5rem;
+  cursor:text; transition:border-color 0.2s;
+}
+.tags-input-wrap:focus-within { border-color:var(--gold); background:var(--bg2); }
+.tag-chip {
+  display:inline-flex; align-items:center; gap:0.3rem;
+  background:var(--navy); color:var(--gold);
+  padding:0.18rem 0.55rem; border-radius:3px;
+  font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.08em;
+}
+.tag-chip button {
+  background:none; border:none; color:var(--gold); cursor:pointer;
+  font-size:0.75rem; padding:0; line-height:1; opacity:0.7;
+}
+.tag-chip button:hover { opacity:1; }
+.tags-text-input {
+  border:none; outline:none; background:transparent;
+  font-family:'Crimson Pro',serif; font-size:0.95rem;
+  color:var(--text); min-width:120px; flex:1;
+}
+
+/* MODAL */
 .modal-overlay {
   display:none; position:fixed; inset:0; z-index:500;
   background:rgba(13,31,60,0.5); backdrop-filter:blur(3px);
@@ -241,17 +195,15 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 }
 .modal-overlay.open { display:flex; }
 .modal-box {
-  background:var(--bg2); border:1px solid var(--border);
-  border-top:4px solid var(--gold);
-  border-radius:6px; width:100%; max-width:840px;
+  background:var(--bg2); border:1px solid var(--border); border-top:4px solid var(--gold);
+  border-radius:6px; width:100%; max-width:900px;
   box-shadow:0 16px 48px rgba(13,31,60,0.2);
   animation:modalIn 0.2s ease;
 }
 @keyframes modalIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 .modal-header {
   padding:1.1rem 1.5rem; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between;
-  background:var(--bg);
+  display:flex; align-items:center; justify-content:space-between; background:var(--bg);
 }
 .modal-header-title { font-family:'Cinzel',serif; font-size:0.9rem; color:var(--navy); letter-spacing:0.06em; }
 .modal-body-inner { padding:1.5rem; }
@@ -259,10 +211,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem; }
 .form-full   { grid-column:1/-1; }
 .form-group  { display:flex; flex-direction:column; gap:0.3rem; }
-.form-label  {
-  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--text-mid);
-}
+.form-label  { font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-mid); }
 .form-input,.form-select,.form-textarea {
   padding:0.55rem 0.75rem; background:var(--bg);
   border:1px solid var(--border); color:var(--text);
@@ -271,7 +220,6 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 }
 .form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--gold); background:var(--bg2); }
 .form-textarea { resize:vertical; min-height:90px; }
-.form-textarea-lg { min-height:150px; }
 .form-hint { font-size:0.78rem; color:#9ca3af; margin-top:0.2rem; }
 .form-check-row { display:flex; gap:1.5rem; align-items:center; margin-bottom:1rem; }
 .form-check { display:flex; align-items:center; gap:0.45rem; cursor:pointer; }
@@ -279,23 +227,49 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 .form-check span { font-size:0.9rem; color:var(--text-mid); }
 .modal-footer {
   padding:1rem 1.5rem; border-top:1px solid var(--border);
-  display:flex; gap:0.75rem; justify-content:flex-end; background:var(--bg);
+  display:flex; gap:0.75rem; justify-content:space-between; align-items:center; background:var(--bg);
 }
+.wa-sync-note { font-size:0.75rem; color:var(--text-mid); font-style:italic; }
+.wa-sync-note span { color:var(--gold-dk); font-weight:600; }
+
+/* QUILL */
+.quill-wrapper {
+  border:1px solid var(--border); border-radius:4px; overflow:hidden;
+  background:var(--bg2); transition:border-color 0.2s;
+}
+.quill-wrapper:focus-within { border-color:var(--gold); }
+.quill-wrapper .ql-toolbar {
+  border:none; border-bottom:1px solid var(--border);
+  background:var(--bg); padding:6px 8px;
+}
+.quill-wrapper .ql-container {
+  border:none; font-family:'Crimson Pro',Georgia,serif;
+  font-size:0.95rem; color:var(--text);
+}
+.quill-wrapper .ql-editor {
+  min-height:260px; padding:0.75rem;
+}
+.quill-wrapper .ql-editor.ql-blank::before {
+  color:#9ca3af; font-style:italic; content:attr(data-placeholder);
+}
+.ql-toolbar .ql-stroke { stroke:var(--text-mid); }
+.ql-toolbar .ql-fill  { fill:var(--text-mid); }
+.ql-toolbar .ql-picker-label { color:var(--text-mid); }
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button.ql-active .ql-stroke { stroke:var(--navy); }
+.ql-toolbar button:hover .ql-fill,
+.ql-toolbar button.ql-active .ql-fill   { fill:var(--navy); }
 
 /* PHOTO UPLOAD */
 .photo-upload-zone {
   border:2px dashed var(--border); border-radius:4px;
-  padding:1.25rem; text-align:center; cursor:pointer;
+  padding:1rem; text-align:center; cursor:pointer;
   transition:border-color 0.2s; background:var(--bg);
 }
 .photo-upload-zone:hover { border-color:var(--gold); background:#fffbf0; }
 .photo-upload-zone input { display:none; }
-.upload-label { font-size:0.85rem; color:var(--text-mid); cursor:pointer; }
 .photo-preview-grid { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.75rem; }
-.photo-prev {
-  position:relative; width:80px; height:60px; border-radius:3px; overflow:hidden;
-  border:1px solid var(--border);
-}
+.photo-prev { position:relative; width:80px; height:60px; border-radius:3px; overflow:hidden; border:1px solid var(--border); }
 .photo-prev img { width:100%; height:100%; object-fit:cover; }
 .photo-prev-del {
   position:absolute; top:2px; right:2px;
@@ -304,7 +278,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 }
 .upload-progress { font-size:0.8rem; color:var(--gold-dk); margin-top:0.5rem; }
 
-/* IMPORT MODAL */
+/* IMPORT */
 .import-box { padding:1.5rem; }
 .import-drop {
   border:2px dashed var(--border); border-radius:4px; padding:2rem;
@@ -334,44 +308,10 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
 .empty-state { text-align:center; padding:3rem 2rem; color:var(--text-mid); font-style:italic; }
 
-/* QUILL RICH TEXT EDITOR */
-.quill-wrapper {
-  border:1px solid var(--border); border-radius:4px; overflow:hidden;
-  background:var(--bg2); transition:border-color 0.2s;
-  display:flex; flex-direction:column;
-}
-.quill-wrapper:focus-within { border-color:var(--gold); }
-.quill-wrapper .ql-toolbar {
-  border:none; border-bottom:1px solid var(--border);
-  background:var(--bg); padding:6px 8px;
-  font-family:'Crimson Pro',serif; flex-shrink:0;
-}
-.quill-wrapper .ql-container {
-  border:none; font-family:'Crimson Pro',Georgia,serif;
-  font-size:0.95rem; color:var(--text); flex:1;
-}
-.quill-wrapper .ql-editor {
-  min-height:200px; height:280px; max-height:none;
-  overflow-y:auto; padding:0.65rem 0.75rem;
-  resize:vertical;
-}
-.quill-wrapper .ql-editor.ql-blank::before {
-  color:#9ca3af; font-style:italic;
-  content:attr(data-placeholder);
-}
-.ql-toolbar .ql-stroke { stroke:var(--text-mid); }
-.ql-toolbar .ql-fill  { fill:var(--text-mid); }
-.ql-toolbar .ql-picker-label { color:var(--text-mid); }
-.ql-toolbar button:hover .ql-stroke,
-.ql-toolbar button.ql-active .ql-stroke { stroke:var(--navy); }
-.ql-toolbar button:hover .ql-fill,
-.ql-toolbar button.ql-active .ql-fill   { fill:var(--navy); }
-
 @media(max-width:640px){
-  .form-grid,.form-grid-3{ grid-template-columns:1fr; }
-  .form-full{ grid-column:auto; }
-  .admin-body{ padding:1rem; }
-  .admin-actions{ gap:0.4rem; }
+  .form-grid,.form-grid-3 { grid-template-columns:1fr; }
+  .form-full { grid-column:auto; }
+  .admin-body { padding:1rem; }
 }
 </style>
 </head>
@@ -383,23 +323,26 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
     <div class="login-logo">Tampa Rough Riders</div>
     <div class="login-sub">Events CMS — Admin Access</div>
     <div style="position:relative;">
-      <input type="password" id="loginPass" class="login-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:2.5rem;width:100%;"/>
-      <span id="pwToggle" onclick="var i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;">👁</span>
+      <input type="password" id="loginPass" class="login-input" placeholder="Admin password"
+             onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:2.5rem;width:100%;"/>
+      <span id="pwToggle" onclick="var i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';"
+            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;">👁</span>
     </div>
     <button class="login-btn" onclick="doLogin()">Sign In</button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
+
 <div id="site-header"></div>
 
 <!-- ADMIN APP -->
 <div id="adminApp">
   <header class="admin-header">
-    <div class="admin-title">&#11088; Rough Riders — Events CMS</div>
+    <div class="admin-title">⭐ Rough Riders — Events CMS</div>
     <div class="admin-actions">
-      <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page &#8599;</a>
-      <button class="btn btn-outline" onclick="exportCSV()">&#8595; Export CSV</button>
-      <button class="btn btn-outline" onclick="openImport()">&#8593; Import CSV</button>
+      <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page ↗</a>
+      <button class="btn btn-outline" onclick="exportCSV()">↓ Export CSV</button>
+      <button class="btn btn-outline" onclick="openImport()">↑ Import CSV</button>
       <button class="btn btn-primary" onclick="openForm()">+ New Event</button>
       <button class="btn btn-ghost" onclick="doLogout()">Sign Out</button>
     </div>
@@ -407,15 +350,10 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
   <div class="admin-body">
     <div class="stats-bar" id="statsBar"></div>
-
     <div class="toolbar">
       <div class="toolbar-left">
         <input type="text" class="search-input" placeholder="Search events…" oninput="searchEvents(this.value)"/>
-        <select class="form-select" style="width:auto;padding:0.45rem 0.75rem" onchange="filterCat(this.value)" id="catFilter">
-          <option value="">All Categories</option>
-          <option>Fishing</option><option>Clays</option><option>Social</option>
-          <option>Parade</option><option>Museum</option><option>Membership</option><option>General</option>
-        </select>
+        <input type="text" class="search-input" placeholder="Filter by tag…" oninput="filterTag(this.value)" style="width:160px;"/>
       </div>
       <div class="toolbar-right">
         <label class="form-check">
@@ -424,16 +362,15 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
         </label>
       </div>
     </div>
-
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>Photo</th><th>Event</th><th>Date</th><th>Category</th><th>Status</th><th>Actions</th>
+            <th>Photo</th><th>Event</th><th>Date</th><th>Tags</th><th>Status</th><th>WA</th><th>Actions</th>
           </tr>
         </thead>
         <tbody id="eventsTableBody">
-          <tr><td colspan="6" class="empty-state">Loading…</td></tr>
+          <tr><td colspan="7" class="empty-state">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -445,16 +382,19 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
   <div class="modal-box">
     <div class="modal-header">
       <div class="modal-header-title" id="formTitle">New Event</div>
-      <button class="btn btn-outline btn-sm" onclick="closeForm()">&#10005; Cancel</button>
+      <button class="btn btn-outline btn-sm" onclick="closeForm()">✕ Cancel</button>
     </div>
     <div class="modal-body-inner">
       <input type="hidden" id="fId"/>
-      <div class="form-grid">
-        <div class="form-group form-full">
-          <label class="form-label">Event Title *</label>
-          <input type="text" id="fTitle" class="form-input" placeholder="31st Annual Charity Fishing Tournament"/>
-        </div>
+      <input type="hidden" id="fWaId"/>
+
+      <!-- Title -->
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label">Event Title *</label>
+        <input type="text" id="fTitle" class="form-input" placeholder="31st Annual Charity Fishing Tournament"/>
       </div>
+
+      <!-- Dates + Time -->
       <div class="form-grid-3">
         <div class="form-group">
           <label class="form-label">Start Date</label>
@@ -469,82 +409,83 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
           <input type="text" id="fTime" class="form-input" placeholder="7:00 AM – 5:00 PM"/>
         </div>
       </div>
-      <div class="form-grid">
+
+      <!-- Location -->
+      <div class="form-grid" style="margin-bottom:1rem;">
         <div class="form-group">
           <label class="form-label">Location</label>
           <input type="text" id="fLocation" class="form-input" placeholder="Treasure Island, FL"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Google Maps URL</label>
-          <input type="url" id="fLocationUrl" class="form-input" placeholder="https://maps.google.com/…"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select id="fCategory" class="form-select">
-            <option>General</option><option>Fishing</option><option>Clays</option>
-            <option>Social</option><option>Parade</option><option>Museum</option><option>Membership</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Emoji / Icon</label>
-          <input type="text" id="fEmoji" class="form-input" placeholder="🎣"/>
+          <label class="form-label">RSVP / Registration URL</label>
+          <input type="text" id="fRsvpUrl" class="form-input" placeholder="https://…"/>
         </div>
       </div>
-      <div class="form-group" style="margin-bottom:1rem">
-        <label class="form-label">Short Description (card teaser)</label>
+
+      <!-- Tags -->
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label">Tags <span style="font-weight:400;text-transform:none;letter-spacing:0;">(press Enter or comma to add)</span></label>
+        <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagsTextInput').focus()">
+          <input type="text" id="tagsTextInput" class="tags-text-input" placeholder="Add a tag…"
+                 onkeydown="handleTagKey(event)" oninput="handleTagInput(event)"/>
+        </div>
+        <div class="form-hint">Syncs to Wild Apricot Tags. Examples: Social, Parade, Fishing, Members Only</div>
+      </div>
+
+      <!-- Short Description -->
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label">Short Description <span style="font-weight:400;text-transform:none;letter-spacing:0;">(card teaser — auto-generated from body if left blank)</span></label>
         <textarea id="fDesc" class="form-textarea" placeholder="1–2 sentence teaser shown on the event card…"></textarea>
       </div>
-      <div class="form-group" style="margin-bottom:1rem">
-        <label class="form-label">Full Detail Body (Rich Text)</label>
+
+      <!-- Rich Text Body -->
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label">Full Detail Body <span style="font-weight:400;text-transform:none;letter-spacing:0;">(syncs to WA Description)</span></label>
         <div class="quill-wrapper">
           <div id="fBodyEditor"></div>
         </div>
-        <div class="form-hint">Shown in the event detail popup. Leave blank to show just the short description.</div>
+        <div class="form-hint">This HTML is saved to Wild Apricot's event Description on every save.</div>
       </div>
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="form-group">
-          <label class="form-label">RSVP / Registration URL</label>
-          <input type="text" id="fRsvpUrl" class="form-input" placeholder="https://… or # for none"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Button Label</label>
-          <input type="text" id="fRsvpLabel" class="form-input" placeholder="Register Now"/>
-        </div>
-      </div>
+
+      <!-- Visibility -->
       <div class="form-check-row">
         <label class="form-check"><input type="checkbox" id="fPublic" checked/><span>Public (visible without login)</span></label>
-        <label class="form-check"><input type="checkbox" id="fFeatured"/><span>Featured (large hero card)</span></label>
         <label class="form-check"><input type="checkbox" id="fActive" checked/><span>Active</span></label>
       </div>
+
+      <!-- Photos -->
       <div class="form-group">
         <label class="form-label">Photos</label>
         <div class="photo-upload-zone" onclick="document.getElementById('photoFileInput').click()">
           <input type="file" id="photoFileInput" multiple accept="image/*" onchange="handlePhotoSelect(event)"/>
-          <div class="upload-label">&#128247; Click to upload photos (JPG, PNG, WebP)</div>
+          <div style="font-size:0.85rem;color:var(--text-mid);">📷 Click to upload photos (JPG, PNG, WebP) — stored in Supabase Storage</div>
         </div>
         <div class="upload-progress" id="uploadProgress"></div>
         <div class="photo-preview-grid" id="photoPreviews"></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeForm()">Cancel</button>
-      <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Save Event</button>
+      <div class="wa-sync-note">💛 Saves to <span>Supabase + Wild Apricot</span> simultaneously</div>
+      <div style="display:flex;gap:0.75rem;">
+        <button class="btn btn-outline" onclick="closeForm()">Cancel</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Save Event</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- IMPORT MODAL -->
 <div class="modal-overlay" id="importModal">
-  <div class="modal-box" style="max-width:600px">
+  <div class="modal-box" style="max-width:600px;">
     <div class="modal-header">
       <div class="modal-header-title">Import Events from CSV</div>
-      <button class="btn btn-outline btn-sm" onclick="closeImport()">&#10005; Cancel</button>
+      <button class="btn btn-outline btn-sm" onclick="closeImport()">✕ Cancel</button>
     </div>
     <div class="import-box">
-      <p style="font-size:0.9rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.6">
-        Upload a CSV file with columns:<br/>
-        <code style="font-size:0.8rem;background:var(--bg);padding:0.2rem 0.4rem;border-radius:3px">
-          title, date_start, date_end, time_display, location, category, emoji, description, rsvp_url, rsvp_label, is_public, is_featured, body_html
+      <p style="font-size:0.9rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.6;">
+        Upload a CSV with columns:<br/>
+        <code style="font-size:0.8rem;background:var(--bg);padding:0.2rem 0.4rem;border-radius:3px;">
+          title, date_start, date_end, time_display, location, tags, description, body_html, rsvp_url, is_public, is_active
         </code>
       </p>
       <div class="import-drop" id="importDrop"
@@ -553,15 +494,15 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
            ondrop="handleImportDrop(event)"
            onclick="document.getElementById('csvFileInput').click()">
         <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvSelect(event)"/>
-        <div style="font-size:2rem;margin-bottom:0.5rem">&#128194;</div>
-        <div style="font-size:0.9rem;color:var(--text-mid)">Click or drag &amp; drop a CSV file here</div>
+        <div style="font-size:2rem;margin-bottom:0.5rem;">📁</div>
+        <div style="font-size:0.9rem;color:var(--text-mid);">Click or drag &amp; drop a CSV file here</div>
       </div>
-      <div class="import-preview" id="importPreview" style="display:none"></div>
-      <div id="importStats" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-mid)"></div>
+      <div class="import-preview" id="importPreview" style="display:none;"></div>
+      <div id="importStats" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-mid);"></div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="justify-content:flex-end;">
       <button class="btn btn-outline" onclick="closeImport()">Cancel</button>
-      <button class="btn btn-success" id="importBtn" onclick="doImport()" style="display:none">&#8593; Import Events</button>
+      <button class="btn btn-success" id="importBtn" onclick="doImport()" style="display:none;">↑ Import Events</button>
     </div>
   </div>
 </div>
@@ -570,19 +511,21 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
-// ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const API_BASE   = '/.netlify/functions/admin-events';  // protected write endpoint
-const LOGIN_API  = '/.netlify/functions/admin-login';   // issues JWT
+const API_BASE   = '/.netlify/functions/admin-events';
+const LOGIN_API  = '/.netlify/functions/admin-login';
 const UPLOAD_API = '/.netlify/functions/upload-photo';
+const SUPABASE_URL = 'https://qyoqyeaqacdjstvkonwx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5b3F5ZWFxYWNkanN0dmtvbnd4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjc2NTMzMywiZXhwIjoyMDg4MzQxMzMzfQ.uP4Kkn-sV245uad4i6PuOmzz-AwXEPPc5o00BeMAHJ8';
 
-let adminToken = '';   // holds the JWT (not the raw password)
+let adminToken = '';
 let allEvents = [];
 let editingId = null;
+let currentTags = [];
 let pendingPhotoUrls = [];
 let pendingPhotoFiles = [];
 let parsedImportRows = [];
 let searchQuery = '';
-let catQuery = '';
+let tagQuery = '';
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 async function doLogin() {
@@ -595,10 +538,7 @@ async function doLogin() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: pass })
     });
-    if (!r.ok) {
-      document.getElementById('loginErr').textContent = 'Incorrect password.';
-      return;
-    }
+    if (!r.ok) { document.getElementById('loginErr').textContent = 'Incorrect password.'; return; }
     const { token } = await r.json();
     adminToken = token;
     sessionStorage.setItem('eventsAdminToken', token);
@@ -606,9 +546,7 @@ async function doLogin() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     await fetchEvents();
-  } catch (err) {
-    document.getElementById('loginErr').textContent = 'Connection error.';
-  }
+  } catch { document.getElementById('loginErr').textContent = 'Connection error.'; }
 }
 
 function doLogout() {
@@ -618,12 +556,10 @@ function doLogout() {
   location.reload();
 }
 
-// Restore session on page load
 window.addEventListener('DOMContentLoaded', () => {
   const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
   if (t) {
     adminToken = t;
-    sessionStorage.setItem('eventsAdminToken', t);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     fetchEvents();
@@ -632,27 +568,69 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ── QUILL INIT ────────────────────────────────────────────────────────────────
 let quillBody = null;
+
 window.addEventListener('DOMContentLoaded', () => {
+  // Custom image handler — uploads to Supabase Storage
+  function imageHandler() {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (!file) return;
+      try {
+        toast('Uploading image…');
+        const b64 = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result.split(',')[1]);
+          r.onerror = rej;
+          r.readAsDataURL(file);
+        });
+        const resp = await fetch(UPLOAD_API, {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+          body: JSON.stringify({ filename: file.name, contentType: file.type || 'image/jpeg', data: b64 })
+        });
+        if (!resp.ok) throw new Error('Upload failed');
+        const { url } = await resp.json();
+        const range = quillBody.getSelection(true);
+        quillBody.insertEmbed(range.index, 'image', url);
+        quillBody.setSelection(range.index + 1);
+        toast('Image inserted ✓', 'ok');
+      } catch (e) {
+        toast('Image upload failed: ' + e.message, true);
+      }
+    };
+  }
+
   quillBody = new Quill('#fBodyEditor', {
     theme: 'snow',
-    placeholder: 'Full event details — bold headings, bullet lists, links…',
+    placeholder: 'Full event details — headings, bullet lists, links, images…',
     modules: {
-      toolbar: [
-        [{ header: [2, 3, false] }],
-        ['bold', 'italic', 'underline'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link'],
-        ['clean']
-      ]
+      toolbar: {
+        container: [
+          [{ header: [2, 3, 4, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ color: [] }, { background: [] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ indent: '-1' }, { indent: '+1' }],
+          ['link', 'image'],
+          [{ align: [] }],
+          ['blockquote', 'code-block'],
+          ['clean']
+        ],
+        handlers: { image: imageHandler }
+      }
     }
   });
 });
 
-// Auth header helper — used on every fetch
 function authHeaders(extra) {
   return Object.assign({ 'Authorization': `Bearer ${adminToken}` }, extra || {});
 }
 
+// ── FETCH EVENTS ──────────────────────────────────────────────────────────────
 async function fetchEvents() {
   try {
     const r = await fetch(API_BASE, { headers: authHeaders() });
@@ -660,39 +638,36 @@ async function fetchEvents() {
     allEvents = await r.json();
     renderTable();
     renderStats();
-  } catch (err) {
-    toast('Failed to load events', true);
-  }
+  } catch { toast('Failed to load events', true); }
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function fmtDate(s, e) {
-  if (!s) return 'By Appt';
+  if (!s) return 'TBD';
   const d = new Date(s + 'T12:00:00');
   const opts = { month:'short', day:'numeric', year:'numeric' };
-  if (e && e !== s) {
+  if (e && e !== s)
     return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) +
-           ' \u2013 ' + new Date(e + 'T12:00:00').toLocaleDateString('en-US', opts);
-  }
+           ' – ' + new Date(e + 'T12:00:00').toLocaleDateString('en-US', opts);
   return d.toLocaleDateString('en-US', opts);
 }
 
 function searchEvents(q) { searchQuery = q.toLowerCase(); renderTable(); }
-function filterCat(v)    { catQuery = v; renderTable(); }
+function filterTag(v)    { tagQuery = v.toLowerCase(); renderTable(); }
 
 // ── STATS ─────────────────────────────────────────────────────────────────────
 function renderStats() {
-  const total    = allEvents.length;
-  const active   = allEvents.filter(e => e.is_active).length;
-  const featured = allEvents.filter(e => e.is_featured).length;
-  const pub      = allEvents.filter(e => e.is_public && e.is_active).length;
-  const priv     = allEvents.filter(e => !e.is_public && e.is_active).length;
+  const total  = allEvents.length;
+  const active = allEvents.filter(e => e.is_active).length;
+  const pub    = allEvents.filter(e => e.is_public && e.is_active).length;
+  const priv   = allEvents.filter(e => !e.is_public && e.is_active).length;
+  const synced = allEvents.filter(e => e.wa_id).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-pill"><strong>${total}</strong>Total</div>
     <div class="stat-pill"><strong>${active}</strong>Active</div>
     <div class="stat-pill"><strong>${pub}</strong>Public</div>
     <div class="stat-pill"><strong>${priv}</strong>Members Only</div>
-    <div class="stat-pill"><strong>${featured}</strong>Featured</div>`;
+    <div class="stat-pill"><strong>${synced}</strong>Synced to WA</div>`;
 }
 
 // ── TABLE ─────────────────────────────────────────────────────────────────────
@@ -700,7 +675,10 @@ function renderTable() {
   const showArch = document.getElementById('showArchived').checked;
   let list = allEvents.filter(e => {
     if (!showArch && !e.is_active) return false;
-    if (catQuery && e.category !== catQuery) return false;
+    if (tagQuery) {
+      const tags = Array.isArray(e.tags) ? e.tags.join(' ').toLowerCase() : '';
+      if (!tags.includes(tagQuery)) return false;
+    }
     if (searchQuery) {
       const hay = (e.title + ' ' + (e.description || '') + ' ' + (e.location || '')).toLowerCase();
       if (!hay.includes(searchQuery)) return false;
@@ -708,86 +686,133 @@ function renderTable() {
     return true;
   });
   list.sort((a, b) => {
-    if (a.is_featured && !b.is_featured) return -1;
-    if (!a.is_featured && b.is_featured) return 1;
     if (!a.date_start) return 1;
     if (!b.date_start) return -1;
     return a.date_start.localeCompare(b.date_start);
   });
   const tbody = document.getElementById('eventsTableBody');
   if (!list.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No events found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No events found.</td></tr>';
     return;
   }
   tbody.innerHTML = list.map(ev => {
     const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-    const thumb = photos.length
+    const thumb  = photos.length
       ? `<img class="event-thumb" src="${photos[0]}" alt=""/>`
-      : `<div class="event-emoji-thumb">${ev.emoji || '&#11088;'}</div>`;
+      : `<div style="width:48px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);border-radius:3px;font-size:1.2rem;">📅</div>`;
+    const tags = Array.isArray(ev.tags) && ev.tags.length
+      ? ev.tags.map(t => `<span class="badge badge-tag">${t}</span>`).join(' ')
+      : '<span style="color:#9ca3af;font-size:0.75rem;">—</span>';
     const visBadge = ev.is_public
       ? `<span class="badge badge-pub">Public</span>`
       : `<span class="badge badge-priv">Members</span>`;
-    const extras = [
-      ev.is_featured ? `<span class="badge badge-feat">&#9733; Featured</span>` : '',
-      !ev.is_active  ? `<span class="badge badge-arch">Archived</span>` : ''
-    ].filter(Boolean).join(' ');
-    return `<tr class="${ev.is_featured ? 'featured-row' : ''}">
+    const archBadge = !ev.is_active ? `<span class="badge badge-arch">Archived</span>` : '';
+    const waBadge = ev.wa_id
+      ? `<span class="badge badge-wa" title="WA ID: ${ev.wa_id}">WA ✓</span>`
+      : `<span style="color:#9ca3af;font-size:0.75rem;">—</span>`;
+    return `<tr>
       <td>${thumb}</td>
       <td>
-        <strong style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--navy)">${ev.title}</strong>
-        <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.15rem">${(ev.description || '').slice(0, 65)}${(ev.description || '').length > 65 ? '…' : ''}</div>
+        <strong style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--navy);">${ev.title}</strong>
+        <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.15rem;">${(ev.description||'').slice(0,65)}${(ev.description||'').length>65?'…':''}</div>
       </td>
-      <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid)">${fmtDate(ev.date_start, ev.date_end)}</td>
-      <td><span class="badge badge-cat">${ev.category || 'General'}</span></td>
-      <td>${visBadge} ${extras}</td>
+      <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid);">${fmtDate(ev.date_start, ev.date_end)}</td>
+      <td>${tags}</td>
+      <td>${visBadge} ${archBadge}</td>
+      <td>${waBadge}</td>
       <td><div class="row-actions">
-        <button class="icon-btn" onclick="openForm('${ev.id}')">&#9998; Edit</button>
-        <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g, "\\'")}')">&#128465;</button>
+        <button class="icon-btn" onclick="openForm('${ev.id}')">✎ Edit</button>
+        <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g,"\\'")}')">🗑</button>
       </div></td>
     </tr>`;
   }).join('');
 }
 
+// ── TAGS ──────────────────────────────────────────────────────────────────────
+function renderTags() {
+  const wrap = document.getElementById('tagsWrap');
+  const input = document.getElementById('tagsTextInput');
+  // Remove all chips
+  wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  // Re-insert chips before input
+  currentTags.forEach((tag, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${tag}<button type="button" onclick="removeTag(${i})">✕</button>`;
+    wrap.insertBefore(chip, input);
+  });
+}
+
+function addTag(val) {
+  const tag = val.trim().replace(/,+$/, '').trim();
+  if (!tag || currentTags.includes(tag)) return;
+  currentTags.push(tag);
+  renderTags();
+}
+
+function removeTag(i) {
+  currentTags.splice(i, 1);
+  renderTags();
+}
+
+function handleTagKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addTag(e.target.value);
+    e.target.value = '';
+  } else if (e.key === 'Backspace' && !e.target.value && currentTags.length) {
+    currentTags.pop();
+    renderTags();
+  }
+}
+
+function handleTagInput(e) {
+  if (e.target.value.includes(',')) {
+    const parts = e.target.value.split(',');
+    parts.slice(0, -1).forEach(p => addTag(p));
+    e.target.value = parts[parts.length - 1];
+  }
+}
+
 // ── FORM ──────────────────────────────────────────────────────────────────────
 function openForm(id) {
   editingId = id || null;
+  currentTags = [];
   pendingPhotoUrls = [];
   pendingPhotoFiles = [];
   document.getElementById('photoPreviews').innerHTML = '';
   document.getElementById('uploadProgress').textContent = '';
   document.getElementById('formTitle').textContent = id ? 'Edit Event' : 'New Event';
+
   if (id) {
     const ev = allEvents.find(e => e.id === id);
     if (!ev) return;
-    document.getElementById('fId').value          = ev.id;
-    document.getElementById('fTitle').value       = ev.title || '';
-    document.getElementById('fDateStart').value   = ev.date_start || '';
-    document.getElementById('fDateEnd').value     = ev.date_end || '';
-    document.getElementById('fTime').value        = ev.time_display || '';
-    document.getElementById('fLocation').value    = ev.location || '';
-    document.getElementById('fLocationUrl').value = ev.location_url || '';
-    document.getElementById('fCategory').value    = ev.category || 'General';
-    document.getElementById('fEmoji').value       = ev.emoji || '';
-    document.getElementById('fDesc').value        = ev.description || '';
-    if (quillBody) quillBody.root.innerHTML       = ev.body_html || '';
-    document.getElementById('fRsvpUrl').value     = ev.rsvp_url || '';
-    document.getElementById('fRsvpLabel').value   = ev.rsvp_label || '';
-    document.getElementById('fPublic').checked    = ev.is_public !== false;
-    document.getElementById('fFeatured').checked  = !!ev.is_featured;
-    document.getElementById('fActive').checked    = ev.is_active !== false;
+    document.getElementById('fId').value        = ev.id;
+    document.getElementById('fWaId').value      = ev.wa_id || '';
+    document.getElementById('fTitle').value     = ev.title || '';
+    document.getElementById('fDateStart').value = ev.date_start || '';
+    document.getElementById('fDateEnd').value   = ev.date_end || '';
+    document.getElementById('fTime').value      = ev.time_display || '';
+    document.getElementById('fLocation').value  = ev.location || '';
+    document.getElementById('fRsvpUrl').value   = ev.rsvp_url || '';
+    document.getElementById('fDesc').value      = ev.description || '';
+    if (quillBody) quillBody.root.innerHTML     = ev.body_html || '';
+    document.getElementById('fPublic').checked  = ev.is_public !== false;
+    document.getElementById('fActive').checked  = ev.is_active !== false;
+    currentTags = Array.isArray(ev.tags) ? [...ev.tags] : [];
     pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
-    renderPhotoPreviews();
   } else {
-    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fLocationUrl','fDesc','fRsvpUrl']
+    ['fId','fWaId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fRsvpUrl','fDesc']
       .forEach(fid => document.getElementById(fid).value = '');
     if (quillBody) quillBody.root.innerHTML = '';
-    document.getElementById('fCategory').value   = 'General';
-    document.getElementById('fEmoji').value      = '&#11088;';
-    document.getElementById('fRsvpLabel').value  = 'View Details';
-    document.getElementById('fPublic').checked   = true;
-    document.getElementById('fFeatured').checked = false;
-    document.getElementById('fActive').checked   = true;
+    document.getElementById('fPublic').checked = true;
+    document.getElementById('fActive').checked = true;
+    currentTags = [];
   }
+
+  renderTags();
+  renderPhotoPreviews();
+  document.getElementById('tagsTextInput').value = '';
   document.getElementById('formModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -806,11 +831,11 @@ function handlePhotoSelect(e) {
 function renderPhotoPreviews() {
   const grid = document.getElementById('photoPreviews');
   const up = pendingPhotoUrls.map((url, i) =>
-    `<div class="photo-prev"><img src="${url}"/><button class="photo-prev-del" onclick="removeExisting(${i})">&#10005;</button></div>`
+    `<div class="photo-prev"><img src="${url}"/><button class="photo-prev-del" onclick="removeExisting(${i})">✕</button></div>`
   ).join('');
   const st = pendingPhotoFiles.map((f, i) => {
     const obj = URL.createObjectURL(f);
-    return `<div class="photo-prev"><img src="${obj}"/><button class="photo-prev-del" onclick="removeStaged(${i})">&#10005;</button></div>`;
+    return `<div class="photo-prev"><img src="${obj}"/><button class="photo-prev-del" onclick="removeStaged(${i})">✕</button></div>`;
   }).join('');
   grid.innerHTML = up + st;
 }
@@ -833,7 +858,7 @@ async function uploadStagedPhotos() {
     });
     const resp = await fetch(UPLOAD_API, {
       method: 'POST',
-      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
       body: JSON.stringify({ filename: file.name, contentType: file.type || 'image/jpeg', data: b64 })
     });
     if (resp.ok) { const { url } = await resp.json(); uploaded.push(url); }
@@ -847,41 +872,58 @@ async function uploadStagedPhotos() {
 async function saveEvent() {
   const title = document.getElementById('fTitle').value.trim();
   if (!title) { toast('Title is required', true); return; }
+
+  // Flush any pending tag text
+  const tagInput = document.getElementById('tagsTextInput');
+  if (tagInput.value.trim()) { addTag(tagInput.value); tagInput.value = ''; }
+
   const btn = document.getElementById('saveBtn');
   btn.disabled = true;
   btn.textContent = 'Saving…';
+
   try {
     const finalPhotos = await uploadStagedPhotos();
+
+    // Auto-generate description from body_html if blank
+    const bodyHtml = quillBody && quillBody.root.innerHTML.trim() !== '<p><br></p>'
+      ? quillBody.root.innerHTML.trim() : null;
+    let description = document.getElementById('fDesc').value.trim();
+    if (!description && bodyHtml) {
+      description = bodyHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+    }
+
     const payload = {
       title,
       date_start:   document.getElementById('fDateStart').value || null,
-      date_end:     document.getElementById('fDateEnd').value || null,
-      time_display: document.getElementById('fTime').value.trim() || null,
+      date_end:     document.getElementById('fDateEnd').value   || null,
+      time_display: document.getElementById('fTime').value.trim()     || null,
       location:     document.getElementById('fLocation').value.trim() || null,
-      location_url: document.getElementById('fLocationUrl').value.trim() || null,
-      category:     document.getElementById('fCategory').value,
-      emoji:        document.getElementById('fEmoji').value.trim() || '⭐',
-      description:  document.getElementById('fDesc').value.trim() || null,
-      body_html:    (quillBody && quillBody.root.innerHTML.trim() !== '<p><br></p>' ? quillBody.root.innerHTML.trim() : null),
-      rsvp_url:     document.getElementById('fRsvpUrl').value.trim() || null,
-      rsvp_label:   document.getElementById('fRsvpLabel').value.trim() || 'View Details',
+      rsvp_url:     document.getElementById('fRsvpUrl').value.trim()  || null,
+      description:  description || null,
+      body_html:    bodyHtml,
       is_public:    document.getElementById('fPublic').checked,
-      is_featured:  document.getElementById('fFeatured').checked,
       is_active:    document.getElementById('fActive').checked,
+      tags:         currentTags,
       photo_urls:   finalPhotos
     };
+
+    const waId = document.getElementById('fWaId').value;
+    if (waId) payload.wa_id = waId;
+
     const method = editingId ? 'PUT' : 'POST';
     if (editingId) payload.id = editingId;
+
     const r = await fetch(API_BASE, {
       method,
-      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
       body: JSON.stringify(payload)
     });
     if (r.status === 401) { doLogout(); return; }
     if (!r.ok) throw new Error(`Save failed: ${r.status}`);
+
     closeForm();
     await fetchEvents();
-    toast(editingId ? 'Event updated ✓' : 'Event created ✓', 'ok');
+    toast(editingId ? 'Event updated + synced to WA ✓' : 'Event created + synced to WA ✓', 'ok');
   } catch (err) {
     toast(err.message, true);
   } finally {
@@ -894,31 +936,30 @@ async function archiveEvent(id, title) {
   if (!confirm(`Archive "${title}"?\n\nHidden from public but not deleted.`)) return;
   const r = await fetch(API_BASE, {
     method: 'DELETE',
-    headers: authHeaders({ 'Content-Type': 'application/json' }),
+    headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
     body: JSON.stringify({ id })
   });
   if (r.status === 401) { doLogout(); return; }
-  if (r.ok) { await fetchEvents(); toast('Event archived', 'ok'); }
+  if (r.ok) { await fetchEvents(); toast('Event archived ✓', 'ok'); }
   else toast('Archive failed', true);
 }
 
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
 function exportCSV() {
-  const cols = ['title','date_start','date_end','time_display','location','location_url',
-                'category','emoji','description','body_html','rsvp_url','rsvp_label',
-                'is_public','is_featured','is_active'];
+  const cols = ['title','date_start','date_end','time_display','location',
+                'tags','description','body_html','rsvp_url','is_public','is_active','wa_id'];
   const esc = v => {
     if (v === null || v === undefined) return '';
-    const s = String(v);
+    const s = Array.isArray(v) ? v.join('|') : String(v);
     return s.includes(',') || s.includes('"') || s.includes('\n')
       ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
   const rows = [cols.join(',')];
   allEvents.forEach(ev => rows.push(cols.map(c => esc(ev[c])).join(',')));
-  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const blob = new Blob([rows.join('\n')], { type:'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `rr-events-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `rr-events-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   toast(`Exported ${allEvents.length} events ✓`, 'ok');
 }
@@ -951,6 +992,20 @@ function handleCsvSelect(e) {
   if (file) processCSVFile(file);
 }
 
+function parseCSVLine(line) {
+  const result = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  result.push(cur);
+  return result.map(v => v.trim());
+}
+
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   if (!lines.length) return [];
@@ -963,38 +1018,23 @@ function parseCSV(text) {
   }).filter(r => r.title);
 }
 
-function parseCSVLine(line) {
-  const result = []; let cur = ''; let inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur);
-  return result.map(v => v.trim());
-}
-
 function processCSVFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
-    const text = e.target.result;
-    parsedImportRows = parseCSV(text);
+    parsedImportRows = parseCSV(e.target.result);
     const prev  = document.getElementById('importPreview');
     const stats = document.getElementById('importStats');
     if (!parsedImportRows.length) {
-      stats.textContent = 'No valid rows found. Make sure the CSV has a title column.';
+      stats.textContent = 'No valid rows found.';
       document.getElementById('importBtn').style.display = 'none';
       return;
     }
     prev.style.display = 'block';
     prev.innerHTML = parsedImportRows.slice(0, 5).map(r =>
-      `<div style="padding:0.25rem 0;border-bottom:1px solid var(--border)">${r.title} — ${r.date_start || 'No date'} — ${r.category || 'General'}</div>`
+      `<div style="padding:0.25rem 0;border-bottom:1px solid var(--border);">${r.title} — ${r.date_start || 'No date'} — ${r.tags || 'No tags'}</div>`
     ).join('') + (parsedImportRows.length > 5
-      ? `<div style="color:#9ca3af;padding-top:0.25rem">…and ${parsedImportRows.length - 5} more</div>` : '');
-    stats.innerHTML = `<strong>${parsedImportRows.length} events</strong> ready to import. Existing events will not be duplicated by title.`;
+      ? `<div style="color:#9ca3af;padding-top:0.25rem;">…and ${parsedImportRows.length - 5} more</div>` : '');
+    stats.innerHTML = `<strong>${parsedImportRows.length} events</strong> ready to import.`;
     document.getElementById('importBtn').style.display = 'inline-block';
   };
   reader.readAsText(file);
@@ -1003,42 +1043,37 @@ function processCSVFile(file) {
 async function doImport() {
   if (!parsedImportRows.length) return;
   const btn = document.getElementById('importBtn');
-  btn.disabled = true;
-  btn.textContent = 'Importing…';
+  btn.disabled = true; btn.textContent = 'Importing…';
   let created = 0, skipped = 0;
   const existingTitles = new Set(allEvents.map(e => e.title.trim().toLowerCase()));
   for (const row of parsedImportRows) {
     if (existingTitles.has(row.title.trim().toLowerCase())) { skipped++; continue; }
+    const tags = row.tags ? row.tags.split('|').map(t => t.trim()).filter(Boolean) : [];
     const payload = {
       title:        row.title.trim(),
-      date_start:   row.date_start || null,
-      date_end:     row.date_end || null,
+      date_start:   row.date_start  || null,
+      date_end:     row.date_end    || null,
       time_display: row.time_display || null,
-      location:     row.location || null,
-      location_url: row.location_url || null,
-      category:     row.category || 'General',
-      emoji:        row.emoji || '⭐',
+      location:     row.location    || null,
+      tags,
       description:  row.description || null,
-      body_html:    row.body_html || null,
-      rsvp_url:     row.rsvp_url || null,
-      rsvp_label:   row.rsvp_label || 'View Details',
-      is_public:    row.is_public !== 'false' && row.is_public !== 'FALSE' && row.is_public !== '0',
-      is_featured:  row.is_featured === 'true' || row.is_featured === 'TRUE' || row.is_featured === '1',
-      is_active:    row.is_active !== 'false' && row.is_active !== 'FALSE' && row.is_active !== '0',
+      body_html:    row.body_html   || null,
+      rsvp_url:     row.rsvp_url    || null,
+      is_public:    row.is_public !== 'false' && row.is_public !== '0',
+      is_active:    row.is_active  !== 'false' && row.is_active !== '0',
       photo_urls:   []
     };
     const r = await fetch(API_BASE, {
       method: 'POST',
-      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
       body: JSON.stringify(payload)
     });
     if (r.ok) created++; else skipped++;
   }
   closeImport();
   await fetchEvents();
-  toast(`Imported ${created} events${skipped ? ' (' + skipped + ' skipped)' : ''}`, 'ok');
-  btn.disabled = false;
-  btn.textContent = '&#8593; Import Events';
+  toast(`Imported ${created} events${skipped ? ' (' + skipped + ' skipped)' : ''} ✓`, 'ok');
+  btn.disabled = false; btn.textContent = '↑ Import Events';
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
@@ -1046,7 +1081,7 @@ function toast(msg, type) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show' + (type === 'ok' ? ' ok' : type === true ? ' err' : '');
-  setTimeout(() => { el.className = 'toast'; }, 3200);
+  setTimeout(() => { el.className = 'toast'; }, 3500);
 }
 </script>
 <script src="header.js"></script>
