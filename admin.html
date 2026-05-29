@@ -631,6 +631,40 @@
     .tab-btn { padding: 0.8rem 1rem; font-size: 0.72rem; }
     .sync-meta { gap: 1rem; }
   }
+  .member-photo-wrap {
+  text-align: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.member-photo-wrap img {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+.member-photo-placeholder {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  border: 2px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+}
+.member-photo-name {
+  margin-top: 0.5rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--navy);
+  letter-spacing: 0.06em;
+}
+.member-photo-level {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+}
 </style>
 </head>
 <body>
@@ -855,7 +889,8 @@
       <h3 id="modalTitle">ADD MEMBER</h3>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
+   <div class="modal-body">
+      <div id="memberPhotoBlock"></div>
       <div class="form-grid">
         <div class="form-group">
           <label>First Name *</label>
@@ -1348,6 +1383,33 @@ function openEditModal(m) {
   document.getElementById('fRank').value       = m.rank       || '';
   document.getElementById('fAdminType').value  = m.admin_type || 'None';
   document.getElementById('fNotes').value      = m.notes      || '';
+
+  // ── Photo preview ──
+  const photoWrap = document.getElementById('memberPhotoBlock');
+  const fullName = [m.first_name, m.last_name].filter(Boolean).join(' ');
+  let lvl = (m.membership_level || '')
+    .replace(/^[\w\d][\w\d]?\s*-\s*/i, '')
+    .replace(/,?\s*20\d\d-20\d\d\s*$/, '')
+    .trim();
+  if (lvl === 'Bookkeeper/Administrator') lvl = 'Bookkeeper';
+  if (m.photo_url) {
+    const proxied = '/.netlify/functions/wa-photo?path=' + encodeURIComponent(m.photo_url);
+    photoWrap.innerHTML = `
+      <div class="member-photo-wrap">
+        <img src="${proxied}" alt="${fullName}"
+             onerror="this.parentElement.innerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">
+        <div class="member-photo-name">${fullName}</div>
+        <div class="member-photo-level">${lvl}</div>
+      </div>`;
+  } else {
+    photoWrap.innerHTML = `
+      <div class="member-photo-wrap">
+        <div class="member-photo-placeholder">👤</div>
+        <div class="member-photo-name">${fullName}</div>
+        <div class="member-photo-level">${lvl}</div>
+      </div>`;
+  }
+
   document.getElementById('memberModal').classList.add('open');
 }
 
