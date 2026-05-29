@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async (event) => {
   const photoPath = event.queryStringParameters?.path;
   if (!photoPath) return { statusCode: 400, body: 'Missing path' };
@@ -21,7 +19,7 @@ exports.handler = async (event) => {
     });
     if (!imgRes.ok) return { statusCode: imgRes.status, body: 'Image fetch failed' };
 
-    const buffer = await imgRes.buffer();
+    const buffer = Buffer.from(await imgRes.arrayBuffer());
     const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
 
     return {
