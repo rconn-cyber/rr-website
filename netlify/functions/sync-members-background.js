@@ -45,8 +45,7 @@ if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
 
 
     const photoUrl = m.Photo && m.Photo.Url
-    ? (m.Photo.Url.startsWith('http') ? m.Photo.Url : 'https://tamparoughriders.org' + m.Photo.Url)
-    : '';
+   const photoUrl = fields['Photo'] && fields['Photo'].Url ? fields['Photo'].Url : '';
 
   return {
     member_number:    fields['Member #'] || String(m.Id || ''),
