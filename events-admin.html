@@ -468,7 +468,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
       <div class="wa-sync-note">💛 Saves to <span>Supabase + Wild Apricot</span> simultaneously</div>
       <div style="display:flex;gap:0.75rem;">
         <button class="btn btn-outline" onclick="closeForm()">Cancel</button>
-        <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Save Event</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="">Save Event</button>
       </div>
     </div>
   </div>
@@ -905,8 +905,9 @@ async function saveEvent() {
       photo_urls:   finalPhotos
     };
 
-    const waId = document.getElementById('fWaId').value;
-    if (waId) payload.wa_id = waId;
+   const waId = document.getElementById('fWaId').value ||
+  (editingId ? (allEvents.find(e => e.id === editingId)?.wa_id || '') : '');
+if (waId) payload.wa_id = waId;
 
     const method = editingId ? 'PUT' : 'POST';
     if (editingId) payload.id = editingId;
