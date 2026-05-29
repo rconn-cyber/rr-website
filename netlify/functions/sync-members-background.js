@@ -44,7 +44,6 @@ if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
   }
 
 
-    const photoUrl = m.Photo && m.Photo.Url
    const photoUrl = fields['Photo'] && fields['Photo'].Url ? fields['Photo'].Url : '';
 
   return {
