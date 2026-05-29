@@ -38,7 +38,10 @@ async function fetchWAMembers(token) {
 function mapWAMemberToSupabase(m) {
   const fields = {};
   if (m.FieldValues) for (const f of m.FieldValues) fields[f.FieldName] = f.Value;
-
+if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
+    console.log('ROBIN PHOTO:', JSON.stringify(m.Photo));
+    console.log('ROBIN PHOTO FIELD:', JSON.stringify(fields['Photo']));
+  }
 
 
     const photoUrl = m.Photo && m.Photo.Url
