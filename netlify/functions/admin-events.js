@@ -138,26 +138,29 @@ async function createWAEvent(ev) {
 }
 
 // Update existing WA event
-async function updateWAEvent(waId, ev) {
+async function createWAEvent(ev) {
   try {
     const token = await getWAToken();
-    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events/${waId}`, {
-      method: 'PUT',
+    const body = { EventId: 0, ...mapToWA(ev) };
+    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events`, {
+      method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ Id: parseInt(waId), ...mapToWA(ev) })
+      body: JSON.stringify(body)
     });
+    const responseText = await resp.text();
     if (!resp.ok) {
-      const err = await resp.text();
-      console.error('WA update event failed:', err);
-      return false;
+      console.error('WA create event failed:', responseText);
+      console.error('WA create event payload:', JSON.stringify(body));
+      return null;
     }
-    return true;
+    const data = JSON.parse(responseText);
+    return String(data.Id);
   } catch (e) {
-    console.error('WA update event error:', e.message);
-    return false;
+    console.error('WA create event error:', e.message);
+    return null;
   }
 }
 
