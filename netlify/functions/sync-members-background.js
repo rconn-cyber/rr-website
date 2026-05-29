@@ -39,11 +39,7 @@ function mapWAMemberToSupabase(m) {
   const fields = {};
   if (m.FieldValues) for (const f of m.FieldValues) fields[f.FieldName] = f.Value;
 
-  if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
-    console.log('ROBIN ADDRESS:', JSON.stringify(fields['Address']));
-    console.log('ROBIN MEMBERSINCE:', m.MemberSince);
-    console.log('ROBIN ALL FIELDS:', JSON.stringify(Object.keys(fields)));
-  }
+
 
     const photoUrl = m.Photo && m.Photo.Url
     ? (m.Photo.Url.startsWith('http') ? m.Photo.Url : 'https://tamparoughriders.org' + m.Photo.Url)
