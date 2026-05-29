@@ -72,7 +72,11 @@ function mapWAMemberToSupabase(m) {
     updated_at:       m.LastUpdated ? new Date(m.LastUpdated).toISOString() : new Date().toISOString()
   };
 }
-
+if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
+    console.log('ROBIN ADDRESS:', JSON.stringify(fields['Address']));
+    console.log('ROBIN MEMBERSINCE:', m.MemberSince);
+    console.log('ROBIN ALL FIELDS:', JSON.stringify(Object.keys(fields)));
+  }
 async function syncMembers() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   const results  = { wa_to_sb: 0, sb_to_wa: 0, skipped: 0, errors: [] };
