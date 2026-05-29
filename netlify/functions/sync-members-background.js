@@ -38,13 +38,8 @@ async function fetchWAMembers(token) {
 function mapWAMemberToSupabase(m) {
   const fields = {};
   if (m.FieldValues) for (const f of m.FieldValues) fields[f.FieldName] = f.Value;
-if (m.FirstName === 'Robin' && m.LastName === 'Conn') {
-    console.log('ROBIN PHOTO:', JSON.stringify(m.Photo));
-    console.log('ROBIN PHOTO FIELD:', JSON.stringify(fields['Photo']));
-  }
 
-
-   const photoUrl = fields['Photo'] && fields['Photo'].Url ? fields['Photo'].Url : '';
+ const photoUrl = fields['Photo'] && fields['Photo'].Url ? fields['Photo'].Url : '';
 
   return {
     member_number:    fields['Member #'] || String(m.Id || ''),
