@@ -45,11 +45,7 @@ function mapWAMemberToSupabase(m) {
     console.log('ROBIN ALL FIELDS:', JSON.stringify(Object.keys(fields)));
   }
 
-  const addr = fields['Address'];
-  const addrObj = addr && typeof addr === 'object' ? addr : {};
-  const addrStr = addr && typeof addr === 'string' ? addr : '';
-
-  const photoUrl = m.Photo && m.Photo.Url
+    const photoUrl = m.Photo && m.Photo.Url
     ? (m.Photo.Url.startsWith('http') ? m.Photo.Url : 'https://tamparoughriders.org' + m.Photo.Url)
     : '';
 
@@ -63,11 +59,11 @@ function mapWAMemberToSupabase(m) {
     membership_level: m.MembershipLevel ? m.MembershipLevel.Name : '',
     level:            m.MembershipLevel ? m.MembershipLevel.Name : '',
     phone:            fields['Phone'] || fields['Cell Phone'] || '',
-    address:          addrObj.Street        || addrStr || '',
-    city:             addrObj.City          || '',
-    state:            addrObj.StateProvince || '',
-    zip:              addrObj.ZipCode       || '',
-    date_joined:      m.MemberSince || null,
+    address:     fields['Address'] || '',
+    city:        fields['City']    || '',
+    state:       fields['State']   || '',
+    zip:         fields['Zip']     || '',
+    date_joined: fields['Member since'] || null,
     rank:             fields['Rank'] || fields['2025-2026 Rank'] || '',
     admin_type:       fields['Admin role'] || '',
     photo_url:        photoUrl,
