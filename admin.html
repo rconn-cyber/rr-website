@@ -4,667 +4,402 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel | Tampa Rough Riders</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy: #0d1f3c;
-    --navy-light: #152a4e;
-    --navy-mid: #1a3460;
-    --gold: #c9a84c;
-    --gold-light: #e2c97e;
-    --gold-dim: rgba(201,168,76,0.15);
-    --burgundy: #6B1A1A;
-    --white: #f5f0e8;
-    --muted: rgba(245,240,232,0.55);
-    --danger: #c0392b;
-    --success: #27ae60;
-    --border: rgba(201,168,76,0.25);
+    --black:   #171717;
+    --gray-1:  #1f1f1f;
+    --gray-2:  #2a2a2a;
+    --gray-5:  #595959;
+    --gray-7:  #9e9e9e;
+    --gray-9:  #e5e5e5;
+    --gray-10: #f2f2f2;
+    --gray-11: #f9f9f9;
+    --white:   #ffffff;
+    --accent:  #e82127;
+    --gold:    #c9a84c;
+    --navy:    #0d1f3c;
+    --danger:  #d93025;
+    --success: #1a8a45;
+    --border:  #e5e5e5;
+    --border-dark: #d0d0d0;
+    --text-primary: #171717;
+    --text-secondary: #595959;
+    --text-muted: #9e9e9e;
+    --radius: 3px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Source Sans 3', sans-serif;
-    background: #f7f8fa;
-    color: #1a1a2e;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--gray-11);
+    color: var(--text-primary);
     min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* ── TOPBAR ── */
-  #topbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 64px;
-    background: var(--navy);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    z-index: 1000;
-    border-bottom: 2px solid var(--gold);
-  }
-  .logo-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-    color: var(--gold);
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  #topbar nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  #topbar nav a {
-    color: #fff;
-    text-decoration: none;
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  #topbar nav a:hover { color: var(--gold); }
-  .member-btn {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 0.4rem 1rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
-  .member-btn:hover { background: var(--gold); color: var(--navy); }
-  .cta-btn {
-    background: var(--gold);
-    color: var(--navy);
-    padding: 0.5rem 1.4rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-decoration: none;
-    font-weight: 700;
-    transition: background 0.2s;
-  }
-  .cta-btn:hover { background: var(--gold-light); }
-  .nav-toggle { display: none; }
-  @media (max-width: 768px) {
-    #topbar nav { display: none; }
-    .nav-toggle {
-      display: block;
-      background: none;
-      border: none;
-      color: var(--gold);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-  }
-
-  /* ── LOGIN OVERLAY ── */
+  /* LOGIN */
   #loginOverlay {
     position: fixed; inset: 0;
-    background: #f7f8fa;
+    background: var(--gray-11);
     display: flex; align-items: center; justify-content: center;
     z-index: 1100;
-    transition: opacity 0.4s;
+    transition: opacity 0.3s;
   }
   #loginOverlay.hidden { opacity: 0; pointer-events: none; }
-
   .login-box {
     text-align: center;
     padding: 3rem 2.5rem;
-    border: 1px solid var(--border);
-    background: #ffffff;
+    background: var(--white);
     max-width: 380px; width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
   }
-  .login-box .crest { font-size: 2.5rem; margin-bottom: 1rem; }
+  .login-box .crest { font-size: 2rem; margin-bottom: 1.25rem; display: block; }
   .login-box h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 0.35rem;
   }
-  .login-box p { color: #6b7280; font-size: 0.85rem; margin-bottom: 2rem; }
+  .login-box p { color: var(--text-muted); font-size: 12px; margin-bottom: 2rem; }
   .login-box input {
     width: 100%; padding: 0.75rem 1rem;
-    background: #ffffff; border: 1px solid #dde0e8;
-    color: #1a1a2e; font-size: 1rem; font-family: inherit;
-    letter-spacing: 0.15em; outline: none; margin-bottom: 1rem;
+    background: var(--gray-11); border: 1px solid var(--border);
+    color: var(--text-primary); font-size: 14px; font-family: inherit;
+    letter-spacing: 0.1em; outline: none;
+    border-radius: var(--radius); margin-bottom: 1rem;
+    transition: border-color 0.15s;
   }
-  .login-box input:focus { border-color: var(--gold); }
+  .login-box input:focus { border-color: var(--black); background: var(--white); }
   .login-box button {
     width: 100%; padding: 0.8rem;
-    background: var(--gold); color: var(--navy);
-    font-family: 'Cinzel', serif; font-size: 0.85rem;
-    letter-spacing: 0.15em; font-weight: 700;
-    border: none; cursor: pointer; transition: background 0.2s;
+    background: var(--black); color: var(--white);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border: none; border-radius: var(--radius); cursor: pointer;
+    transition: background 0.15s;
   }
-  .login-box button:hover { background: var(--gold-light); }
-  #loginError {
-    color: #e74c3c; font-size: 0.8rem; margin-top: 0.75rem;
-    min-height: 1.2em;
-  }
+  .login-box button:hover { background: var(--gray-2); }
+  #loginError { color: var(--danger); font-size: 12px; margin-top: 0.75rem; min-height: 1.2em; }
 
-  /* ── HEADER ── */
-  header {
-    background: #ffffff;
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
+  /* TOPBAR */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px; background: var(--black);
     display: flex; align-items: center; justify-content: space-between;
-    height: 60px;
-    position: sticky; top: 64px; z-index: 100;
-    background: #ffffff; border-bottom: 1px solid #dde0e8;
+    padding: 0 2rem; z-index: 1000;
   }
-  .header-left { display: flex; align-items: center; gap: 1rem; }
-  .header-left a {
-    color: #6b7280; font-size: 0.8rem; text-decoration: none;
-    letter-spacing: 0.08em; transition: color 0.2s;
+  .logo-nav {
+    display: flex; align-items: center; gap: 0.6rem;
+    text-decoration: none; color: var(--white);
+    font-size: 13px; font-weight: 500; letter-spacing: 0.05em; white-space: nowrap;
   }
-  .header-left a:hover { color: var(--gold); }
-  .header-title {
-    font-family: 'Cinzel', serif;
-    color: var(--gold);
-    font-size: 1rem;
-    letter-spacing: 0.12em;
+  .logo-nav .logo-mark {
+    width: 28px; height: 28px; background: var(--accent);
+    border-radius: 2px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
   }
-  .header-badge {
-    background: var(--gold-dim);
-    border: 1px solid var(--border);
-    color: var(--gold);
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
-    letter-spacing: 0.1em;
+  #topbar nav { display: flex; align-items: center; gap: 2rem; }
+  #topbar nav a {
+    color: rgba(255,255,255,0.55); text-decoration: none;
+    font-size: 12px; font-weight: 400; letter-spacing: 0.04em;
+    transition: color 0.15s;
+  }
+  #topbar nav a:hover { color: #fff; }
+  .member-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.75); padding: 0.35rem 0.9rem;
+    font-family: inherit; font-size: 12px; letter-spacing: 0.04em;
+    border-radius: var(--radius); cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .member-btn:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  .cta-btn {
+    background: var(--white); color: var(--black);
+    padding: 0.4rem 1.1rem; font-family: inherit;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; border-radius: var(--radius);
+    transition: opacity 0.15s;
+  }
+  .cta-btn:hover { opacity: 0.85; }
+  .nav-toggle { display: none; }
+  @media (max-width: 768px) {
+    #topbar nav { display: none; }
+    .nav-toggle { display: block; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 1.3rem; cursor: pointer; }
   }
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    background: #ffffff;
-    padding: 0 2rem;
+  /* ADMIN SHELL */
+  #adminMain { display: none; }
+  header { display: none; }
+
+  /* SUBBAR / TABS */
+  .admin-subbar {
+    position: sticky; top: 56px; z-index: 100;
+    background: var(--white); border-bottom: 1px solid var(--border);
+    display: flex; align-items: stretch;
+    padding: 0 2rem; gap: 0;
   }
+  /* legacy .tabs selector kept for compat */
+  .tabs { display: none; }
   .tab-btn {
-    padding: 0.9rem 1.5rem;
+    padding: 0 1.25rem; height: 44px;
     background: none; border: none;
-    color: #6b7280; font-family: 'Cinzel', serif;
-    font-size: 0.78rem; letter-spacing: 0.12em;
-    cursor: pointer; position: relative;
-    transition: color 0.2s;
     border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    color: var(--text-muted); font-family: inherit;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px; white-space: nowrap;
   }
-  .tab-btn:hover { color: var(--gold-light); }
-  .tab-btn.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active { color: var(--text-primary); border-bottom-color: var(--black); }
 
-  /* ── MAIN CONTENT ── */
-  main { padding: 5rem 2rem 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-
+  /* MAIN */
+  main { padding: 2rem; max-width: 1280px; margin: 0 auto; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* ── PAGE HEADER ── */
+  /* PAGE HEADER */
   .page-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 1.5rem; padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--border);
   }
-  .page-header h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem; color: var(--gold);
-    letter-spacing: 0.08em;
-  }
-  .page-header p { color: #6b7280; font-size: 0.85rem; margin-top: 0.2rem; }
+  .page-header h2 { font-size: 18px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+  .page-header p { color: var(--text-muted); font-size: 13px; }
 
-  /* ── STAT CARDS ── */
+  /* STAT CARDS */
   .stats-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-bottom: 1.5rem;
   }
   .stat-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: 0.6rem 0.75rem;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.85rem 1rem;
+    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
   }
+  .stat-card:hover { border-color: var(--border-dark); box-shadow: var(--shadow-sm); }
   .stat-card .stat-label {
-    font-size: 0.62rem; letter-spacing: 0.08em;
-    color: #6b7280; text-transform: uppercase;
-    margin-bottom: 0.2rem; white-space:normal; line-height:1.2;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 0.35rem; white-space: normal; line-height: 1.3;
   }
-  .stat-card .stat-value {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem; color: #444;
-    line-height: 1;
-  }
+  .stat-card .stat-value { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; line-height: 1; }
 
-  /* ── TOOLBAR ── */
-  .toolbar {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-  .search-wrap {
-    position: relative; flex: 1; min-width: 220px;
-  }
+  /* TOOLBAR */
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex: 1; min-width: 240px; }
   .search-wrap input {
-    width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem;
-    background: #ffffff; border: 1px solid var(--border);
-    color: #1a1a2e; font-family: inherit; font-size: 0.9rem;
-    outline: none;
+    width: 100%; padding: 0.6rem 1rem 0.6rem 2.4rem;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text-primary);
+    font-family: inherit; font-size: 13px; outline: none;
+    transition: border-color 0.15s;
   }
-  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap input:focus { border-color: var(--black); }
+  .search-wrap input::placeholder { color: var(--text-muted); }
   .search-wrap .search-icon {
-    position: absolute; left: 0.8rem; top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280; font-size: 0.9rem; pointer-events: none;
+    position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 13px; pointer-events: none;
   }
   .filter-select {
-    padding: 0.65rem 1rem;
-    background: #ffffff; border: 1px solid var(--border);
-    color: #1a1a2e; font-family: inherit; font-size: 0.85rem;
-    outline: none; cursor: pointer;
+    padding: 0.6rem 0.9rem; background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text-primary);
+    font-family: inherit; font-size: 13px; outline: none; cursor: pointer;
+    transition: border-color 0.15s;
   }
-  .filter-select:focus { border-color: var(--gold); }
+  .filter-select:focus { border-color: var(--black); }
 
-  /* ── BUTTONS ── */
+  /* BUTTONS */
   .btn {
-    padding: 0.65rem 1.2rem;
-    font-family: 'Cinzel', serif; font-size: 0.75rem;
-    letter-spacing: 0.1em; cursor: pointer;
-    border: none; transition: all 0.2s;
-    white-space: nowrap;
+    padding: 0.55rem 1.1rem; font-family: inherit;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    cursor: pointer; border: none; border-radius: var(--radius);
+    transition: all 0.15s; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 0.35rem;
   }
-  .btn-gold { background: var(--gold); color: var(--navy); font-weight: 700; }
-  .btn-gold:hover { background: var(--gold-light); }
-  .btn-outline {
-    background: transparent; border: 1px solid var(--border);
-    color: #6b7280;
-  }
-  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
-  .btn-danger { background: var(--danger); color: #fff; }
-  .btn-danger:hover { background: #e74c3c; }
-  .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.7rem; }
+  .btn-gold { background: var(--black); color: var(--white); }
+  .btn-gold:hover { background: var(--gray-2); }
+  .btn-outline { background: var(--white); border: 1px solid var(--border); color: var(--text-secondary); }
+  .btn-outline:hover { border-color: var(--black); color: var(--text-primary); }
+  .btn-danger { background: transparent; border: 1px solid rgba(217,48,37,0.3); color: var(--danger); }
+  .btn-danger:hover { background: var(--danger); color: var(--white); border-color: var(--danger); }
+  .btn-sm { padding: 0.35rem 0.65rem; font-size: 11px; }
 
-  /* ── TABLE ── */
-  .table-wrap {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    overflow: hidden;
+  /* COL CHOOSER */
+  #colChooser {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.875rem 1rem; margin-top: 0.5rem;
+    box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: 0.4rem 1.25rem;
   }
-  table {
-    width: 100%; border-collapse: collapse;
-    font-size: 0.85rem;
-  }
-  thead {
-    background: rgba(201,168,76,0.08);
-    border-bottom: 1px solid var(--border);
-  }
+  #colChooser label { font-size: 12px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+  /* TABLE */
+  .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: var(--gray-11); border-bottom: 1px solid var(--border); }
   th {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem; font-weight: 600;
-    letter-spacing: 0.1em; color: var(--gold);
-    white-space: nowrap;
+    padding: 0.65rem 1rem; text-align: left;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--text-muted); white-space: nowrap;
   }
-  td {
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid rgba(201,168,76,0.08);
-    vertical-align: middle;
-  }
+  td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--gray-10); vertical-align: middle; color: var(--text-primary); }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(201,168,76,0.04); }
+  tr:hover td { background: var(--gray-11); }
 
-  .status-badge {
-    display: inline-block;
-    padding: 0.2rem 0.55rem;
-    font-size: 0.68rem; letter-spacing: 0.08em;
-    font-weight: 600; text-transform: uppercase;
-  }
-  .status-active { background: rgba(39,174,96,0.15); color: #2ecc71; }
-  .status-lapsed { background: rgba(192,57,43,0.15); color: #e74c3c; }
-  .status-pending { background: rgba(243,156,18,0.15); color: #f39c12; }
-  .status-leave { background: rgba(142,68,173,0.15); color: #9b59b6; }
+  .status-badge { display: inline-block; padding: 0.18rem 0.5rem; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; border-radius: 2px; }
+  .status-active  { background: rgba(26,138,69,0.1);  color: #1a8a45; }
+  .status-lapsed  { background: rgba(217,48,37,0.1);  color: #d93025; }
+  .status-pending { background: rgba(234,132,0,0.1);  color: #b85c00; }
+  .status-leave   { background: rgba(100,100,200,0.1);color: #4040b8; }
+  .action-btns { display: flex; gap: 6px; }
 
-  .action-btns { display: flex; gap: 0.4rem; }
-
-  /* ── PAGINATION ── */
+  /* PAGINATION */
   .pagination {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.75rem 1rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.8rem; color: #6b7280;
+    padding: 0.75rem 1rem; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-muted); background: var(--gray-11);
   }
-  .page-controls { display: flex; gap: 0.4rem; }
+  .page-controls { display: flex; gap: 4px; }
   .page-btn {
-    width: 30px; height: 30px;
-    background: #f7f8fa; border: 1px solid var(--border);
-    color: #6b7280; cursor: pointer; font-size: 0.8rem;
+    width: 28px; height: 28px; background: var(--white);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text-secondary); cursor: pointer; font-size: 12px; font-family: inherit;
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.15s;
   }
-  .page-btn:hover, .page-btn.active { border-color: var(--gold); color: var(--gold); }
+  .page-btn:hover { border-color: var(--black); color: var(--text-primary); }
+  .page-btn.active { background: var(--black); border-color: var(--black); color: var(--white); }
   .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  /* ── MODAL ── */
+  /* MODAL */
   .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(5,12,25,0.85);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
     display: flex; align-items: center; justify-content: center;
-    z-index: 500;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
+    z-index: 500; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s; backdrop-filter: blur(2px);
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    width: 90%; max-width: 560px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); width: 90%; max-width: 560px;
     max-height: 90vh; overflow-y: auto;
-    transform: translateY(10px);
-    transition: transform 0.25s;
+    transform: translateY(8px); transition: transform 0.2s;
+    box-shadow: var(--shadow-md);
   }
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal-header {
-    padding: 2rem 1.5rem 1.2rem;
-    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.5rem 1rem; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
   }
-  .modal-header h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem; color: var(--gold); letter-spacing: 0.08em;
-  }
-  .modal-close {
-    background: none; border: none;
-    color: #6b7280; cursor: pointer; font-size: 1.3rem;
-    line-height: 1; transition: color 0.2s;
-  }
-  .modal-close:hover { color: #1a1a2e; }
-  .modal-body { padding: 1.5rem; }
-  .modal-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: flex-end; gap: 0.75rem;
-  }
+  .modal-header h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.04em; text-transform: uppercase; }
+  .modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; line-height: 1; transition: color 0.15s; padding: 0; }
+  .modal-close:hover { color: var(--text-primary); }
+  .modal-body { padding: 1.25rem 1.5rem; }
+  .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--gray-11); }
 
-  /* ── FORM ── */
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-grid .full { grid-column: 1 / -1; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-group label {
-    font-size: 0.72rem; letter-spacing: 0.1em;
-    color: var(--gold); text-transform: uppercase;
-  }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--text-muted); text-transform: uppercase; }
   .form-group input,
   .form-group select,
   .form-group textarea {
-    padding: 0.65rem 0.9rem;
-    background: #ffffff; border: 1px solid #dde0e8;
-    color: #1a1a2e; font-family: inherit; font-size: 0.9rem;
-    outline: none; transition: border-color 0.2s;
+    padding: 0.6rem 0.8rem; background: var(--gray-11); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text-primary); font-family: inherit;
+    font-size: 13px; outline: none; transition: border-color 0.15s, background 0.15s;
   }
   .form-group input:focus,
   .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--gold); }
-  .form-group select option { background: #ffffff; color: #1a1a2e; }
+  .form-group textarea:focus { border-color: var(--black); background: var(--white); }
 
-  /* ── EVENTS TAB ── */
-  .events-redirect {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: 3rem;
-    text-align: center;
-  }
-  .events-redirect .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
-  .events-redirect h3 {
-    font-family: 'Cinzel', serif;
-    color: var(--gold); font-size: 1.1rem;
-    letter-spacing: 0.1em; margin-bottom: 0.5rem;
-  }
-  .events-redirect p { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  /* MEMBER PHOTO */
+  .member-photo-wrap { text-align: center; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .member-photo-wrap img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+  .member-photo-placeholder { width: 72px; height: 72px; border-radius: 50%; background: var(--gray-10); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+  .member-photo-name { margin-top: 0.5rem; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .member-photo-level { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  /* ── SYNC TAB ── */
-  .sync-panel {
-    max-width: 680px;
-  }
-  .sync-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-  }
-  .sync-card h3 {
-    font-family: 'Cinzel', serif;
-    color: var(--gold);
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.4rem;
-  }
-  .sync-card p {
-    color: #6b7280;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    margin-bottom: 1.25rem;
-  }
-  .sync-meta {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  }
-  .sync-meta-item {
-    font-size: 0.8rem;
-    color: #6b7280;
-  }
-  .sync-meta-item strong {
-    display: block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.2rem;
-  }
+  /* EVENTS */
+  .events-redirect { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 3rem; text-align: center; }
+  .events-redirect .icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
+  .events-redirect h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .events-redirect p { color: var(--text-muted); font-size: 13px; margin-bottom: 1.5rem; }
+
+  /* SYNC */
+  .sync-panel { max-width: 680px; }
+  .sync-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .sync-card h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .sync-card p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 1.25rem; }
+  .sync-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .sync-meta-item { font-size: 12px; color: var(--text-secondary); }
+  .sync-meta-item strong { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px; }
   #syncBtn {
-    background: var(--navy);
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 0.75rem 2rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
+    background: var(--black); color: var(--white); border: none;
+    border-radius: var(--radius); padding: 0.65rem 1.75rem;
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.15s;
   }
-  #syncBtn:hover:not(:disabled) {
-    background: var(--gold);
-    color: var(--navy);
-  }
-  #syncBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  .sync-status-box {
-    margin-top: 1.5rem;
-    display: none;
-  }
+  #syncBtn:hover:not(:disabled) { background: var(--gray-2); }
+  #syncBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .sync-status-box { margin-top: 1.25rem; display: none; }
   .sync-spinner-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: #6b7280;
-    font-size: 0.875rem;
-    font-style: italic;
-    padding: 1rem;
-    background: #f7f8fa;
-    border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.75rem;
+    color: var(--text-secondary); font-size: 13px;
+    padding: 0.875rem 1rem; background: var(--gray-11);
+    border: 1px solid var(--border); border-radius: var(--radius);
   }
-  .sync-results-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    margin-top: 1rem;
-  }
-  .sync-results-table th {
-    background: var(--navy);
-    color: var(--gold);
-    padding: 0.5rem 1rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
+  .sync-results-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0.875rem; }
+  .sync-results-table th { background: var(--gray-11); color: var(--text-muted); padding: 0.5rem 0.875rem; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
   .sync-results-table th:first-child { text-align: left; }
-  .sync-results-table td {
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    text-align: center;
-    color: #444;
-  }
-  .sync-results-table td:first-child { text-align: left; font-weight: 600; }
-  .sync-success-banner {
-    background: rgba(39,174,96,0.08);
-    border: 1px solid rgba(39,174,96,0.3);
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.875rem;
-    color: #2e7d32;
-    margin-bottom: 0.5rem;
-  }
-  .sync-error-banner {
-    background: rgba(192,57,43,0.08);
-    border: 1px solid rgba(192,57,43,0.3);
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: var(--danger);
-    margin-top: 0.75rem;
-  }
-  .sync-error-banner ul {
-    margin: 0.4rem 0 0 1rem;
-    font-size: 0.8rem;
-  }
-  .sync-info-card {
-    background: rgba(201,168,76,0.06);
-    border-left: 3px solid var(--gold);
-    padding: 1rem 1.25rem;
-  }
-  .sync-info-card strong {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    color: var(--navy);
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-  .sync-info-card p {
-    margin: 0;
-    font-size: 0.825rem;
-    color: #555;
-    line-height: 1.5;
-  }
-  .sync-last-run {
-    font-size: 0.78rem;
-    color: #6b7280;
-    margin-top: 0.75rem;
-    font-style: italic;
-  }
+  .sync-results-table td { padding: 0.5rem 0.875rem; border-bottom: 1px solid var(--gray-10); text-align: center; color: var(--text-secondary); }
+  .sync-results-table td:first-child { text-align: left; font-weight: 500; color: var(--text-primary); }
+  .sync-success-banner { background: rgba(26,138,69,0.07); border: 1px solid rgba(26,138,69,0.25); border-radius: var(--radius); padding: 0.65rem 0.875rem; display: flex; align-items: center; gap: 0.5rem; font-size: 13px; color: var(--success); margin-bottom: 0.5rem; }
+  .sync-error-banner { background: rgba(217,48,37,0.06); border: 1px solid rgba(217,48,37,0.2); border-radius: var(--radius); padding: 0.65rem 0.875rem; font-size: 13px; color: var(--danger); margin-top: 0.75rem; }
+  .sync-error-banner ul { margin: 0.3rem 0 0 1rem; font-size: 12px; }
+  .sync-info-card { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--black); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .sync-info-card strong { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); display: block; margin-bottom: 0.4rem; }
+  .sync-info-card p { margin: 0; font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
+  .sync-last-run { font-size: 11.5px; color: var(--text-muted); margin-top: 0.75rem; }
 
-  /* ── TOAST ── */
+  /* TOAST */
   #toast {
-    position: fixed; bottom: 2rem; right: 2rem;
-    background: #ffffff; border: 1px solid var(--border);
-    padding: 0.8rem 1.2rem; font-size: 0.85rem;
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.3s; z-index: 600;
-    display: flex; align-items: center; gap: 0.6rem;
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--black); color: var(--white);
+    border-radius: var(--radius); padding: 0.75rem 1.1rem;
+    font-size: 13px; font-weight: 400;
+    transform: translateY(60px); opacity: 0;
+    transition: all 0.25s; z-index: 600;
+    display: flex; align-items: center; gap: 0.5rem;
+    box-shadow: var(--shadow-md); max-width: 320px;
   }
   #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.success { border-color: var(--success); }
-  #toast.error { border-color: var(--danger); }
+  #toast.success { background: #1a1a1a; border-left: 3px solid var(--success); }
+  #toast.error   { background: #1a1a1a; border-left: 3px solid var(--danger); }
 
-  /* ── LOADING ── */
-  .loading-row td {
-    text-align: center; padding: 3rem;
-    color: #6b7280; font-size: 0.85rem;
-  }
-  .spinner {
-    display: inline-block; width: 18px; height: 18px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle; margin-right: 0.5rem;
-  }
+  /* LOADING */
+  .loading-row td { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 13px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--gray-9); border-top-color: var(--black); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .empty-state {
-    text-align: center; padding: 3rem;
-    color: #6b7280; font-size: 0.9rem;
-  }
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 13px; }
 
   @media (max-width: 640px) {
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .full { grid-column: 1; }
-    main { padding: 5rem 1rem 1rem; }
-    .tabs { padding: 0 1rem; }
-    .tab-btn { padding: 0.8rem 1rem; font-size: 0.72rem; }
-    .sync-meta { gap: 1rem; }
+    main { padding: 1.25rem 1rem; }
+    .admin-subbar { padding: 0 1rem; overflow-x: auto; }
+    .tab-btn { padding: 0 1rem; font-size: 11px; }
   }
-  .member-photo-wrap {
-  text-align: center;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
-}
-.member-photo-wrap img {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--gold);
-}
-.member-photo-placeholder {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  background: var(--gold-dim);
-  border: 2px solid var(--border);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.2rem;
-}
-.member-photo-name {
-  margin-top: 0.5rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem;
-  color: var(--navy);
-  letter-spacing: 0.06em;
-}
-.member-photo-level {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.15rem;
-}
 </style>
 </head>
 <body>
@@ -672,212 +407,200 @@
 <!-- LOGIN OVERLAY -->
 <div id="loginOverlay">
   <div class="login-box">
-    <div class="crest">⚔️</div>
-    <h1>ADMIN ACCESS</h1>
+    <span class="crest">⚔️</span>
+    <h1>Admin Access</h1>
     <p>Tampa Rough Riders — Restricted Area</p>
     <div style="position:relative;margin-bottom:1rem;">
-      <input type="password" id="pwInput" placeholder="Enter password" autocomplete="current-password" style="margin-bottom:0;padding-right:2.8rem;">
-      <span id="pwEye" onclick="var i=document.getElementById('pwInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;line-height:1;">👁</span>
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password" style="margin-bottom:0;padding-right:2.8rem;">
+      <span id="pwEye" onclick="var i=document.getElementById('pwInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:0.9rem;user-select:none;line-height:1;">👁</span>
     </div>
-    <button onclick="checkLogin()">ENTER</button>
+    <button onclick="checkLogin()">Sign In</button>
     <div id="loginError"></div>
   </div>
 </div>
 
-<div id="site-header"></div>
+<!-- TOPBAR -->
+<div id="topbar">
+  <a class="logo-nav" href="/">
+    <div class="logo-mark">RR</div>
+    Tampa Rough Riders
+  </a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/events.html">Events</a>
+    <a href="/membership.html">Members</a>
+  </nav>
+</div>
 
-<!-- MAIN -->
-<main id="adminMain" style="display:none;">
+<!-- ADMIN MAIN -->
+<div id="adminMain">
 
-<nav style="display:flex;align-items:center;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#ffffff;position:sticky;top:64px;z-index:100;">
-  <button class="tab-btn active" onclick="switchTab('membership',this)">MEMBERSHIP</button>
-  <button class="tab-btn" onclick="switchTab('events',this)">EVENTS</button>
-  <button class="tab-btn" onclick="switchTab('sync',this)">🔄 WA SYNC</button>
-</nav>
+  <nav class="admin-subbar">
+    <button class="tab-btn active" onclick="switchTab('membership',this)">Membership</button>
+    <button class="tab-btn" onclick="switchTab('events',this)">Events</button>
+    <button class="tab-btn" onclick="switchTab('sync',this)">WA Sync</button>
+  </nav>
 
-  <!-- ══ MEMBERSHIP TAB ══ -->
-  <div id="tab-membership" class="tab-panel active">
-    <div class="page-header">
-      <div>
-        <h2>Membership Registry</h2>
-        <p>View, edit, add, and remove members from the Supabase roster</p>
-      </div>
-      <div style="display:flex;gap:0.75rem;align-items:center;">
-        <button class="btn btn-gold" onclick="openAddModal()">+ ADD MEMBER</button>
-        <button class="btn btn-outline" onclick="document.getElementById('csvFileInput').click()">&#8593; IMPORT CSV</button>
-        <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="importCSV(this)">
-      </div>
-    </div>
+  <main>
 
-    <div class="stats-row" id="statsRow" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
-      <div class="stat-card">
-        <div class="stat-label">Total Members</div>
-        <div class="stat-value" id="statTotal">—</div>
-      </div>
-      <div id="levelBreakdown" style="display:contents;"></div>
-    </div>
-
-    <div class="toolbar">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search by name, email, or member #…" oninput="onSearch()">
-      </div>
-      <select class="filter-select" id="typeFilter" onchange="onSearch()">
-        <option value="">All Levels</option>
-        <option value="Full Members">Full Members</option>
-        <option value="Full member non public">Full Member (Non-Public)</option>
-        <option value="Senior Board Emeritus">Senior Board Emeritus</option>
-        <option value="Probationary">Probationary</option>
-        <option value="Absentee">Absentee</option>
-        <option value="Non Resident">Non Resident</option>
-        <option value="Leave of Absence">Leave of Absence</option>
-        <option value="Bookkeeper">Bookkeeper/Administrator</option>
-        <option value="Deceased">Deceased</option>
-        <option value="Resigned">Resigned</option>
-      </select>
-    </div>
-
-    <div style="margin-bottom:0.75rem;">
-      <button class="btn btn-outline btn-sm" onclick="toggleColChooser()" style="font-size:0.72rem;">&#9638; COLUMNS</button>
-      <div id="colChooser" style="display:none;background:#fff;border:1px solid #dde0e8;padding:1rem;margin-top:0.5rem;border-radius:4px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="waid" checked onchange="applyColVisibility()"> WA ID</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> Member #</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="rank" onchange="applyColVisibility()"> Rank</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="phone" onchange="applyColVisibility()"> Phone</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="city" onchange="applyColVisibility()"> City</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="joined" onchange="applyColVisibility()"> Date Joined</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="admintype" onchange="applyColVisibility()"> Admin Type</label>
-        <label style="font-size:0.82rem;cursor:pointer;"><input type="checkbox" data-col="actions" checked onchange="applyColVisibility()"> Actions</label>
-      </div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th data-col="waid">WA ID</th>
-            <th data-col="num">Member #</th>
-            <th data-col="name">Name</th>
-            <th data-col="email">Email</th>
-            <th data-col="type">Level</th>
-            <th data-col="status" style="display:none;">Status</th>
-            <th data-col="rank" style="display:none;">Rank</th>
-            <th data-col="phone" style="display:none;">Phone</th>
-            <th data-col="city" style="display:none;">City</th>
-            <th data-col="admintype" style="display:none;">Admin Type</th>
-            <th data-col="joined">Date Joined</th>
-            <th data-col="actions">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="memberTableBody">
-          <tr class="loading-row">
-            <td colspan="11"><span class="spinner"></span> Loading members…</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="pagination" id="pagination" style="display:none;">
-        <span id="paginationInfo"></span>
-        <div class="page-controls" id="pageControls"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ EVENTS TAB ══ -->
-  <div id="tab-events" class="tab-panel">
-    <div class="page-header">
-      <div>
-        <h2>Events Management</h2>
-        <p>Manage public and member-only events</p>
-      </div>
-    </div>
-    <div class="events-redirect">
-      <div class="icon">📅</div>
-      <h3>EVENTS ADMIN</h3>
-      <p>Full event management is available in the dedicated Events Admin panel.</p>
-      <a href="events-admin.html" class="btn btn-gold" style="display:inline-block;text-decoration:none;">
-        OPEN EVENTS ADMIN →
-      </a>
-    </div>
-  </div>
-
-  <!-- ══ WA SYNC TAB ══ -->
-  <div id="tab-sync" class="tab-panel">
-    <div class="page-header">
-      <div>
-        <h2>Wild Apricot Sync</h2>
-        <p>Bidirectional sync between Wild Apricot and Supabase — members and events</p>
-      </div>
-    </div>
-
-    <div class="sync-panel">
-
-      <div class="sync-card">
-        <h3>MANUAL SYNC</h3>
-        <p>Syncs all members and events between Wild Apricot and Supabase in both directions. When the same record has been updated in both places, the most recently modified version wins.</p>
-
-        <div class="sync-meta">
-          <div class="sync-meta-item">
-            <strong>Direction</strong>
-            WA ↔ Supabase (bidirectional)
-          </div>
-          <div class="sync-meta-item">
-            <strong>Data</strong>
-            Members + Events
-          </div>
-          <div class="sync-meta-item">
-            <strong>Conflict Resolution</strong>
-            Most recent wins
-          </div>
-          <div class="sync-meta-item">
-            <strong>Scheduled</strong>
-            Every hour (automatic)
-          </div>
+    <!-- MEMBERSHIP TAB -->
+    <div id="tab-membership" class="tab-panel active">
+      <div class="page-header">
+        <div>
+          <h2>Membership Registry</h2>
+          <p>View, edit, add, and remove members from the Supabase roster</p>
         </div>
-
-        <button id="syncBtn" onclick="runSync()">🔄 RUN SYNC NOW</button>
-        <div id="syncLastRun" class="sync-last-run" style="display:none;"></div>
-
-        <div class="sync-status-box" id="syncStatusBox">
-          <div class="sync-spinner-row" id="syncSpinner">
-            <span class="spinner"></span>
-            Syncing members and events… this may take 15–30 seconds.
-          </div>
-          <div id="syncResults"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-outline" onclick="document.getElementById('csvFileInput').click()">↑ Import CSV</button>
+          <button class="btn btn-gold" onclick="openAddModal()">+ Add Member</button>
+          <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="importCSV(this)">
         </div>
       </div>
 
-      <div class="sync-info-card">
-        <strong>HOW IT WORKS</strong>
-        <p>
-          Wild Apricot is the primary source for member status, level, and billing data.
-          Supabase is the primary source for website-specific fields like <em>rank</em>, <em>admin_type</em>, and <em>photo_url</em>.
-          Events created in Wild Apricot sync into Supabase automatically. Events created directly in Supabase are pushed to Wild Apricot as new events.
-          The scheduled sync runs every hour via Netlify. Check Netlify function logs for sync history.
-        </p>
+      <div class="stats-row" id="statsRow" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+        <div class="stat-card">
+          <div class="stat-label">Total Members</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div id="levelBreakdown" style="display:contents;"></div>
       </div>
 
-    </div>
-  </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search by name, email, or member #…" oninput="onSearch()">
+        </div>
+        <select class="filter-select" id="typeFilter" onchange="onSearch()">
+          <option value="">All Levels</option>
+          <option value="Full Members">Full Members</option>
+          <option value="Full member non public">Full Member (Non-Public)</option>
+          <option value="Senior Board Emeritus">Senior Board Emeritus</option>
+          <option value="Probationary">Probationary</option>
+          <option value="Absentee">Absentee</option>
+          <option value="Non Resident">Non Resident</option>
+          <option value="Leave of Absence">Leave of Absence</option>
+          <option value="Bookkeeper">Bookkeeper/Administrator</option>
+          <option value="Deceased">Deceased</option>
+          <option value="Resigned">Resigned</option>
+        </select>
+      </div>
 
-</main>
+      <div style="margin-bottom:0.75rem;">
+        <button class="btn btn-outline btn-sm" onclick="toggleColChooser()">⊞ Columns</button>
+        <div id="colChooser" style="display:none;background:#fff;border:1px solid #e5e5e5;padding:1rem;margin-top:0.5rem;border-radius:3px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="waid" checked onchange="applyColVisibility()"> WA ID</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> Member #</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="type" checked onchange="applyColVisibility()"> Type</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="rank" onchange="applyColVisibility()"> Rank</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="phone" onchange="applyColVisibility()"> Phone</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="city" onchange="applyColVisibility()"> City</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="joined" checked onchange="applyColVisibility()"> Date Joined</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="admintype" onchange="applyColVisibility()"> Admin Type</label>
+          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="actions" checked onchange="applyColVisibility()"> Actions</label>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-col="waid">WA ID</th>
+              <th data-col="num">Member #</th>
+              <th data-col="name">Name</th>
+              <th data-col="email">Email</th>
+              <th data-col="type">Level</th>
+              <th data-col="status" style="display:none;">Status</th>
+              <th data-col="rank" style="display:none;">Rank</th>
+              <th data-col="phone" style="display:none;">Phone</th>
+              <th data-col="city" style="display:none;">City</th>
+              <th data-col="admintype" style="display:none;">Admin Type</th>
+              <th data-col="joined">Date Joined</th>
+              <th data-col="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="memberTableBody">
+            <tr class="loading-row">
+              <td colspan="11"><span class="spinner"></span> Loading members…</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination" style="display:none;">
+          <span id="paginationInfo"></span>
+          <div class="page-controls" id="pageControls"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS TAB -->
+    <div id="tab-events" class="tab-panel">
+      <div class="page-header">
+        <div>
+          <h2>Events Management</h2>
+          <p>Manage public and member-only events</p>
+        </div>
+      </div>
+      <div class="events-redirect">
+        <div class="icon">📅</div>
+        <h3>Events Admin</h3>
+        <p>Full event management is available in the dedicated Events Admin panel.</p>
+        <a href="events-admin.html" class="btn btn-gold" style="display:inline-flex;text-decoration:none;">Open Events Admin →</a>
+      </div>
+    </div>
+
+    <!-- WA SYNC TAB -->
+    <div id="tab-sync" class="tab-panel">
+      <div class="page-header">
+        <div>
+          <h2>Wild Apricot Sync</h2>
+          <p>Bidirectional sync between Wild Apricot and Supabase — members and events</p>
+        </div>
+      </div>
+      <div class="sync-panel">
+        <div class="sync-card">
+          <h3>Manual Sync</h3>
+          <p>Syncs all members and events between Wild Apricot and Supabase in both directions. When the same record has been updated in both places, the most recently modified version wins.</p>
+          <div class="sync-meta">
+            <div class="sync-meta-item"><strong>Direction</strong>WA ↔ Supabase (bidirectional)</div>
+            <div class="sync-meta-item"><strong>Data</strong>Members + Events</div>
+            <div class="sync-meta-item"><strong>Conflict Resolution</strong>Most recent wins</div>
+            <div class="sync-meta-item"><strong>Scheduled</strong>Every hour (automatic)</div>
+          </div>
+          <button id="syncBtn" onclick="runSync()">↺ Run Sync Now</button>
+          <div id="syncLastRun" class="sync-last-run" style="display:none;"></div>
+          <div class="sync-status-box" id="syncStatusBox">
+            <div class="sync-spinner-row" id="syncSpinner">
+              <span class="spinner"></span>
+              Syncing members and events… this may take 15–30 seconds.
+            </div>
+            <div id="syncResults"></div>
+          </div>
+        </div>
+        <div class="sync-info-card">
+          <strong>How It Works</strong>
+          <p>Wild Apricot is the primary source for member status, level, and billing data. Supabase is the primary source for website-specific fields like <em>rank</em>, <em>admin_type</em>, and <em>photo_url</em>. Events created in Wild Apricot sync into Supabase automatically. Events created directly in Supabase are pushed to Wild Apricot as new events. The scheduled sync runs every hour via Netlify.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
 
 <!-- IMPORT CSV MODAL -->
 <div class="modal-overlay" id="importModal">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
-      <h3>IMPORT MEMBERS FROM CSV</h3>
-      <button class="modal-close" onclick="closeImportModal()">&#10005;</button>
+      <h3>Import Members from CSV</h3>
+      <button class="modal-close" onclick="closeImportModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div id="importStatus" style="font-size:0.9rem;color:#6b7280;margin-bottom:1rem;"></div>
-      <div id="importPreview" style="font-size:0.85rem;"></div>
+      <div id="importStatus" style="font-size:13px;color:var(--text-muted);margin-bottom:1rem;"></div>
+      <div id="importPreview" style="font-size:13px;"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeImportModal()">CANCEL</button>
-      <button class="btn btn-gold" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">IMPORT ALL</button>
+      <button class="btn btn-outline" onclick="closeImportModal()">Cancel</button>
+      <button class="btn btn-gold" id="importConfirmBtn" onclick="confirmImport()" style="display:none;">Import All</button>
     </div>
   </div>
 </div>
@@ -886,32 +609,17 @@
 <div class="modal-overlay" id="memberModal">
   <div class="modal">
     <div class="modal-header">
-      <h3 id="modalTitle">ADD MEMBER</h3>
+      <h3 id="modalTitle">Add Member</h3>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-   <div class="modal-body">
+    <div class="modal-body">
       <div id="memberPhotoBlock"></div>
       <div class="form-grid">
-        <div class="form-group">
-          <label>First Name *</label>
-          <input type="text" id="fFirst" placeholder="First">
-        </div>
-        <div class="form-group">
-          <label>Last Name *</label>
-          <input type="text" id="fLast" placeholder="Last">
-        </div>
-        <div class="form-group full">
-          <label>Email</label>
-          <input type="email" id="fEmail" placeholder="email@example.com">
-        </div>
-        <div class="form-group">
-          <label>Member #</label>
-          <input type="text" id="fMemberNum" placeholder="e.g. 1042">
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="text" id="fPhone" placeholder="(813) 555-0000">
-        </div>
+        <div class="form-group"><label>First Name *</label><input type="text" id="fFirst" placeholder="First"></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" id="fLast" placeholder="Last"></div>
+        <div class="form-group full"><label>Email</label><input type="email" id="fEmail" placeholder="email@example.com"></div>
+        <div class="form-group"><label>Member #</label><input type="text" id="fMemberNum" placeholder="e.g. 1042"></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="fPhone" placeholder="(813) 555-0000"></div>
         <div class="form-group">
           <label>Membership Level</label>
           <select id="fType">
@@ -930,30 +638,12 @@
             <option value="3 - Bookkeeper/Administrator">Bookkeeper/Administrator</option>
           </select>
         </div>
-        <div class="form-group full">
-          <label>Address</label>
-          <input type="text" id="fAddress" placeholder="Street address">
-        </div>
-        <div class="form-group">
-          <label>City</label>
-          <input type="text" id="fCity">
-        </div>
-        <div class="form-group">
-          <label>State</label>
-          <input type="text" id="fState" placeholder="FL" maxlength="2">
-        </div>
-        <div class="form-group">
-          <label>Zip</label>
-          <input type="text" id="fZip" placeholder="33605">
-        </div>
-        <div class="form-group">
-          <label>Date Joined</label>
-          <input type="date" id="fDateJoined">
-        </div>
-        <div class="form-group">
-          <label>Rank</label>
-          <input type="text" id="fRank" placeholder="e.g. CPT, SGT">
-        </div>
+        <div class="form-group full"><label>Address</label><input type="text" id="fAddress" placeholder="Street address"></div>
+        <div class="form-group"><label>City</label><input type="text" id="fCity"></div>
+        <div class="form-group"><label>State</label><input type="text" id="fState" placeholder="FL" maxlength="2"></div>
+        <div class="form-group"><label>Zip</label><input type="text" id="fZip" placeholder="33605"></div>
+        <div class="form-group"><label>Date Joined</label><input type="date" id="fDateJoined"></div>
+        <div class="form-group"><label>Rank</label><input type="text" id="fRank" placeholder="e.g. CPT, SGT"></div>
         <div class="form-group">
           <label>Admin Type</label>
           <select id="fAdminType">
@@ -963,15 +653,12 @@
             <option value="Events">Events</option>
           </select>
         </div>
-        <div class="form-group full">
-          <label>Notes</label>
-          <textarea id="fNotes" rows="2" style="resize:vertical;padding:0.4rem;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
-        </div>
+        <div class="form-group full"><label>Notes</label><textarea id="fNotes" rows="2" style="resize:vertical;"></textarea></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal()">CANCEL</button>
-      <button class="btn btn-gold" onclick="saveMember()">SAVE MEMBER</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveMember()">Save Member</button>
     </div>
   </div>
 </div>
@@ -980,22 +667,21 @@
 <div class="modal-overlay" id="deleteModal">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header">
-      <h3>CONFIRM DELETE</h3>
+      <h3>Confirm Delete</h3>
       <button class="modal-close" onclick="closeDeleteModal()">✕</button>
     </div>
     <div class="modal-body">
-      <p style="color:#444;font-size:0.9rem;line-height:1.6;">
-        Are you sure you want to remove <strong id="deleteName" style="color:var(--navy);"></strong> from the registry? This cannot be undone.
+      <p style="color:var(--text-secondary);font-size:13px;line-height:1.6;">
+        Are you sure you want to remove <strong id="deleteName" style="color:var(--text-primary);"></strong> from the registry? This cannot be undone.
       </p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeDeleteModal()">CANCEL</button>
-      <button class="btn btn-danger" onclick="confirmDelete()">DELETE MEMBER</button>
+      <button class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete Member</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
@@ -1005,606 +691,311 @@ const TABLE = 'rr_members';
 const PAGE_SIZE = 25;
 const PASSWORD = 'bullyjudge';
 
-let allMembers = [];
-let filteredMembers = [];
-let currentPage = 1;
-let editingId = null;
-let deleteId = null;
-
-// ── CSV IMPORT ──
+let allMembers = [], filteredMembers = [], currentPage = 1, editingId = null, deleteId = null;
 let pendingImportRows = [];
 
 function importCSV(input) {
-  const file = input.files[0];
-  if (!file) return;
-  input.value = '';
+  const file = input.files[0]; if (!file) return; input.value = '';
   const reader = new FileReader();
   reader.onload = e => {
     const text = e.target.result;
     pendingImportRows = parseWAcsv(text);
-    const modal = document.getElementById('importModal');
     const status = document.getElementById('importStatus');
     const preview = document.getElementById('importPreview');
     const btn = document.getElementById('importConfirmBtn');
-    status.textContent = `Found ${pendingImportRows.length} members. Click IMPORT ALL to upsert into Supabase (existing members matched by member_number will be updated).`;
+    status.textContent = `Found ${pendingImportRows.length} members. Click Import All to upsert into Supabase.`;
     const sample = pendingImportRows.slice(0, 5).map(r =>
-      `<div style="padding:0.3rem 0;border-bottom:1px solid #eee;">${r.member_number || '—'} &nbsp; ${r.last_name}, ${r.first_name} &nbsp; <span style="color:#6b7280;">${r.membership_level || ''}</span></div>`
+      `<div style="padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">${r.member_number||'—'} &nbsp; ${r.last_name}, ${r.first_name} &nbsp; <span style="color:var(--text-muted);">${r.membership_level||''}</span></div>`
     ).join('');
-    preview.innerHTML = `<div style="margin-bottom:0.5rem;font-weight:600;">Preview (first 5):</div>${sample}${pendingImportRows.length > 5 ? `<div style="color:#6b7280;margin-top:0.3rem;">…and ${pendingImportRows.length - 5} more</div>` : ''}`;
-    btn.style.display = 'inline-block';
-    modal.classList.add('open');
+    preview.innerHTML = `<div style="margin-bottom:0.5rem;font-weight:600;font-size:12px;">Preview (first 5):</div>${sample}${pendingImportRows.length>5?`<div style="color:var(--text-muted);margin-top:0.3rem;font-size:12px;">…and ${pendingImportRows.length-5} more</div>`:''}`;
+    btn.style.display = 'inline-flex';
+    document.getElementById('importModal').classList.add('open');
   };
   reader.readAsText(file);
 }
 
 function parseWAcsv(text) {
-  text = text.replace(/^\uFEFF/, '');
+  text = text.replace(/^\uFEFF/,'');
   const tokens = tokenizeCSV(text);
   if (tokens.length < 2) return [];
-  const headers = tokens[0].map(h => h.trim());
+  const headers = tokens[0].map(h=>h.trim());
   const rows = [];
-  for (let i = 1; i < tokens.length; i++) {
-    const cols = tokens[i];
-    if (cols.every(c => !c.trim())) continue;
-    const get = name => {
-      const idx = headers.findIndex(h => h.toLowerCase() === name.toLowerCase());
-      return idx >= 0 ? (cols[idx] || '').trim() : '';
-    };
+  for (let i=1; i<tokens.length; i++) {
+    const cols = tokens[i]; if (cols.every(c=>!c.trim())) continue;
+    const get = name => { const idx=headers.findIndex(h=>h.toLowerCase()===name.toLowerCase()); return idx>=0?(cols[idx]||'').trim():''; };
     const yr = get('Year Admitted');
-    const row = {
-      first_name:       get('First name') || null,
-      last_name:        get('Last name') || null,
-      email:            get('Email') || null,
-      phone:            get('Phone') || null,
-      address:          get('Address') || null,
-      city:             get('City') || null,
-      state:            get('State') || null,
-      zip:              get('Zip') || null,
-      member_number:    get('Member #') || null,
-      membership_level: get('Membership level') || null,
-      rank:             get('2025-2026 Rank') || null,
-      notes:            get('Notes') || null,
-      date_joined:      (yr && /^\d{4}$/.test(yr)) ? yr + '-01-01' : null,
-    };
+    const row = { first_name:get('First name')||null, last_name:get('Last name')||null, email:get('Email')||null, phone:get('Phone')||null, address:get('Address')||null, city:get('City')||null, state:get('State')||null, zip:get('Zip')||null, member_number:get('Member #')||null, membership_level:get('Membership level')||null, rank:get('2025-2026 Rank')||null, notes:get('Notes')||null, date_joined:(yr&&/^\d{4}$/.test(yr))?yr+'-01-01':null };
     if (row.last_name) rows.push(row);
   }
   return rows;
 }
 
 function tokenizeCSV(text) {
-  const rows = [];
-  let row = [];
-  let cur = '';
-  let inQuote = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    const nx = text[i + 1];
-    if (ch === '"') {
-      if (inQuote && nx === '"') { cur += '"'; i++; }
-      else inQuote = !inQuote;
-    } else if (ch === ',' && !inQuote) {
-      row.push(cur); cur = '';
-    } else if (ch === '\n' && !inQuote) {
-      row.push(cur); cur = '';
-      rows.push(row); row = [];
-    } else if (ch === '\r' && nx === '\n' && !inQuote) {
-      row.push(cur); cur = '';
-      rows.push(row); row = [];
-      i++;
-    } else {
-      cur += ch;
-    }
+  const rows=[]; let row=[],cur='',inQuote=false;
+  for (let i=0;i<text.length;i++) {
+    const ch=text[i],nx=text[i+1];
+    if (ch==='"') { if(inQuote&&nx==='"'){cur+='"';i++;}else inQuote=!inQuote; }
+    else if (ch===','&&!inQuote){row.push(cur);cur='';}
+    else if (ch==='\n'&&!inQuote){row.push(cur);cur='';rows.push(row);row=[];}
+    else if (ch==='\r'&&nx==='\n'&&!inQuote){row.push(cur);cur='';rows.push(row);row=[];i++;}
+    else cur+=ch;
   }
-  if (cur || row.length) { row.push(cur); rows.push(row); }
+  if(cur||row.length){row.push(cur);rows.push(row);}
   return rows;
 }
 
 function closeImportModal() {
   document.getElementById('importModal').classList.remove('open');
-  pendingImportRows = [];
-  document.getElementById('importStatus').textContent = '';
-  document.getElementById('importPreview').innerHTML = '';
-  document.getElementById('importConfirmBtn').style.display = 'none';
+  pendingImportRows=[];
+  document.getElementById('importStatus').textContent='';
+  document.getElementById('importPreview').innerHTML='';
+  document.getElementById('importConfirmBtn').style.display='none';
 }
 
 async function confirmImport() {
-  const btn = document.getElementById('importConfirmBtn');
-  const status = document.getElementById('importStatus');
-  btn.disabled = true;
-  btn.textContent = 'Importing…';
-  const BATCH = 50;
-  let done = 0;
-  const validRows = pendingImportRows.filter(r => r.member_number && r.member_number.trim());
-  const skipped = pendingImportRows.length - validRows.length;
-  if (skipped > 0) status.textContent = `Skipping ${skipped} rows with no member number…`;
-  pendingImportRows = validRows;
+  const btn=document.getElementById('importConfirmBtn'), status=document.getElementById('importStatus');
+  btn.disabled=true; btn.textContent='Importing…';
+  const BATCH=50; let done=0;
+  const validRows=pendingImportRows.filter(r=>r.member_number&&r.member_number.trim());
+  const skipped=pendingImportRows.length-validRows.length;
+  if(skipped>0) status.textContent=`Skipping ${skipped} rows with no member number…`;
+  pendingImportRows=validRows;
   try {
-    for (let i = 0; i < pendingImportRows.length; i += BATCH) {
-      const batch = pendingImportRows.slice(i, i + BATCH);
-      const res = await sbFetch(TABLE + '?on_conflict=member_number', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
-        body: JSON.stringify(batch)
-      });
-      done += batch.length;
-      status.textContent = `Importing… ${done} / ${pendingImportRows.length}`;
+    for(let i=0;i<pendingImportRows.length;i+=BATCH){
+      const batch=pendingImportRows.slice(i,i+BATCH);
+      await sbFetch(TABLE+'?on_conflict=member_number',{method:'POST',headers:{'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify(batch)});
+      done+=batch.length; status.textContent=`Importing… ${done} / ${pendingImportRows.length}`;
     }
-    showToast(`Imported ${pendingImportRows.length} members successfully.`, 'success');
-    closeImportModal();
-    loadMembers();
-  } catch(err) {
-    status.textContent = 'Error: ' + err.message;
-    btn.disabled = false;
-    btn.textContent = 'RETRY';
-  }
+    showToast(`Imported ${pendingImportRows.length} members successfully.`,'success');
+    closeImportModal(); loadMembers();
+  } catch(err){ status.textContent='Error: '+err.message; btn.disabled=false; btn.textContent='Retry'; }
 }
 
-// ── AUTH ──
 function checkLogin() {
-  const val = document.getElementById('pwInput').value;
-  if (val === PASSWORD) {
+  const val=document.getElementById('pwInput').value;
+  if(val===PASSWORD){
     document.getElementById('loginOverlay').classList.add('hidden');
-    document.getElementById('adminMain').style.display = 'block';
-    loadMembers().then(() => applyColVisibility());
-  } else {
-    document.getElementById('loginError').textContent = 'Incorrect password.';
-  }
+    document.getElementById('adminMain').style.display='block';
+    loadMembers().then(()=>applyColVisibility());
+  } else { document.getElementById('loginError').textContent='Incorrect password.'; }
 }
-document.getElementById('pwInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkLogin();
-});
+document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
 
-// ── TABS ──
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+function switchTab(name,btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
 }
 
-// ── SUPABASE HELPERS ──
-async function sbFetch(path, opts = {}) {
-  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-    ...opts,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation',
-      ...(opts.headers || {})
-    }
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
-  }
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
+async function sbFetch(path,opts={}) {
+  const res=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})}});
+  if(!res.ok){const err=await res.text();throw new Error(err);}
+  const text=await res.text(); return text?JSON.parse(text):null;
 }
 
-// ── LOAD MEMBERS ──
 async function loadMembers() {
   try {
-    const data = await sbFetch(TABLE + '?select=*&order=last_name.asc');
-    allMembers = data || [];
-    updateStats();
-    onSearch();
-  } catch (e) {
+    const data=await sbFetch(TABLE+'?select=*&order=last_name.asc');
+    allMembers=data||[]; updateStats(); onSearch();
+  } catch(e) {
     console.error(e);
-    document.getElementById('memberTableBody').innerHTML =
-      '<tr><td colspan="11" style="text-align:center;padding:2rem;color:#e74c3c;">Error loading members. Check console for details.</td></tr>';
-    showToast('Failed to load members: ' + e.message, 'error');
+    document.getElementById('memberTableBody').innerHTML='<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--danger);">Error loading members.</td></tr>';
+    showToast('Failed to load members: '+e.message,'error');
   }
 }
 
 function updateStats() {
-  document.getElementById('statTotal').textContent = allMembers.length;
-  const levelMap = {};
-  allMembers.forEach(m => {
-    let lvl = (m.membership_level || '').trim();
-    lvl = lvl.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
-    if (lvl === 'Bookkeeper/Administrator') lvl = 'Bookkeeper';
-    if (!lvl) lvl = 'Unknown';
-    levelMap[lvl] = (levelMap[lvl] || 0) + 1;
+  document.getElementById('statTotal').textContent=allMembers.length;
+  const levelMap={};
+  allMembers.forEach(m=>{
+    let lvl=(m.membership_level||'').trim().replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if(lvl==='Bookkeeper/Administrator')lvl='Bookkeeper';
+    if(!lvl)lvl='Unknown';
+    levelMap[lvl]=(levelMap[lvl]||0)+1;
   });
-  const sorted = Object.entries(levelMap).sort((a,b) => b[1]-a[1]);
-  const breakdown = document.getElementById('levelBreakdown');
-  breakdown.innerHTML = sorted.map(([lvl, cnt]) =>
-    `<div class="stat-card" style="cursor:pointer;" onclick="filterByLevel('${lvl.replace(/'/g,"\\'")}')">
-      <div class="stat-label" style="white-space:normal;line-height:1.3;">${lvl}</div>
-      <div class="stat-value">${cnt}</div>
-    </div>`
+  const sorted=Object.entries(levelMap).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('levelBreakdown').innerHTML=sorted.map(([lvl,cnt])=>
+    `<div class="stat-card" onclick="filterByLevel('${lvl.replace(/'/g,"\\'")}')"><div class="stat-label">${lvl}</div><div class="stat-value">${cnt}</div></div>`
   ).join('');
 }
 
 function filterByLevel(lvl) {
-  document.getElementById('searchInput').value = '';
-  filteredMembers = allMembers.filter(m => {
-    let ml = (m.membership_level || '').trim();
-    ml = ml.replace(/^[\w\d][\w\d]?\s*-\s*/i, '').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
-    if (ml === 'Bookkeeper/Administrator') ml = 'Bookkeeper';
-    return ml === lvl;
+  document.getElementById('searchInput').value='';
+  filteredMembers=allMembers.filter(m=>{
+    let ml=(m.membership_level||'').trim().replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if(ml==='Bookkeeper/Administrator')ml='Bookkeeper';
+    return ml===lvl;
   });
-  currentPage = 1;
-  renderTable();
+  currentPage=1; renderTable();
 }
 
-// ── SEARCH / FILTER ──
 function onSearch() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const typeF = document.getElementById('typeFilter').value;
-  filteredMembers = allMembers.filter(m => {
-    const first = (m.first_name || '').toString();
-    const last  = (m.last_name  || '').toString();
-    const email = (m.email      || '').toString();
-    const num   = (m.member_number || '').toString();
-    const type  = (m.membership_level || '').toString();
-    const matchQ = !q || [first, last, email, num].some(v => v.toLowerCase().includes(q));
-    const matchT = !typeF || type.toLowerCase().includes(typeF.toLowerCase());
-    return matchQ && matchT;
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const typeF=document.getElementById('typeFilter').value;
+  filteredMembers=allMembers.filter(m=>{
+    const matchQ=!q||[m.first_name,m.last_name,m.email,m.member_number].some(v=>(v||'').toString().toLowerCase().includes(q));
+    const matchT=!typeF||(m.membership_level||'').toLowerCase().includes(typeF.toLowerCase());
+    return matchQ&&matchT;
   });
-  currentPage = 1;
-  renderTable();
+  currentPage=1; renderTable();
 }
 
-// ── COLUMN VISIBILITY ──
-let colChooserOpen = false;
-function toggleColChooser() {
-  const el = document.getElementById('colChooser');
-  colChooserOpen = !colChooserOpen;
-  el.style.display = colChooserOpen ? 'flex' : 'none';
+let colChooserOpen=false;
+function toggleColChooser(){
+  const el=document.getElementById('colChooser');
+  colChooserOpen=!colChooserOpen;
+  el.style.display=colChooserOpen?'flex':'none';
 }
-function applyColVisibility() {
-  const defaults = ['waid','num','name','email','type','joined','actions'];
-  document.querySelectorAll('#colChooser input[data-col]').forEach(cb => {
-    const col = cb.dataset.col;
-    const show = cb.checked;
-    document.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
-      el.style.display = show ? '' : 'none';
-    });
-  });
-  defaults.forEach(col => {
-    const cb = document.querySelector(`#colChooser input[data-col="${col}"]`);
-    if (!cb || cb.checked) {
-      document.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
-        el.style.display = '';
-      });
-    }
+function applyColVisibility(){
+  document.querySelectorAll('#colChooser input[data-col]').forEach(cb=>{
+    document.querySelectorAll(`[data-col="${cb.dataset.col}"]`).forEach(el=>{el.style.display=cb.checked?'':' none';});
   });
 }
 
-// ── RENDER TABLE ──
 function renderTable() {
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const page  = filteredMembers.slice(start, start + PAGE_SIZE);
-  const tbody = document.getElementById('memberTableBody');
-
-  if (filteredMembers.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">No members found.</td></tr>';
-    document.getElementById('pagination').style.display = 'none';
-    return;
-  }
-
-  tbody.innerHTML = page.map(m => {
-    const first  = m.first_name  || '';
-    const last   = m.last_name   || '';
-    const email  = m.email       || '';
-    const num    = m.member_number || '';
-    const status = m.status      || '';
-    const typeRaw  = m.membership_level || '';
-    let type = typeRaw.replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
-    if (type === 'Bookkeeper/Administrator') type = 'Bookkeeper';
-    const renewed = m.date_joined || '';
-    const statusClass = status.toLowerCase().includes('active') ? 'status-active'
-                      : status.toLowerCase().includes('lapsed') ? 'status-lapsed'
-                      : status.toLowerCase().includes('pending') ? 'status-pending'
-                      : status.toLowerCase().includes('leave') ? 'status-leave' : '';
-    const renewedStr = renewed ? new Date(renewed).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '—';
-    const rank  = m.rank  || '';
-    const phone = m.phone || '';
-    const city  = m.city  || '';
+  const start=(currentPage-1)*PAGE_SIZE, page=filteredMembers.slice(start,start+PAGE_SIZE);
+  const tbody=document.getElementById('memberTableBody');
+  if(filteredMembers.length===0){tbody.innerHTML='<tr><td colspan="11" class="empty-state">No members found.</td></tr>';document.getElementById('pagination').style.display='none';return;}
+  tbody.innerHTML=page.map(m=>{
+    let type=(m.membership_level||'').replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+    if(type==='Bookkeeper/Administrator')type='Bookkeeper';
+    const status=m.status||'';
+    const statusClass=status.toLowerCase().includes('active')?'status-active':status.toLowerCase().includes('lapsed')?'status-lapsed':status.toLowerCase().includes('pending')?'status-pending':status.toLowerCase().includes('leave')?'status-leave':'';
+    const renewedStr=m.date_joined?new Date(m.date_joined).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}):'—';
     return `<tr>
-     <td data-col="waid" style="color:#6b7280;font-size:0.8rem;">${m.wa_id || ''}</td>
-      <td data-col="num" style="color:#444;font-size:0.8rem;font-weight:600;">${num}</td>
-      <td data-col="name"><strong>${last}</strong>, ${first}</td>
-      <td data-col="email" style="font-size:0.82rem;">${email}</td>
-      <td data-col="type" style="font-size:0.8rem;">${type}</td>
-      <td data-col="status" style="display:none;"><span class="status-badge ${statusClass}">${status || '—'}</span></td>
-      <td data-col="rank" style="font-size:0.8rem;display:none;">${rank}</td>
-      <td data-col="phone" style="font-size:0.82rem;display:none;">${phone}</td>
-      <td data-col="city" style="font-size:0.82rem;display:none;">${city}</td>
-      <td data-col="admintype" style="font-size:0.8rem;display:none;">${m.admin_type && m.admin_type !== 'None' ? m.admin_type : '—'}</td>
-      <td data-col="joined" style="font-size:0.8rem;color:#6b7280;">${renewedStr}</td>
-      <td data-col="actions">
-        <div class="action-btns">
-          <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id},'${(last+', '+first).replace(/'/g,"\\'")}')">Del</button>
-        </div>
-      </td>
+      <td data-col="waid" style="color:var(--text-muted);font-size:12px;">${m.wa_id||''}</td>
+      <td data-col="num" style="font-size:12px;font-weight:600;color:var(--text-secondary);">${m.member_number||''}</td>
+      <td data-col="name" style="font-weight:500;"><span style="color:var(--text-primary);">${m.last_name||''}</span><span style="color:var(--text-muted);">, ${m.first_name||''}</span></td>
+      <td data-col="email" style="font-size:12px;color:var(--text-secondary);">${m.email||''}</td>
+      <td data-col="type" style="font-size:12px;color:var(--text-secondary);">${type}</td>
+      <td data-col="status" style="display:none;"><span class="status-badge ${statusClass}">${status||'—'}</span></td>
+      <td data-col="rank" style="font-size:12px;display:none;">${m.rank||''}</td>
+      <td data-col="phone" style="font-size:12px;display:none;">${m.phone||''}</td>
+      <td data-col="city" style="font-size:12px;display:none;">${m.city||''}</td>
+      <td data-col="admintype" style="font-size:12px;display:none;">${m.admin_type&&m.admin_type!=='None'?m.admin_type:'—'}</td>
+      <td data-col="joined" style="font-size:12px;color:var(--text-muted);">${renewedStr}</td>
+      <td data-col="actions"><div class="action-btns">
+        <button class="btn btn-outline btn-sm" onclick='openEditModal(${JSON.stringify(m)})'>Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="openDeleteModal(${m.id},'${((m.last_name||'')+', '+(m.first_name||'')).replace(/'/g,"\\'")}')">Del</button>
+      </div></td>
     </tr>`;
   }).join('');
-
-  renderPagination();
-  applyColVisibility();
+  renderPagination(); applyColVisibility();
 }
 
 function renderPagination() {
-  const total = filteredMembers.length;
-  const pages = Math.ceil(total / PAGE_SIZE);
-  const start = (currentPage - 1) * PAGE_SIZE + 1;
-  const end   = Math.min(currentPage * PAGE_SIZE, total);
-  document.getElementById('pagination').style.display = 'flex';
-  document.getElementById('paginationInfo').textContent = `Showing ${start}–${end} of ${total} members`;
-  const ctrl = document.getElementById('pageControls');
-  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
-  for (let i = 1; i <= pages; i++) {
-    if (pages <= 7 || Math.abs(i - currentPage) <= 2 || i === 1 || i === pages) {
-      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-    } else if (Math.abs(i - currentPage) === 3) {
-      html += `<span style="padding:0 0.3rem;color:var(--muted);">…</span>`;
-    }
+  const total=filteredMembers.length, pages=Math.ceil(total/PAGE_SIZE);
+  const start=(currentPage-1)*PAGE_SIZE+1, end=Math.min(currentPage*PAGE_SIZE,total);
+  document.getElementById('pagination').style.display='flex';
+  document.getElementById('paginationInfo').textContent=`${start}–${end} of ${total} members`;
+  const ctrl=document.getElementById('pageControls');
+  let html=`<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  for(let i=1;i<=pages;i++){
+    if(pages<=7||Math.abs(i-currentPage)<=2||i===1||i===pages) html+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if(Math.abs(i-currentPage)===3) html+=`<span style="padding:0 0.3rem;color:var(--text-muted);">…</span>`;
   }
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
-  ctrl.innerHTML = html;
+  html+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  ctrl.innerHTML=html;
 }
 
-function goPage(p) {
-  const pages = Math.ceil(filteredMembers.length / PAGE_SIZE);
-  if (p < 1 || p > pages) return;
-  currentPage = p;
-  renderTable();
-}
+function goPage(p){const pages=Math.ceil(filteredMembers.length/PAGE_SIZE);if(p<1||p>pages)return;currentPage=p;renderTable();}
 
-// ── ADD / EDIT MODAL ──
-function openAddModal() {
-  editingId = null;
-  document.getElementById('modalTitle').textContent = 'ADD MEMBER';
-  clearForm();
-  document.getElementById('memberModal').classList.add('open');
-}
+function openAddModal(){editingId=null;document.getElementById('modalTitle').textContent='Add Member';clearForm();document.getElementById('memberModal').classList.add('open');}
 
-function openEditModal(m) {
-  editingId = m.id;
-  document.getElementById('modalTitle').textContent = 'EDIT MEMBER';
-  document.getElementById('fFirst').value     = m.first_name  || '';
-  document.getElementById('fLast').value      = m.last_name   || '';
-  document.getElementById('fEmail').value     = m.email       || '';
-  document.getElementById('fMemberNum').value = m.member_number || '';
-  document.getElementById('fPhone').value     = m.phone       || '';
-  document.getElementById('fAddress').value   = m.address     || '';
-  document.getElementById('fCity').value      = m.city        || '';
-  document.getElementById('fState').value     = m.state       || '';
-  document.getElementById('fZip').value       = m.zip         || '';
-  const typeEl = document.getElementById('fType');
-  const ty = m.membership_level || '';
-  [...typeEl.options].forEach(o => { if (ty === o.value) typeEl.value = o.value; });
-  const renewed = m.date_joined || '';
-  document.getElementById('fDateJoined').value = renewed ? renewed.substring(0,10) : '';
-  document.getElementById('fRank').value       = m.rank       || '';
-  document.getElementById('fAdminType').value  = m.admin_type || 'None';
-  document.getElementById('fNotes').value      = m.notes      || '';
-
-  // ── Photo preview ──
-  const photoWrap = document.getElementById('memberPhotoBlock');
-  const fullName = [m.first_name, m.last_name].filter(Boolean).join(' ');
-  let lvl = (m.membership_level || '')
-    .replace(/^[\w\d][\w\d]?\s*-\s*/i, '')
-    .replace(/,?\s*20\d\d-20\d\d\s*$/, '')
-    .trim();
-  if (lvl === 'Bookkeeper/Administrator') lvl = 'Bookkeeper';
-  if (m.photo_url) {
-    const proxied = '/.netlify/functions/wa-photo?path=' + encodeURIComponent(m.photo_url);
-    photoWrap.innerHTML = `
-      <div class="member-photo-wrap">
-        <img src="${proxied}" alt="${fullName}"
-             onerror="this.parentElement.innerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">
-        <div class="member-photo-name">${fullName}</div>
-        <div class="member-photo-level">${lvl}</div>
-      </div>`;
+function openEditModal(m){
+  editingId=m.id; document.getElementById('modalTitle').textContent='Edit Member';
+  document.getElementById('fFirst').value=m.first_name||'';
+  document.getElementById('fLast').value=m.last_name||'';
+  document.getElementById('fEmail').value=m.email||'';
+  document.getElementById('fMemberNum').value=m.member_number||'';
+  document.getElementById('fPhone').value=m.phone||'';
+  document.getElementById('fAddress').value=m.address||'';
+  document.getElementById('fCity').value=m.city||'';
+  document.getElementById('fState').value=m.state||'';
+  document.getElementById('fZip').value=m.zip||'';
+  const typeEl=document.getElementById('fType');
+  [...typeEl.options].forEach(o=>{if(m.membership_level===o.value)typeEl.value=o.value;});
+  document.getElementById('fDateJoined').value=m.date_joined?m.date_joined.substring(0,10):'';
+  document.getElementById('fRank').value=m.rank||'';
+  document.getElementById('fAdminType').value=m.admin_type||'None';
+  document.getElementById('fNotes').value=m.notes||'';
+  const photoWrap=document.getElementById('memberPhotoBlock');
+  const fullName=[m.first_name,m.last_name].filter(Boolean).join(' ');
+  let lvl=(m.membership_level||'').replace(/^[\w\d][\w\d]?\s*-\s*/i,'').replace(/,?\s*20\d\d-20\d\d\s*$/,'').trim();
+  if(lvl==='Bookkeeper/Administrator')lvl='Bookkeeper';
+  if(m.photo_url){
+    const proxied='/.netlify/functions/wa-photo?path='+encodeURIComponent(m.photo_url);
+    photoWrap.innerHTML=`<div class="member-photo-wrap"><img src="${proxied}" alt="${fullName}" onerror="this.parentElement.innerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'"><div class="member-photo-name">${fullName}</div><div class="member-photo-level">${lvl}</div></div>`;
   } else {
-    photoWrap.innerHTML = `
-      <div class="member-photo-wrap">
-        <div class="member-photo-placeholder">👤</div>
-        <div class="member-photo-name">${fullName}</div>
-        <div class="member-photo-level">${lvl}</div>
-      </div>`;
+    photoWrap.innerHTML=`<div class="member-photo-wrap"><div class="member-photo-placeholder">👤</div><div class="member-photo-name">${fullName}</div><div class="member-photo-level">${lvl}</div></div>`;
   }
-
   document.getElementById('memberModal').classList.add('open');
 }
 
-function closeModal() {
-  document.getElementById('memberModal').classList.remove('open');
-  editingId = null;
+function closeModal(){document.getElementById('memberModal').classList.remove('open');editingId=null;}
+
+function clearForm(){
+  ['fFirst','fLast','fEmail','fMemberNum','fPhone','fAddress','fCity','fState','fZip','fDateJoined','fRank','fNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fAdminType').value='None';
+  document.getElementById('fType').value='2a - Full Members 2025-2026';
+  document.getElementById('memberPhotoBlock').innerHTML='';
 }
 
-function clearForm() {
-  ['fFirst','fLast','fEmail','fMemberNum','fPhone','fAddress','fCity','fState','fZip','fDateJoined','fRank','fNotes']
-    .forEach(id => document.getElementById(id).value = '');
-  document.getElementById('fAdminType').value = 'None';
-  document.getElementById('fType').value = '2a - Full Members 2025-2026';
+async function saveMember(){
+  const payload={first_name:document.getElementById('fFirst').value.trim(),last_name:document.getElementById('fLast').value.trim(),email:document.getElementById('fEmail').value.trim(),member_number:document.getElementById('fMemberNum').value.trim(),phone:document.getElementById('fPhone').value.trim(),address:document.getElementById('fAddress').value.trim(),city:document.getElementById('fCity').value.trim(),state:document.getElementById('fState').value.trim(),zip:document.getElementById('fZip').value.trim(),membership_level:document.getElementById('fType').value,date_joined:document.getElementById('fDateJoined').value||null,rank:document.getElementById('fRank').value.trim(),admin_type:document.getElementById('fAdminType').value,notes:document.getElementById('fNotes').value.trim(),updated_at:new Date().toISOString()};
+  if(!payload.first_name||!payload.last_name){showToast('First and last name are required.','error');return;}
+  try{
+    if(editingId){await sbFetch(TABLE+'?id=eq.'+editingId,{method:'PATCH',body:JSON.stringify(payload)});const idx=allMembers.findIndex(m=>m.id==editingId);if(idx>-1)allMembers[idx]={...allMembers[idx],...payload};showToast('Member updated successfully.','success');}
+    else{const result=await sbFetch(TABLE,{method:'POST',body:JSON.stringify(payload)});if(result&&result[0])allMembers.push(result[0]);showToast('Member added successfully.','success');}
+    updateStats();onSearch();closeModal();
+  }catch(e){showToast('Error saving member: '+e.message,'error');}
 }
 
-async function saveMember() {
-  const payload = {
-    first_name:       document.getElementById('fFirst').value.trim(),
-    last_name:        document.getElementById('fLast').value.trim(),
-    email:            document.getElementById('fEmail').value.trim(),
-    member_number:    document.getElementById('fMemberNum').value.trim(),
-    phone:            document.getElementById('fPhone').value.trim(),
-    address:          document.getElementById('fAddress').value.trim(),
-    city:             document.getElementById('fCity').value.trim(),
-    state:            document.getElementById('fState').value.trim(),
-    zip:              document.getElementById('fZip').value.trim(),
-    membership_level: document.getElementById('fType').value,
-    date_joined:      document.getElementById('fDateJoined').value || null,
-    rank:             document.getElementById('fRank').value.trim(),
-    admin_type:       document.getElementById('fAdminType').value,
-    notes:            document.getElementById('fNotes').value.trim(),
-    updated_at:       new Date().toISOString(),
-  };
-
-  if (!payload.first_name || !payload.last_name) {
-    showToast('First and last name are required.', 'error'); return;
-  }
-
-  try {
-    if (editingId) {
-      await sbFetch(TABLE + '?id=eq.' + editingId, {
-        method: 'PATCH',
-        body: JSON.stringify(payload)
-      });
-      const idx = allMembers.findIndex(m => m.id == editingId);
-      if (idx > -1) allMembers[idx] = { ...allMembers[idx], ...payload };
-      showToast('Member updated successfully.', 'success');
-    } else {
-      const result = await sbFetch(TABLE, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-      if (result && result[0]) allMembers.push(result[0]);
-      showToast('Member added successfully.', 'success');
-    }
-    updateStats();
-    onSearch();
-    closeModal();
-  } catch (e) {
-    showToast('Error saving member: ' + e.message, 'error');
-  }
+function openDeleteModal(id,name){deleteId=id;document.getElementById('deleteName').textContent=name;document.getElementById('deleteModal').classList.add('open');}
+function closeDeleteModal(){document.getElementById('deleteModal').classList.remove('open');deleteId=null;}
+async function confirmDelete(){
+  if(!deleteId)return;
+  try{await sbFetch(TABLE+'?id=eq.'+deleteId,{method:'DELETE'});allMembers=allMembers.filter(m=>m.id!=deleteId);updateStats();onSearch();closeDeleteModal();showToast('Member removed.','success');}
+  catch(e){showToast('Error deleting member: '+e.message,'error');}
 }
 
-// ── DELETE ──
-function openDeleteModal(id, name) {
-  deleteId = id;
-  document.getElementById('deleteName').textContent = name;
-  document.getElementById('deleteModal').classList.add('open');
-}
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('open');
-  deleteId = null;
-}
-async function confirmDelete() {
-  if (!deleteId) return;
-  try {
-    await sbFetch(TABLE + '?id=eq.' + deleteId, { method: 'DELETE' });
-    allMembers = allMembers.filter(m => m.id != deleteId);
-    updateStats();
-    onSearch();
-    closeDeleteModal();
-    showToast('Member removed.', 'success');
-  } catch (e) {
-    showToast('Error deleting member: ' + e.message, 'error');
-  }
-}
-
-// ── WA SYNC ──
-async function runSync() {
-  const btn       = document.getElementById('syncBtn');
-  const statusBox = document.getElementById('syncStatusBox');
-  const spinner   = document.getElementById('syncSpinner');
-  const results   = document.getElementById('syncResults');
-  const lastRun   = document.getElementById('syncLastRun');
-
-  btn.disabled = true;
-  btn.textContent = '⏳ SYNCING…';
-  statusBox.style.display = 'block';
-  spinner.style.display = 'flex';
-  results.innerHTML = '<p style="color:var(--muted);font-size:0.9rem;">Sync triggered — this takes 20–60 seconds. Polling for results…</p>';
-
-  // Fire both background functions (they return 202 immediately, no body)
-  await Promise.all([
-    fetch('/.netlify/functions/sync-members-background', { method: 'POST' }),
-    fetch('/.netlify/functions/sync-events-background',  { method: 'POST' })
-  ]);
-
-  // Poll sync-status every 5s for up to 90s
-  const startedAt = Date.now();
-  const poll = setInterval(async () => {
-    try {
-      const resp = await fetch('/.netlify/functions/sync-status');
-      const data = await resp.json();
-      console.log('sync-status response:', JSON.stringify(data));
-      const m = data.latest?.members;
-      const e = data.latest?.events;
-
-   const mDone = !m || (m.status === 'complete' || m.status === 'error');
-const eDone = !e || (e.status === 'complete' || e.status === 'error');
-
-if (mDone && eDone && (m || e)) {
-        clearInterval(poll);
-        spinner.style.display = 'none';
-        btn.disabled = false;
-        btn.textContent = '🔄 RUN SYNC NOW';
-
-        const mRes = m.results?.members || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] };
-        const eRes = e.results?.events  || { wa_to_sb:0, sb_to_wa:0, skipped:0, errors:[] };
-        const allErrors = [...(mRes.errors||[]), ...(eRes.errors||[])];
-        const success = m.status === 'complete' && e.status === 'complete';
-
-      results.innerHTML = `
-          <div class="sync-success-banner" style="${success ? '' : 'background:var(--danger-light);'}">
-            ${success ? '✅ Sync completed successfully' : '⚠️ Sync completed with errors'}
-            <span style="margin-left:auto;font-size:0.75rem;opacity:0.7;">
-              ${new Date(m.finished_at).toLocaleString()}
-            </span>
-          </div>
-          <table class="sync-results-table">
-            <thead>
-              <tr><th>Category</th><th>WA → Supabase</th><th>Supabase → WA</th><th>Skipped</th><th>Errors</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>👥 Members</td>
-                <td>${mRes.wa_to_sb}</td><td>${mRes.sb_to_wa}</td><td>${mRes.skipped}</td>
-                <td style="color:${mRes.errors?.length ? 'var(--danger)' : 'var(--success)'};">${mRes.errors?.length || 0}</td>
-              </tr>
-              <tr>
-                <td>📅 Events</td>
-                <td>${eRes.wa_to_sb}</td><td>${eRes.sb_to_wa}</td><td>${eRes.skipped}</td>
-                <td style="color:${eRes.errors?.length ? 'var(--danger)' : 'var(--success)'};">${eRes.errors?.length || 0}</td>
-              </tr>
-            </tbody>
-          </table>
-          ${allErrors.length ? `
-            <div class="sync-error-banner">
-              <strong>Errors:</strong>
-              <ul>${allErrors.map(e => `<li>${e}</li>`).join('')}</ul>
-            </div>` : ''}
-        `;
-        lastRun.textContent = 'Last run: ' + new Date(m.finished_at).toLocaleString();
-        lastRun.style.display = 'block';
-        if (success) loadMembers();
+async function runSync(){
+  const btn=document.getElementById('syncBtn'),statusBox=document.getElementById('syncStatusBox'),spinner=document.getElementById('syncSpinner'),results=document.getElementById('syncResults'),lastRun=document.getElementById('syncLastRun');
+  btn.disabled=true;btn.textContent='⏳ Syncing…';statusBox.style.display='block';spinner.style.display='flex';
+  results.innerHTML='<p style="color:var(--text-muted);font-size:13px;">Sync triggered — polling for results…</p>';
+  await Promise.all([fetch('/.netlify/functions/sync-members-background',{method:'POST'}),fetch('/.netlify/functions/sync-events-background',{method:'POST'})]);
+  const startedAt=Date.now();
+  const poll=setInterval(async()=>{
+    try{
+      const resp=await fetch('/.netlify/functions/sync-status');const data=await resp.json();
+      const m=data.latest?.members,e=data.latest?.events;
+      const mDone=!m||(m.status==='complete'||m.status==='error');
+      const eDone=!e||(e.status==='complete'||e.status==='error');
+      if(mDone&&eDone&&(m||e)){
+        clearInterval(poll);spinner.style.display='none';btn.disabled=false;btn.textContent='↺ Run Sync Now';
+        const mRes=m.results?.members||{wa_to_sb:0,sb_to_wa:0,skipped:0,errors:[]};
+        const eRes=e.results?.events||{wa_to_sb:0,sb_to_wa:0,skipped:0,errors:[]};
+        const allErrors=[...(mRes.errors||[]),...(eRes.errors||[])];
+        const success=m.status==='complete'&&e.status==='complete';
+        results.innerHTML=`<div class="sync-success-banner">${success?'✓ Sync completed successfully':'⚠ Sync completed with errors'}<span style="margin-left:auto;font-size:11px;opacity:0.7;">${new Date(m.finished_at).toLocaleString()}</span></div><table class="sync-results-table"><thead><tr><th>Category</th><th>WA → Supabase</th><th>Supabase → WA</th><th>Skipped</th><th>Errors</th></tr></thead><tbody><tr><td>Members</td><td>${mRes.wa_to_sb}</td><td>${mRes.sb_to_wa}</td><td>${mRes.skipped}</td><td style="color:${mRes.errors?.length?'var(--danger)':'var(--success)'};">${mRes.errors?.length||0}</td></tr><tr><td>Events</td><td>${eRes.wa_to_sb}</td><td>${eRes.sb_to_wa}</td><td>${eRes.skipped}</td><td style="color:${eRes.errors?.length?'var(--danger)':'var(--success)'};">${eRes.errors?.length||0}</td></tr></tbody></table>${allErrors.length?`<div class="sync-error-banner"><strong>Errors:</strong><ul>${allErrors.map(e=>`<li>${e}</li>`).join('')}</ul></div>`:''}`;
+        lastRun.textContent='Last run: '+new Date(m.finished_at).toLocaleString();lastRun.style.display='block';
+        if(success)loadMembers();
       }
-
-     if (Date.now() - startedAt > 300000) {
-        clearInterval(poll);
-        spinner.style.display = 'none';
-        btn.disabled = false;
-        btn.textContent = '🔄 RUN SYNC NOW';
-        results.innerHTML = `<div class="sync-error-banner">⏱ Sync is taking longer than expected. Check Netlify function logs.</div>`;
-      }
-    } catch (err) {
-      // Keep polling on transient errors
-    }
-  }, 5000);
+      if(Date.now()-startedAt>300000){clearInterval(poll);spinner.style.display='none';btn.disabled=false;btn.textContent='↺ Run Sync Now';results.innerHTML=`<div class="sync-error-banner">⏱ Sync taking longer than expected. Check Netlify logs.</div>`;}
+    }catch(err){}
+  },5000);
 }
 
-// ── TOAST ──
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.innerHTML = (type === 'success' ? '✓ ' : '✗ ') + msg;
-  t.className = 'show ' + type;
-  setTimeout(() => t.className = '', 3500);
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.innerHTML=(type==='success'?'✓ ':'✗ ')+msg;
+  t.className='show '+type;
+  setTimeout(()=>t.className='',3500);
 }
 
-// close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => {
-    if (e.target === el) {
-      el.classList.remove('open');
-      editingId = null; deleteId = null;
-    }
-  });
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');editingId=null;deleteId=null;}});
 });
 </script>
 
