@@ -39,7 +39,6 @@ function toWADate(d) {
 }
 
 function mapWAEventToSupabase(waEvent) {
-  console.log("WA_REG_DEBUG:", waEvent.Id, JSON.stringify({RegistrationType: waEvent.RegistrationType, Type: waEvent.Type, EventType: waEvent.EventType, RegistrationEnabled: waEvent.RegistrationEnabled}));
   const tags = Array.isArray(waEvent.Tags)
     ? waEvent.Tags.map(t => t.Label || t).filter(Boolean) : [];
   const description = waEvent.Description
@@ -56,7 +55,7 @@ function mapWAEventToSupabase(waEvent) {
     description,
     body_html:   waEvent.Description || '',
     rsvp_url:         waEvent.RegistrationEnabled ? `https://tamparoughriders.org/event-${waEvent.Id}` : '',
-    registration_type: waEvent.RegistrationType === 'Advanced' ? 'advanced' : 'simple',
+    registration_type: waEvent.EventType === 'Regular' ? 'ticketed' : 'rsvp',
     is_public:   waEvent.AccessLevel === 'Public',
     is_active:   !waEvent.IsDraft,
     tags,
