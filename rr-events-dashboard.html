@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Events Dashboard – Rough Riders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:#0d1f3c; --navy-mid:#162d55; --gold:#C9A84C; --gold-dk:#a07e2a; --gold-lt:#e8c96a;
+  --bg:#f7f8fa; --bg2:#ffffff; --text:#1a1a2e; --text-mid:#4a4a6a;
+  --border:#dde0e8; --shadow:rgba(13,31,60,0.10); --green:#1a6b3a; --red:#8b1a1a;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* TOPBAR */
+#topbar {
+  position:sticky; top:0; z-index:100;
+  background:var(--navy); border-bottom:3px solid var(--gold);
+  padding:0 1.5rem; height:58px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo { font-family:'Cinzel',serif; font-size:0.9rem; font-weight:700; color:var(--gold); letter-spacing:0.08em; }
+.topbar-actions { display:flex; gap:0.6rem; align-items:center; }
+
+/* BUTTONS */
+.btn {
+  font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.45rem 0.9rem; border-radius:4px; cursor:pointer; transition:all 0.2s; border:none; white-space:nowrap;
+  text-decoration:none; display:inline-flex; align-items:center; gap:0.35rem;
+}
+.btn-primary { background:var(--navy); color:var(--gold); font-weight:700; border:1px solid var(--gold); }
+.btn-primary:hover { background:var(--navy-mid); }
+.btn-ghost { background:transparent; color:rgba(240,232,208,0.7); border:1px solid rgba(201,168,76,0.4); }
+.btn-ghost:hover { color:var(--gold); border-color:var(--gold); }
+.btn-admin-on { background:var(--gold); color:var(--navy); font-weight:700; border:1px solid var(--gold); }
+
+/* ADMIN BARS */
+.admin-pwd-bar {
+  background:#fffbf0; border-bottom:2px solid var(--gold);
+  padding:0.6rem 1.5rem; display:none; gap:0.65rem; align-items:center; flex-wrap:wrap;
+}
+.admin-pwd-bar.open { display:flex; }
+.pwd-label { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-mid); }
+.pwd-input {
+  border:1px solid var(--border); border-radius:4px; padding:0.38rem 0.75rem;
+  font-family:'Crimson Pro',serif; font-size:0.9rem; outline:none; width:200px;
+}
+.pwd-input:focus { border-color:var(--gold); }
+.admin-active-bar {
+  background:#fffbf0; border-bottom:1px solid var(--gold); padding:0.45rem 1.5rem;
+  display:none; align-items:center; gap:0.5rem;
+  font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.08em; color:var(--gold-dk);
+}
+.admin-active-bar.open { display:flex; }
+.admin-active-bar button {
+  background:none; border:none; cursor:pointer; color:var(--gold-dk);
+  font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.08em; margin-left:auto;
+  text-transform:uppercase;
+}
+
+/* BODY */
+.admin-body { padding:1.25rem 1.5rem; max-width:1400px; margin:0 auto; }
+
+/* STATS */
+.stats-bar { display:flex; gap:0.85rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+.stat-pill {
+  background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--gold);
+  padding:0.55rem 1.1rem; border-radius:4px;
+  font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.06em;
+  color:var(--text-mid); box-shadow:0 1px 4px var(--shadow);
+}
+.stat-pill strong { color:var(--navy); font-size:1.1rem; margin-right:0.3rem; display:block; }
+
+/* TOOLBAR */
+.toolbar {
+  display:flex; gap:0.65rem; align-items:center; margin-bottom:1.1rem;
+  flex-wrap:wrap; justify-content:space-between;
+}
+.toolbar-left { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
+.toolbar-right { display:flex; gap:0.5rem; align-items:center; }
+.filter-btn {
+  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.38rem 0.75rem; border-radius:20px; cursor:pointer;
+  border:1px solid var(--border); background:var(--bg2); color:var(--text-mid); transition:all 0.15s;
+}
+.filter-btn.active { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.filter-btn:hover:not(.active) { border-color:var(--navy); color:var(--navy); }
+.search-input {
+  padding:0.42rem 0.85rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg2); color:var(--text); font-family:'Crimson Pro',serif; font-size:0.9rem;
+  outline:none; width:220px; transition:border-color 0.2s;
+}
+.search-input:focus { border-color:var(--gold); }
+
+/* DETAIL PANEL */
+.detail-panel {
+  background:var(--bg2); border:1px solid var(--border); border-radius:6px;
+  box-shadow:0 2px 12px var(--shadow); margin-bottom:1.25rem; overflow:hidden;
+}
+.detail-header {
+  background:var(--navy); padding:0.75rem 1.25rem;
+  display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--gold);
+}
+.detail-title { font-family:'Cinzel',serif; font-size:0.85rem; color:var(--gold); letter-spacing:0.07em; }
+.detail-close { background:none; border:none; color:rgba(255,255,255,0.5); font-size:1.25rem; cursor:pointer; line-height:1; }
+.detail-close:hover { color:#fff; }
+.detail-body { padding:1.25rem; display:grid; grid-template-columns:220px 1fr; gap:1.25rem; }
+@media(max-width:600px) { .detail-body { grid-template-columns:1fr; } }
+.detail-img { width:100%; height:155px; object-fit:cover; border-radius:4px; border:1px solid var(--border); }
+.detail-img-placeholder {
+  width:100%; height:155px; background:var(--navy-mid); border-radius:4px;
+  display:flex; align-items:center; justify-content:center; font-size:38px; color:var(--gold);
+}
+.detail-meta { display:flex; flex-direction:column; gap:0.55rem; }
+.detail-meta-row { display:flex; align-items:flex-start; gap:0.5rem; font-size:0.88rem; color:var(--text-mid); }
+.detail-meta-row strong {
+  color:var(--text); min-width:75px; font-family:'Cinzel',serif;
+  font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; padding-top:2px; flex-shrink:0;
+}
+.detail-desc { padding:0.9rem 1.25rem 1.25rem; font-size:0.9rem; color:var(--text-mid); line-height:1.6; border-top:1px solid var(--border); }
+
+/* TABLE */
+.section-count { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-mid); padding:0 0 0.6rem; text-align:right; }
+.table-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; box-shadow:0 2px 12px var(--shadow); overflow-x:auto; }
+table { width:100%; border-collapse:collapse; min-width:700px; }
+thead th {
+  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-mid); padding:0.75rem 1rem; border-bottom:2px solid var(--border);
+  text-align:left; background:var(--bg);
+}
+tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:#f0f4ff; }
+td { padding:0.7rem 1rem; font-size:0.88rem; vertical-align:middle; }
+.event-thumb { width:52px; height:38px; object-fit:cover; border-radius:3px; border:1px solid var(--border); display:block; }
+.thumb-placeholder {
+  width:52px; height:38px; border-radius:3px; border:1px solid var(--border);
+  background:var(--navy-mid); display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:var(--gold);
+}
+.badge {
+  font-family:'Cinzel',serif; font-size:0.52rem; letter-spacing:0.08em;
+  padding:0.16rem 0.45rem; border-radius:3px; display:inline-block; margin:1px;
+}
+.badge-tag  { background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; }
+.badge-pub  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+.badge-priv { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+.badge-arch { background:#f9fafb; color:#9ca3af; border:1px solid #e5e7eb; }
+.badge-wa   { background:#fff7ed; color:#92400e; border:1px solid #fed7aa; }
+.badge-soon { background:#fefce8; color:#854d0e; border:1px solid #fef08a; }
+.badge-today{ background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; }
+.event-name-cell { font-family:'Crimson Pro',serif; font-size:0.95rem; font-weight:600; color:var(--text); line-height:1.3; }
+.event-date-cell { font-size:0.82rem; color:var(--text-mid); white-space:nowrap; }
+.event-loc-cell  { font-size:0.82rem; color:var(--text-mid); }
+.row-actions { display:flex; gap:0.3rem; }
+.icon-btn {
+  padding:0.25rem 0.55rem; border-radius:3px; cursor:pointer; font-size:0.7rem;
+  border:1px solid var(--border); background:var(--bg); color:var(--text-mid);
+  transition:all 0.2s; font-family:'Cinzel',serif; letter-spacing:0.06em;
+  text-decoration:none; display:inline-flex; align-items:center;
+}
+.icon-btn:hover { border-color:var(--navy); color:var(--navy); background:#eef2ff; }
+
+/* STATE ROWS */
+.loading-row td, .error-row td, .empty-row td {
+  text-align:center; padding:3rem; color:var(--text-mid);
+  font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:0.1em;
+}
+.error-row td { color:var(--red); }
+.spinner {
+  display:block; width:30px; height:30px; border:2px solid var(--border);
+  border-top-color:var(--navy); border-radius:50%; animation:spin 0.75s linear infinite;
+  margin:0 auto 12px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:1.5rem; right:1.5rem; z-index:999;
+  font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:0.08em;
+  padding:0.7rem 1.2rem; border-radius:4px; opacity:0;
+  transition:opacity 0.3s; pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,0.15);
+}
+.toast.success { background:var(--green); color:#fff; }
+.toast.error   { background:var(--red); color:#fff; }
+.toast.show    { opacity:1; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <span class="logo">⭐ Rough Riders — Events Dashboard</span>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" id="adminBtn" onclick="toggleAdminPwd()">🔒 Admin</button>
+    <a class="btn btn-ghost" href="https://rr-home-page.netlify.app/events-admin" target="_blank">Open CMS ↗</a>
+    <a class="btn btn-ghost" href="https://rr-home-page.netlify.app/events" target="_blank">Public Page ↗</a>
+    <button class="btn btn-primary" onclick="loadEvents()">↺ Refresh</button>
+  </div>
+</div>
+
+<!-- ADMIN PASSWORD BAR -->
+<div class="admin-pwd-bar" id="adminPwdBar">
+  <span class="pwd-label">Admin password</span>
+  <input type="password" id="pwdInput" class="pwd-input" placeholder="Enter password…"
+         onkeydown="if(event.key==='Enter')applyAdmin()"/>
+  <button class="btn btn-primary" onclick="applyAdmin()">Unlock</button>
+  <button class="btn btn-ghost" onclick="clearAdmin()"
+          style="color:var(--text-mid);border-color:var(--border);">Clear</button>
+</div>
+
+<!-- ADMIN ACTIVE BAR -->
+<div class="admin-active-bar" id="adminActiveBar">
+  ⭐ Admin mode active — showing all events including inactive &amp; private
+  <button onclick="clearAdmin()">Sign Out</button>
+</div>
+
+<!-- MAIN BODY -->
+<div class="admin-body">
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-pill"><strong id="sTotal">—</strong>Upcoming</div>
+    <div class="stat-pill"><strong id="sMonth">—</strong>This Month</div>
+    <div class="stat-pill"><strong id="sRsvp">—</strong>Has RSVP</div>
+    <div class="stat-pill"><strong id="sNext">—</strong>Days to Next</div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('7',this)">Next 7 Days</button>
+      <button class="filter-btn" onclick="setFilter('30',this)">Next 30 Days</button>
+      <button class="filter-btn" onclick="setFilter('90',this)">Next 90 Days</button>
+      <button class="filter-btn" onclick="setFilter('rsvp',this)">Has RSVP</button>
+    </div>
+    <div class="toolbar-right">
+      <input type="text" class="search-input" id="searchInput"
+             placeholder="Search events…" oninput="renderEvents(allEvents)"/>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div id="detailPanel"></div>
+
+  <!-- COUNT -->
+  <div id="countLabel" class="section-count"></div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:64px">Photo</th>
+          <th>Event</th>
+          <th style="width:150px">Date</th>
+          <th>Location</th>
+          <th style="width:170px">Tags</th>
+          <th style="width:100px">Status</th>
+          <th style="width:55px">WA</th>
+          <th style="width:100px">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr class="loading-row">
+          <td colspan="8">
+            <span class="spinner"></span>
+            Loading events…
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /admin-body -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://rr-home-page.netlify.app/.netlify/functions/events-api';
+let allEvents = [];
+let activeFilter = 'all';
+let adminToken = sessionStorage.getItem('rr_admin') || '';
+
+/* ── Admin auth ──────────────────────────────────── */
+function toggleAdminPwd() {
+  const bar = document.getElementById('adminPwdBar');
+  bar.classList.toggle('open');
+  if (bar.classList.contains('open')) document.getElementById('pwdInput').focus();
+}
+function applyAdmin() {
+  adminToken = document.getElementById('pwdInput').value.trim();
+  sessionStorage.setItem('rr_admin', adminToken);
+  document.getElementById('adminPwdBar').classList.remove('open');
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('adminActiveBar').classList.toggle('open', !!adminToken);
+  const btn = document.getElementById('adminBtn');
+  btn.className = adminToken ? 'btn btn-admin-on' : 'btn btn-ghost';
+  btn.textContent = adminToken ? '⭐ Admin' : '🔒 Admin';
+  loadEvents();
+}
+function clearAdmin() {
+  adminToken = '';
+  sessionStorage.removeItem('rr_admin');
+  document.getElementById('adminPwdBar').classList.remove('open');
+  document.getElementById('adminActiveBar').classList.remove('open');
+  const btn = document.getElementById('adminBtn');
+  btn.className = 'btn btn-ghost';
+  btn.textContent = '🔒 Admin';
+  loadEvents();
+}
+
+/* ── Helpers ─────────────────────────────────────── */
+function daysUntil(d) {
+  if (!d) return 9999;
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((new Date(d + 'T00:00:00') - now) / 86400000);
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US',
+    { month:'short', day:'numeric', year:'numeric' });
+}
+function stripHtml(h) {
+  return h ? h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim() : '';
+}
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ── Filter ──────────────────────────────────────── */
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEvents(allEvents);
+}
+
+/* ── Stats ───────────────────────────────────────── */
+function updateStats(events) {
+  const up = events.filter(e => daysUntil(e.date_start) >= 0);
+  document.getElementById('sTotal').textContent = up.length;
+  document.getElementById('sMonth').textContent = up.filter(e => daysUntil(e.date_start) <= 31).length;
+  document.getElementById('sRsvp').textContent  = up.filter(e => e.rsvp_url).length;
+  const nxt = up.length ? daysUntil(up[0].date_start) : '—';
+  document.getElementById('sNext').textContent  = nxt === 0 ? 'Today' : nxt;
+}
+
+/* ── Detail panel ────────────────────────────────── */
+function showDetail(ev) {
+  const imgUrl = ev.photo_urls && ev.photo_urls[0] ? ev.photo_urls[0] : null;
+  const tags   = Array.isArray(ev.tags) ? ev.tags : [];
+  const desc   = stripHtml(ev.body_html || ev.description || '');
+  document.getElementById('detailPanel').innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <span class="detail-title">${ev.title || 'Event'}</span>
+        <button class="detail-close" onclick="document.getElementById('detailPanel').innerHTML=''" aria-label="Close">✕</button>
+      </div>
+      <div class="detail-body">
+        ${imgUrl
+          ? `<img class="detail-img" src="${imgUrl}" alt="${ev.title||''}"
+               onerror="this.outerHTML='<div class=detail-img-placeholder>🎗</div>'">`
+          : '<div class="detail-img-placeholder">🎗</div>'}
+        <div class="detail-meta">
+          <div class="detail-meta-row">
+            <strong>Date</strong>
+            ${fmtDate(ev.date_start)}${ev.date_end && ev.date_end !== ev.date_start ? ' – ' + fmtDate(ev.date_end) : ''}${ev.time_display ? ' · ' + ev.time_display : ''}
+          </div>
+          ${ev.location ? `<div class="detail-meta-row"><strong>Location</strong>${ev.location}</div>` : ''}
+          ${ev.rsvp_url ? `<div class="detail-meta-row"><strong>RSVP</strong><a href="${ev.rsvp_url}" target="_blank" style="color:var(--gold-dk)">${ev.rsvp_url}</a></div>` : ''}
+          ${tags.length ? `<div class="detail-meta-row"><strong>Tags</strong><span>${tags.map(t => `<span class="badge badge-tag">${t}</span>`).join('')}</span></div>` : ''}
+          ${adminToken ? `
+          <div class="detail-meta-row"><strong>WA ID</strong>${ev.wa_id || '—'}</div>
+          <div class="detail-meta-row"><strong>Active</strong>${ev.is_active ? '✓ Yes' : '✗ No'}&nbsp;&nbsp;<strong>Public</strong>${ev.is_public ? '✓ Yes' : '✗ No'}</div>` : ''}
+        </div>
+      </div>
+      ${desc ? `<div class="detail-desc">${desc.slice(0,800)}${desc.length > 800 ? '…' : ''}</div>` : ''}
+    </div>`;
+  document.getElementById('detailPanel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ── Render table ────────────────────────────────── */
+function renderEvents(events) {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const filtered = events.filter(ev => {
+    const days = daysUntil(ev.date_start);
+    if (!adminToken && days < 0) return false;
+    if (activeFilter === '7'    && days > 7)  return false;
+    if (activeFilter === '30'   && days > 30) return false;
+    if (activeFilter === '90'   && days > 90) return false;
+    if (activeFilter === 'rsvp' && !ev.rsvp_url) return false;
+    if (q) {
+      const hay = ((ev.title||'')+' '+(ev.location||'')+' '+(ev.description||'')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('countLabel').textContent =
+    filtered.length + ' event' + (filtered.length !== 1 ? 's' : '') + ' shown';
+
+  if (!filtered.length) {
+    document.getElementById('tableBody').innerHTML =
+      '<tr class="empty-row"><td colspan="8">No events match this filter.</td></tr>';
+    return;
+  }
+
+  let rows = '';
+  filtered.forEach(ev => {
+    const days   = daysUntil(ev.date_start);
+    const imgUrl = ev.photo_urls && ev.photo_urls[0] ? ev.photo_urls[0] : null;
+    const tags   = Array.isArray(ev.tags) ? ev.tags : [];
+
+    let dayBadge = '';
+    if (days === 0)           dayBadge = '<span class="badge badge-today">Today</span>';
+    else if (days > 0 && days <= 7) dayBadge = `<span class="badge badge-soon">In ${days}d</span>`;
+    else if (days < 0)        dayBadge = `<span class="badge badge-arch">${Math.abs(days)}d ago</span>`;
+
+    const statusBadges =
+      (ev.is_public ? '<span class="badge badge-pub">Public</span>' : '<span class="badge badge-priv">Private</span>') +
+      (!ev.is_active ? '<span class="badge badge-arch">Archived</span>' : '');
+
+    // Safely encode event data for onclick
+    const evJSON = JSON.stringify(ev)
+      .replace(/\\/g,'\\\\')
+      .replace(/'/g,"\\'")
+      .replace(/"/g,'&quot;');
+
+    rows += `<tr>
+      <td>
+        ${imgUrl
+          ? `<img class="event-thumb" src="${imgUrl}" alt=""
+               onerror="this.outerHTML='<div class=thumb-placeholder>🎗</div>'">`
+          : '<div class="thumb-placeholder">🎗</div>'}
+      </td>
+      <td>
+        <div class="event-name-cell">${ev.title || 'Untitled'}</div>
+        ${dayBadge}
+      </td>
+      <td class="event-date-cell">
+        ${fmtDate(ev.date_start)}
+        ${ev.date_end && ev.date_end !== ev.date_start ? '<br>' + fmtDate(ev.date_end) : ''}
+        ${ev.time_display ? '<br><span style="font-size:0.78rem">' + ev.time_display + '</span>' : ''}
+      </td>
+      <td class="event-loc-cell">${ev.location || '<span style="opacity:0.4">—</span>'}</td>
+      <td>${tags.map(t => `<span class="badge badge-tag">${t}</span>`).join('') || '<span style="opacity:0.4;font-size:0.8rem">—</span>'}</td>
+      <td>${statusBadges}</td>
+      <td>${ev.wa_id ? `<span class="badge badge-wa" title="WA ID: ${ev.wa_id}">WA</span>` : '<span style="opacity:0.3;font-size:0.8rem">—</span>'}</td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-btn" onclick="showDetail(evCache['${ev.id || ev.wa_id}'])" title="Details">Detail</button>
+          ${ev.rsvp_url ? `<a class="icon-btn" href="${ev.rsvp_url}" target="_blank" title="Register">RSVP</a>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('tableBody').innerHTML = rows;
+}
+
+/* ── Load from API ───────────────────────────────── */
+// Cache events by id for onclick reference
+const evCache = {};
+
+async function loadEvents() {
+  document.getElementById('tableBody').innerHTML =
+    '<tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading events…</td></tr>';
+  document.getElementById('detailPanel').innerHTML = '';
+
+  try {
+    const hdrs = { 'Content-Type': 'application/json' };
+    let url = API;
+    if (adminToken) { hdrs['Authorization'] = 'Bearer ' + adminToken; url += '?all=true'; }
+
+    const res = await fetch(url, { headers: hdrs });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    allEvents = (Array.isArray(data) ? data : (data.Items || data.items || []))
+      .sort((a, b) =>
+        new Date((a.date_start || '9999') + 'T00:00:00') -
+        new Date((b.date_start || '9999') + 'T00:00:00'));
+
+    // Populate cache
+    allEvents.forEach(ev => { evCache[ev.id || ev.wa_id] = ev; });
+
+    updateStats(allEvents);
+    renderEvents(allEvents);
+    toast('Events loaded — ' + allEvents.length + ' total');
+  } catch (err) {
+    document.getElementById('tableBody').innerHTML = `
+      <tr class="error-row">
+        <td colspan="8">
+          Failed to load events: <strong>${err.message}</strong><br><br>
+          <button class="btn btn-primary" onclick="loadEvents()" style="margin:0 auto">↺ Retry</button>
+        </td>
+      </tr>`;
+    toast('Load failed: ' + err.message, 'error');
+  }
+}
+
+/* ── Init ────────────────────────────────────────── */
+if (adminToken) {
+  document.getElementById('adminActiveBar').classList.add('open');
+  const btn = document.getElementById('adminBtn');
+  btn.className = 'btn btn-admin-on';
+  btn.textContent = '⭐ Admin';
+}
+loadEvents();
+</script>
+</body>
+</html>
