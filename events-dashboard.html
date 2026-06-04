@@ -226,7 +226,7 @@ td { padding:0.7rem 1rem; font-size:0.88rem; vertical-align:middle; }
   <div class="stats-bar">
     <div class="stat-pill"><strong id="sTotal">—</strong>Upcoming</div>
     <div class="stat-pill"><strong id="sMonth">—</strong>This Month</div>
-    <div class="stat-pill"><strong id="sRsvp">—</strong>Advanced</div>
+    <div class="stat-pill"><strong id="sRsvp">—</strong>RSVP</div>
     <div class="stat-pill"><strong id="sNext">—</strong>Days to Next</div>
   </div>
 
@@ -234,10 +234,11 @@ td { padding:0.7rem 1rem; font-size:0.88rem; vertical-align:middle; }
   <div class="toolbar">
     <div class="toolbar-left">
       <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-      <button class="filter-btn" onclick="setFilter('7',this)">Next 7 Days</button>
-      <button class="filter-btn" onclick="setFilter('30',this)">Next 30 Days</button>
-      <button class="filter-btn" onclick="setFilter('90',this)">Next 90 Days</button>
-      <button class="filter-btn" onclick="setFilter('rsvp',this)">Advanced</button>
+      <button class="filter-btn" onclick="setFilter('7',this)">This Week</button>
+      <button class="filter-btn" onclick="setFilter('30',this)">This Month</button>
+      <button class="filter-btn" onclick="setFilter('90',this)">Next 3 Months</button>
+      <button class="filter-btn" onclick="setFilter('rsvp',this)">RSVP Only</button>
+      <button class="filter-btn" onclick="setFilter('advanced',this)">Advanced ★</button>
     </div>
     <div class="toolbar-right">
       <input type="text" class="search-input" id="searchInput"
@@ -357,7 +358,12 @@ function updateStats(events) {
 /* ── Detail panel ────────────────────────────────── */
 function showDetail(ev) {
   const imgUrl = ev.photo_urls && ev.photo_urls[0] ? ev.photo_urls[0] : null;
-  const tags   = Array.isArray(ev.tags) ? ev.tags : [];
+  const HIDE_TAGS = new Set(['add to rr public home page','add to public fishing page',
+    'add to public st pats page','add to rr public clays page','add to rr public golf page',
+    'add to tbr list','bartender needed','bead sale','brewers guild','budgeted',
+    'featured','highlighted','historical event','honor flight','key west',
+    'meeting','nmoc','non-official','offsite','parade','tbr','2025 - 2026','2026 - 2027']);
+  const tags   = Array.isArray(ev.tags) ? ev.tags.filter(t => !HIDE_TAGS.has(t.toLowerCase())) : [];
   const desc   = stripHtml(ev.body_html || ev.description || '');
   document.getElementById('detailPanel').innerHTML = `
     <div class="detail-panel">
@@ -398,6 +404,17 @@ function renderEvents(events) {
     if (activeFilter === '30'   && days > 30) return false;
     if (activeFilter === '90'   && days > 90) return false;
     if (activeFilter === 'rsvp' && !ev.rsvp_url) return false;
+    // Advanced = registration enabled + tagged 'budgeted' or title contains ticket keywords
+    if (activeFilter === 'advanced') {
+      if (!ev.rsvp_url) return false;
+      const tags = Array.isArray(ev.tags) ? ev.tags.map(t=>t.toLowerCase()) : [];
+      const title = (ev.title||'').toLowerCase();
+      const isAdvanced = tags.includes('budgeted') || tags.includes('paid') ||
+        title.includes('tournament') || title.includes('shoot') ||
+        title.includes('luncheon') || title.includes('party') ||
+        title.includes('sponsorship') || title.includes('ticket');
+      if (!isAdvanced) return false;
+    }
     if (q) {
       const hay = ((ev.title||'')+' '+(ev.location||'')+' '+(ev.description||'')).toLowerCase();
       if (!hay.includes(q)) return false;
@@ -418,7 +435,12 @@ function renderEvents(events) {
   filtered.forEach(ev => {
     const days   = daysUntil(ev.date_start);
     const imgUrl = ev.photo_urls && ev.photo_urls[0] ? ev.photo_urls[0] : null;
-    const tags   = Array.isArray(ev.tags) ? ev.tags : [];
+    const HIDE_TAGS = new Set(['add to rr public home page','add to public fishing page',
+      'add to public st pats page','add to rr public clays page','add to rr public golf page',
+      'add to tbr list','bartender needed','bead sale','brewers guild','budgeted',
+      'featured','highlighted','historical event','honor flight','key west',
+      'meeting','nmoc','non-official','offsite','parade','tbr','2025 - 2026','2026 - 2027']);
+    const tags   = Array.isArray(ev.tags) ? ev.tags.filter(t => !HIDE_TAGS.has(t.toLowerCase())) : [];
 
     let dayBadge = '';
     if (days === 0)           dayBadge = '<span class="badge badge-today">Today</span>';
