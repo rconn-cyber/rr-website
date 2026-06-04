@@ -238,7 +238,7 @@ td { padding:0.7rem 1rem; font-size:0.88rem; vertical-align:middle; }
       <button class="filter-btn" onclick="setFilter('30',this)">This Month</button>
       <button class="filter-btn" onclick="setFilter('90',this)">Next 3 Months</button>
       <button class="filter-btn" onclick="setFilter('rsvp',this)">RSVP Only</button>
-      <button class="filter-btn" onclick="setFilter('advanced',this)">Advanced ★</button>
+      <button class="filter-btn" onclick="setFilter('advanced',this)">Ticketed</button>
     </div>
     <div class="toolbar-right">
       <input type="text" class="search-input" id="searchInput"
@@ -403,17 +403,12 @@ function renderEvents(events) {
     if (activeFilter === '7'    && days > 7)  return false;
     if (activeFilter === '30'   && days > 30) return false;
     if (activeFilter === '90'   && days > 90) return false;
-    if (activeFilter === 'rsvp' && !ev.rsvp_url) return false;
-    // Advanced = registration enabled + tagged 'budgeted' or title contains ticket keywords
-    if (activeFilter === 'advanced') {
+    if (activeFilter === 'rsvp') {
       if (!ev.rsvp_url) return false;
-      const tags = Array.isArray(ev.tags) ? ev.tags.map(t=>t.toLowerCase()) : [];
-      const title = (ev.title||'').toLowerCase();
-      const isAdvanced = tags.includes('budgeted') || tags.includes('paid') ||
-        title.includes('tournament') || title.includes('shoot') ||
-        title.includes('luncheon') || title.includes('party') ||
-        title.includes('sponsorship') || title.includes('ticket');
-      if (!isAdvanced) return false;
+      if (ev.registration_type === 'advanced') return false;
+    }
+    if (activeFilter === 'advanced') {
+      if (ev.registration_type !== 'advanced') return false;
     }
     if (q) {
       const hay = ((ev.title||'')+' '+(ev.location||'')+' '+(ev.description||'')).toLowerCase();
