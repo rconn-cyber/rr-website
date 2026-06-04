@@ -405,10 +405,10 @@ function renderEvents(events) {
     if (activeFilter === '90'   && days > 90) return false;
     if (activeFilter === 'rsvp') {
       if (!ev.rsvp_url) return false;
-      if (ev.registration_type === 'advanced') return false;
+      if (ev.registration_type !== 'rsvp') return false;
     }
     if (activeFilter === 'advanced') {
-      if (ev.registration_type !== 'advanced') return false;
+      if (ev.registration_type !== 'ticketed' || !ev.rsvp_url) return false;
     }
     if (q) {
       const hay = ((ev.title||'')+' '+(ev.location||'')+' '+(ev.description||'')).toLowerCase();
