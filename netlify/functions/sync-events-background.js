@@ -39,6 +39,7 @@ function toWADate(d) {
 }
 
 function mapWAEventToSupabase(waEvent) {
+  console.log("WA_REG_DEBUG:", waEvent.Id, JSON.stringify({RegistrationType: waEvent.RegistrationType, Type: waEvent.Type, EventType: waEvent.EventType, RegistrationEnabled: waEvent.RegistrationEnabled}));
   const tags = Array.isArray(waEvent.Tags)
     ? waEvent.Tags.map(t => t.Label || t).filter(Boolean) : [];
   const description = waEvent.Description
