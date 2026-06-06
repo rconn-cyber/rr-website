@@ -552,7 +552,8 @@ function doLogout() {
   adminToken = '';
   sessionStorage.removeItem('eventsAdminToken');
   localStorage.removeItem('eventsAdminToken');
-  location.reload();
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminApp').style.display = 'none';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
