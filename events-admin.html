@@ -556,16 +556,32 @@ function doLogout() {
   document.getElementById('adminApp').style.display = 'none';
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  // Auto-login if token passed in URL (from admin.html)
-  const urlToken = new URLSearchParams(window.location.search).get('token');
-  if (urlToken) {
-    sessionStorage.setItem('eventsAdminToken', urlToken);
-    localStorage.setItem('eventsAdminToken', urlToken);
-    // Clean URL without reloading
+window.addEventListener('DOMContentLoaded', async () => {
+  // If arriving from admin.html with ?pw=, exchange password for a real token
+  const params = new URLSearchParams(window.location.search);
+  const pw = params.get('pw');
+  if (pw) {
     history.replaceState(null, '', window.location.pathname);
+    try {
+      const r = await fetch(LOGIN_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      if (r.ok) {
+        const { token } = await r.json();
+        adminToken = token;
+        sessionStorage.setItem('eventsAdminToken', token);
+        localStorage.setItem('eventsAdminToken', token);
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+        fetchEvents();
+        return;
+      }
+    } catch {}
   }
-  const t = urlToken || sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
+  // Normal startup — check stored token
+  const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
   if (t) {
     adminToken = t;
     document.getElementById('loginScreen').style.display = 'none';
