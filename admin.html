@@ -177,22 +177,22 @@
 
   /* STAT CARDS */
   .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px; margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px; margin-bottom: 1rem;
   }
   .stat-card {
     background: var(--white); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 0.85rem 1rem;
-    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+    border-radius: 20px; padding: 0.25rem 0.75rem;
+    cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    display: flex; align-items: center; gap: 0.4rem;
   }
-  .stat-card:hover { border-color: var(--border-dark); box-shadow: var(--shadow-sm); }
+  .stat-card:hover { border-color: var(--border-dark); background: var(--gray-11); }
   .stat-card .stat-label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
-    color: var(--text-muted); text-transform: uppercase;
-    margin-bottom: 0.35rem; white-space: normal; line-height: 1.3;
+    font-size: 11px; font-weight: 500;
+    color: var(--text-muted); white-space: nowrap;
   }
-  .stat-card .stat-value { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.02em; line-height: 1; }
+  .stat-card .stat-value { font-size: 12px; font-weight: 700; color: var(--text-primary); }
 
   /* TOOLBAR */
   .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
@@ -457,10 +457,10 @@
         </div>
       </div>
 
-      <div class="stats-row" id="statsRow" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
-        <div class="stat-card">
-          <div class="stat-label">Total Members</div>
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card" onclick="filterByLevel('')">
           <div class="stat-value" id="statTotal">—</div>
+          <div class="stat-label">Total</div>
         </div>
         <div id="levelBreakdown" style="display:contents;"></div>
       </div>
@@ -545,7 +545,7 @@
         <div class="icon">📅</div>
         <h3>Events Admin</h3>
         <p>Full event management is available in the dedicated Events Admin panel.</p>
-        <a href="events-admin.html" class="btn btn-gold" style="display:inline-flex;text-decoration:none;">Open Events Admin →</a>
+        <a href="#" onclick="openEventsAdmin()" class="btn btn-gold" style="display:inline-flex;text-decoration:none;">Open Events Admin →</a>
       </div>
     </div>
 
@@ -779,6 +779,10 @@ function checkLogin() {
     loadMembers().then(()=>applyColVisibility());
   } else { document.getElementById('loginError').textContent='Incorrect password.'; }
 }
+
+function openEventsAdmin() {
+  window.location.href = 'events-admin.html?token=' + encodeURIComponent(PASSWORD);
+}
 document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
 
 function switchTab(name,btn) {
@@ -816,7 +820,7 @@ function updateStats() {
   });
   const sorted=Object.entries(levelMap).sort((a,b)=>b[1]-a[1]);
   document.getElementById('levelBreakdown').innerHTML=sorted.map(([lvl,cnt])=>
-    `<div class="stat-card" onclick="filterByLevel('${lvl.replace(/'/g,"\\'")}')"><div class="stat-label">${lvl}</div><div class="stat-value">${cnt}</div></div>`
+    `<div class="stat-card" onclick="filterByLevel('${lvl.replace(/'/g,"\\'")}')" title="${lvl}"><div class="stat-value">${cnt}</div><div class="stat-label">${lvl}</div></div>`
   ).join('');
 }
 
