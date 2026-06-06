@@ -780,8 +780,19 @@ function checkLogin() {
   } else { document.getElementById('loginError').textContent='Incorrect password.'; }
 }
 
-function openEventsAdmin() {
-  window.location.href = 'events-admin.html?token=' + encodeURIComponent(PASSWORD);
+async function openEventsAdmin() {
+  try {
+    const r = await fetch('/.netlify/functions/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: PASSWORD })
+    });
+    if (!r.ok) throw new Error('Login failed');
+    const { token } = await r.json();
+    window.location.href = 'events-admin.html?token=' + encodeURIComponent(token);
+  } catch {
+    window.location.href = 'events-admin.html'; // fallback: manual login
+  }
 }
 document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
 
