@@ -556,7 +556,15 @@ function doLogout() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
+  // Auto-login if token passed in URL (from admin.html)
+  const urlToken = new URLSearchParams(window.location.search).get('token');
+  if (urlToken) {
+    sessionStorage.setItem('eventsAdminToken', urlToken);
+    localStorage.setItem('eventsAdminToken', urlToken);
+    // Clean URL without reloading
+    history.replaceState(null, '', window.location.pathname);
+  }
+  const t = urlToken || sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
   if (t) {
     adminToken = t;
     document.getElementById('loginScreen').style.display = 'none';
