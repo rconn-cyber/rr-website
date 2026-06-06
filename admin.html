@@ -781,18 +781,7 @@ function checkLogin() {
 }
 
 async function openEventsAdmin() {
-  try {
-    const r = await fetch('/.netlify/functions/admin-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: PASSWORD })
-    });
-    if (!r.ok) throw new Error('Login failed');
-    const { token } = await r.json();
-    window.location.href = 'events-admin.html?token=' + encodeURIComponent(token);
-  } catch {
-    window.location.href = 'events-admin.html'; // fallback: manual login
-  }
+  window.location.href = 'events-admin.html?pw=' + encodeURIComponent(PASSWORD);
 }
 document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
 
