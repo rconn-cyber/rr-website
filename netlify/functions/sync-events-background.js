@@ -57,8 +57,8 @@ function mapWAEventToSupabase(waEvent) {
     rsvp_url:         waEvent.RegistrationEnabled ? `https://tamparoughriders.org/event-${waEvent.Id}` : '',
     registration_type: waEvent.EventType === 'Regular' ? 'ticketed' : 'rsvp',
    // NEW
-const hasPublicTag = tags.some(t => t.toLowerCase() === 'add to rr public home page');
-is_public:   hasPublicTag,
+  // is_public = true when WA AccessLevel is 'Public'
+  is_public:   waEvent.AccessLevel === 'Public',
     is_active:   !waEvent.IsDraft,
     tags,
     photo_urls:  waEvent.EventImage ? [waEvent.EventImage] : [],
