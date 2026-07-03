@@ -8,12 +8,10 @@ export default async (req) => {
     const form = await req.formData();
     const key = form.get("key");
     if (key !== ADMIN_KEY) {
-      return new Response(buildHtml(null, "Wrong password. Try again.", null), {
-        headers: { "Content-Type": "text/html" }
-      });
+      return new Response(buildHtml(null, "Wrong password.", null), { headers: { "Content-Type": "text/html" } });
     }
 
-    // Get OAuth bearer token first
+    // Get OAuth bearer token
     const tokenRes = await fetch("https://oauth.wildapricot.org/auth/token", {
       method: "POST",
       headers: {
@@ -25,14 +23,11 @@ export default async (req) => {
     const tokenData = await tokenRes.json();
     const access_token = tokenData.access_token;
     if (!access_token) {
-      return new Response(buildHtml(null, "WA authentication failed: " + JSON.stringify(tokenData), null), {
-        headers: { "Content-Type": "text/html" }
-      });
+      return new Response(buildHtml(null, "WA auth failed: " + JSON.stringify(tokenData), null), { headers: { "Content-Type": "text/html" } });
     }
-
     const authHeader = "Bearer " + access_token;
 
-    const ARCHIVE_LIST = [
+    const ARCHIVE_IDS = [
       [96198707,"Brian Castor (dup)","Brian Castor #512"],
       [87048299,"Chris Franks (blank)","Chris Franks #1418"],
       [82809521,"Chris Macionski (alt)","Chris Macionski #899"],
@@ -82,22 +77,38 @@ export default async (req) => {
       [62905252,"Derek Del Rosal (alt)","Derek Del-Rosal #501"],
     ];
 
+    // Dedupe
     const seen = new Set();
-    const deduped = ARCHIVE_LIST.filter(([id]) => {
-      if (seen.has(id)) return false;
-      seen.add(id); return true;
-    });
+    const deduped = ARCHIVE_IDS.filter(([id]) => { if (seen.has(id)) return false; seen.add(id); return true; });
+
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    const fetchWithRetry = async (url, opts, retries = 3) => {
+      for (let i = 0; i < retries; i++) {
+        const res = await fetch(url, opts);
+        if (res.status === 429) {
+          await sleep(3000 * (i + 1));
+          continue;
+        }
+        return res;
+      }
+      return { ok: false, status: 429 };
+    };
 
     const results = { success: [], skipped: [], failed: [] };
 
     for (const [userId, name, keeping] of deduped) {
       try {
-        const getRes = await fetch(`${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`, {
-          headers: { Authorization: authHeader, Accept: "application/json" }
-        });
-        if (!getRes.ok) { results.failed.push({ userId, name, reason: `GET ${getRes.status}` }); continue; }
+        // GET contact
+        const getRes = await fetchWithRetry(
+          `${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`,
+          { headers: { Authorization: authHeader, Accept: "application/json" } }
+        );
+        if (!getRes.ok) { results.failed.push({ userId, name, reason: `GET ${getRes.status}` }); await sleep(1000); continue; }
         const contact = await getRes.json();
+        await sleep(600);
 
+        // Safety check
         const memberIdField = contact.FieldValues?.find(f => f.SystemCode === "MemberId");
         if (contact.MembershipEnabled && memberIdField?.Value) {
           results.skipped.push({ userId, name, reason: `Active member #${memberIdField.Value}` }); continue;
@@ -106,38 +117,37 @@ export default async (req) => {
           results.skipped.push({ userId, name, reason: "already archived" }); continue;
         }
 
+        // PUT archive
         contact.Archived = true;
-        const putRes = await fetch(`${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`, {
-          method: "PUT",
-          headers: { Authorization: authHeader, "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(contact)
-        });
+        const putRes = await fetchWithRetry(
+          `${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`,
+          {
+            method: "PUT",
+            headers: { Authorization: authHeader, "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify(contact)
+          }
+        );
+        await sleep(600);
+
         if (!putRes.ok) { results.failed.push({ userId, name, reason: `PUT ${putRes.status}` }); continue; }
         results.success.push({ userId, name, keeping });
-        await new Promise(r => setTimeout(r, 200));
+
       } catch (e) {
         results.failed.push({ userId, name, reason: String(e) });
       }
     }
 
-    return new Response(buildHtml(results, null, new Date().toISOString()), {
-      headers: { "Content-Type": "text/html" }
-    });
+    return new Response(buildHtml(results, null, new Date().toISOString()), { headers: { "Content-Type": "text/html" } });
   }
 
-  return new Response(buildHtml(null, null, null), {
-    headers: { "Content-Type": "text/html" }
-  });
+  return new Response(buildHtml(null, null, null), { headers: { "Content-Type": "text/html" } });
 };
 
 function buildHtml(results, errMsg, runAt) {
   const rows = results ? [
-    ...results.success.map(r =>
-      `<tr><td style="color:#1a7a3a">&#10003; Archived</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#555">${r.keeping}</td></tr>`),
-    ...results.skipped.map(r =>
-      `<tr><td style="color:#888">&mdash; Skipped</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#888">${r.reason}</td></tr>`),
-    ...results.failed.map(r =>
-      `<tr><td style="color:#c00">&#10007; Failed</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#c00">${r.reason}</td></tr>`),
+    ...results.success.map(r => `<tr><td style="color:#1a7a3a">&#10003; Archived</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#555">${r.keeping}</td></tr>`),
+    ...results.skipped.map(r => `<tr><td style="color:#888">&mdash; Skipped</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#888">${r.reason}</td></tr>`),
+    ...results.failed.map(r => `<tr><td style="color:#c00">&#10007; Failed</td><td>${r.userId}</td><td>${r.name}</td><td style="color:#c00">${r.reason}</td></tr>`),
   ].join("") : "";
 
   const summary = results
@@ -148,33 +158,24 @@ function buildHtml(results, errMsg, runAt) {
         ${results.failed.length} failed
        </div>` : "";
 
-  const errBox = errMsg
-    ? `<div style="background:#fff3cd;padding:12px 16px;border-radius:6px;margin:16px 0;font-size:14px">${errMsg}</div>`
-    : "";
+  const errBox = errMsg ? `<div style="background:#fff3cd;padding:12px 16px;border-radius:6px;margin:16px 0">${errMsg}</div>` : "";
 
-  const table = rows
-    ? `<table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
-        <thead><tr style="background:#f5f5f5">
-          <th style="padding:8px;text-align:left">Result</th>
-          <th style="padding:8px;text-align:left">User ID</th>
-          <th style="padding:8px;text-align:left">Name</th>
-          <th style="padding:8px;text-align:left">Note</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-       </table>` : "";
+  const table = rows ? `<table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px">
+    <thead><tr style="background:#f5f5f5">
+      <th style="padding:8px;text-align:left">Result</th><th style="padding:8px;text-align:left">User ID</th>
+      <th style="padding:8px;text-align:left">Name</th><th style="padding:8px;text-align:left">Note</th>
+    </tr></thead><tbody>${rows}</tbody></table>` : "";
 
   return `<!DOCTYPE html><html><head><title>WA Archive Duplicates</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    body{font-family:Arial,sans-serif;max-width:960px;margin:40px auto;padding:0 20px;color:#222}
-    h2{color:#0d1f3c}
-    input[type=password]{padding:8px 12px;border:1px solid #ccc;border-radius:4px;width:240px;margin-right:8px}
-    button{padding:8px 20px;background:#0d1f3c;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}
-    button:hover{background:#1a3a6c}
-    td,th{padding:7px 10px;border-bottom:1px solid #eee;text-align:left}
-  </style></head><body>
+  <style>body{font-family:Arial,sans-serif;max-width:960px;margin:40px auto;padding:0 20px;color:#222}
+  h2{color:#0d1f3c}input[type=password]{padding:8px 12px;border:1px solid #ccc;border-radius:4px;width:240px;margin-right:8px}
+  button{padding:8px 20px;background:#0d1f3c;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}
+  button:hover{background:#1a3a6c}td,th{padding:7px 10px;border-bottom:1px solid #eee;text-align:left}</style>
+  </head><body>
   <h2>WA Duplicate Contact Archiver</h2>
-  <p style="color:#555;font-size:14px">Archives duplicate contacts where the active member record is kept. Safe — uses WA archive (reversible), not delete.</p>
+  <p style="color:#555;font-size:14px">Archives duplicate contacts where the active member record is kept. Safe — uses WA archive (reversible), not delete.<br>
+  <strong>Note:</strong> This processes ~47 contacts with rate-limiting delays. The page will load for 60-90 seconds — do not close it.</p>
   <form method="POST">
     <input type="password" name="key" placeholder="Admin password" required>
     <button type="submit">Run Archive Job</button>
@@ -183,4 +184,7 @@ function buildHtml(results, errMsg, runAt) {
   </body></html>`;
 }
 
-export const config = { path: "/admin/wa-archive" };
+export const config = {
+  path: "/admin/wa-archive",
+  timeout: 90
+};
