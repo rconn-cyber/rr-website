@@ -21,7 +21,7 @@
 # Secrets scanner exclusions
 # Supabase anon key + URL are safe in frontend (public-read only)
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html,events-admin.html"
+  SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html,events-admin.html,netlify/functions/wa-archive-duplicates-background.js,netlify/functions/wa-archive-trigger.js"
 
 [[redirects]]
   from = "/events-admin"
@@ -32,5 +32,3 @@
   from = "/events"
   to   = "/events.html"
   status = 200
-
-# wa-archive functions added 2026-07-03
