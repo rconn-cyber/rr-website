@@ -17,7 +17,7 @@ export default async (req) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key: ADMIN_KEY })
     });
-    return new Response(buildHtml("Job started! Processing ~47 contacts — takes about 30 seconds. Refresh this page to see results.", true, null), {
+    return new Response(buildHtml("Job started! Processing contacts — refresh in 30 seconds to see results.", true, null), {
       headers: { "Content-Type": "text/html" }
     });
   }
@@ -52,7 +52,7 @@ function buildHtml(msg, started, results) {
        </div>` : "";
 
   const msgBox = msg
-    ? `<div style="background:${started ? '#e8f5e9' : '#fff3cd'};padding:12px 16px;border-radius:6px;margin:16px 0;font-size:14px">${msg}</div>`
+    ? `<div style="background:${started ? "#e8f5e9" : "#fff3cd"};padding:12px 16px;border-radius:6px;margin:16px 0;font-size:14px">${msg}</div>`
     : "";
 
   const table = rows
@@ -76,8 +76,8 @@ function buildHtml(msg, started, results) {
     button:hover{background:#1a3a6c}
     td,th{padding:7px 10px;border-bottom:1px solid #eee;text-align:left}
   </style></head><body>
-  <h2>&#128464; WA Duplicate Contact Archiver</h2>
-  <p style="color:#555;font-size:14px">Archives 47 duplicate contacts where the active member record is kept. Safe &mdash; uses WA archive (reversible), not delete.</p>
+  <h2>WA Duplicate Contact Archiver</h2>
+  <p style="color:#555;font-size:14px">Archives duplicate contacts where the active member record is kept. Safe — uses WA archive (reversible), not delete.</p>
   <form method="POST">
     <input type="password" name="key" placeholder="Admin password" required>
     <button type="submit">Run Archive Job</button>
