@@ -13,6 +13,25 @@ export default async (req) => {
       });
     }
 
+    // Get OAuth bearer token first
+    const tokenRes = await fetch("https://oauth.wildapricot.org/auth/token", {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic " + Buffer.from("APIKEY:" + WA_API_KEY).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: "grant_type=client_credentials&scope=auto"
+    });
+    const tokenData = await tokenRes.json();
+    const access_token = tokenData.access_token;
+    if (!access_token) {
+      return new Response(buildHtml(null, "WA authentication failed: " + JSON.stringify(tokenData), null), {
+        headers: { "Content-Type": "text/html" }
+      });
+    }
+
+    const authHeader = "Bearer " + access_token;
+
     const ARCHIVE_LIST = [
       [96198707,"Brian Castor (dup)","Brian Castor #512"],
       [87048299,"Chris Franks (blank)","Chris Franks #1418"],
@@ -74,7 +93,7 @@ export default async (req) => {
     for (const [userId, name, keeping] of deduped) {
       try {
         const getRes = await fetch(`${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`, {
-          headers: { Authorization: `APIKEY ${WA_API_KEY}`, Accept: "application/json" }
+          headers: { Authorization: authHeader, Accept: "application/json" }
         });
         if (!getRes.ok) { results.failed.push({ userId, name, reason: `GET ${getRes.status}` }); continue; }
         const contact = await getRes.json();
@@ -90,7 +109,7 @@ export default async (req) => {
         contact.Archived = true;
         const putRes = await fetch(`${BASE}/accounts/${ACCOUNT_ID}/contacts/${userId}`, {
           method: "PUT",
-          headers: { Authorization: `APIKEY ${WA_API_KEY}`, "Content-Type": "application/json", Accept: "application/json" },
+          headers: { Authorization: authHeader, "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify(contact)
         });
         if (!putRes.ok) { results.failed.push({ userId, name, reason: `PUT ${putRes.status}` }); continue; }
@@ -106,7 +125,6 @@ export default async (req) => {
     });
   }
 
-  // GET - show form
   return new Response(buildHtml(null, null, null), {
     headers: { "Content-Type": "text/html" }
   });
@@ -165,6 +183,4 @@ function buildHtml(results, errMsg, runAt) {
   </body></html>`;
 }
 
-export const config = {
-  path: "/admin/wa-archive"
-};
+export const config = { path: "/admin/wa-archive" };
