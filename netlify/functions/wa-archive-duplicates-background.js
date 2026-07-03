@@ -3,12 +3,12 @@ import { getStore } from "@netlify/blobs";
 export default async (req) => {
   const WA_API_KEY = Netlify.env.get("WA_API_KEY");
   const ADMIN_KEY = Netlify.env.get("EVENTS_ADMIN_PASSWORD");
-  const ACCOUNT_ID = "279468";
+  const ACCOUNT_ID = Netlify.env.get("WA_ACCOUNT_ID") || "279468";
   const BASE = "https://api.wildapricot.org/v2";
 
   let body = {};
   try { body = await req.json(); } catch(e) {}
-  if (body.key !== ADMIN_KEY) {
+  if (!ADMIN_KEY || body.key !== ADMIN_KEY) {
     console.log("wa-archive-background: unauthorized");
     return;
   }
@@ -64,7 +64,11 @@ export default async (req) => {
   ];
 
   const seen = new Set();
-  const deduped = ARCHIVE_LIST.filter(([id]) => { if(seen.has(id)) return false; seen.add(id); return true; });
+  const deduped = ARCHIVE_LIST.filter(([id]) => {
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
 
   const results = { success: [], skipped: [], failed: [] };
 
@@ -101,7 +105,6 @@ export default async (req) => {
       }
       results.success.push({ userId, name, keeping });
       console.log(`Archived: ${name} (${userId})`);
-
       await new Promise(r => setTimeout(r, 300));
     } catch (e) {
       results.failed.push({ userId, name, reason: String(e) });
