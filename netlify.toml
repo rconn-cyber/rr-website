@@ -32,3 +32,5 @@
   from = "/events"
   to   = "/events.html"
   status = 200
+
+# wa-archive functions added 2026-07-03
