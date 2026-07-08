@@ -151,7 +151,6 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 .badge-pub  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
 .badge-priv { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
 .badge-arch { background:#f9fafb; color:#9ca3af; border:1px solid #e5e7eb; }
-.badge-wa   { background:#fff7ed; color:#92400e; border:1px solid #fed7aa; }
 .row-actions { display:flex; gap:0.35rem; }
 .icon-btn {
   padding:0.28rem 0.6rem; border-radius:3px; cursor:pointer;
@@ -367,7 +366,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
       <table>
         <thead>
           <tr>
-            <th>Photo</th><th>Event</th><th>Date</th><th>Tags</th><th>Status</th><th>WA</th><th>Actions</th>
+            <th>Photo</th><th>Event</th><th>Date</th><th>Tags</th><th>Status</th><th>Actions</th>
           </tr>
         </thead>
         <tbody id="eventsTableBody">
@@ -387,7 +386,6 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
     </div>
     <div class="modal-body-inner">
       <input type="hidden" id="fId"/>
-      <input type="hidden" id="fWaId"/>
 
       <!-- Title -->
       <div class="form-group" style="margin-bottom:1rem;">
@@ -430,7 +428,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
           <input type="text" id="tagsTextInput" class="tags-text-input" placeholder="Add a tag…"
                  onkeydown="handleTagKey(event)" oninput="handleTagInput(event)"/>
         </div>
-        <div class="form-hint">Syncs to Wild Apricot Tags. Examples: Social, Parade, Fishing, Members Only</div>
+        <div class="form-hint">Examples: Social, Parade, Fishing, Members Only</div>
       </div>
 
       <!-- Short Description -->
@@ -441,17 +439,17 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
 
       <!-- Rich Text Body -->
       <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Full Detail Body <span style="font-weight:400;text-transform:none;letter-spacing:0;">(syncs to WA Description)</span></label>
+        <label class="form-label">Full Detail Body</label>
         <div class="quill-wrapper">
           <div id="fBodyEditor"></div>
         </div>
-        <div class="form-hint">This HTML is saved to Wild Apricot's event Description on every save.</div>
+        <div class="form-hint">Full HTML event description shown on the event detail page.</div>
       </div>
 
       <!-- Visibility -->
       <div class="form-check-row">
-        <label class="form-check"><input type="checkbox" id="fPublic" checked/><span>Public (visible without login)</span></label>
-        <label class="form-check"><input type="checkbox" id="fActive" checked/><span>Active</span></label>
+        <label class="form-check"><input type="checkbox" id="fPublic"/><span>Public <span style="font-weight:400;font-size:0.8em;opacity:0.7;">(visible to non-members)</span></span></label>
+        <label class="form-check"><input type="checkbox" id="fActive" checked/><span>Active <span style="font-weight:400;font-size:0.8em;opacity:0.7;">(shows on events page; uncheck to hide/archive)</span></span></label>
       </div>
 
       <!-- Photos -->
@@ -466,10 +464,10 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
       </div>
     </div>
    <div class="modal-footer" style="position:sticky;bottom:0;background:var(--bg);z-index:10;">
-      <div class="wa-sync-note">💛 Saves to <span>Supabase + Wild Apricot</span> simultaneously</div>
+      <div class="wa-sync-note">Saves to Supabase</div>
       <div style="display:flex;gap:0.75rem;">
         <button class="btn btn-outline" onclick="closeForm()">Cancel</button>
-        <button class="btn btn-primary" id="saveBtn" onclick="">Save Event</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Save Event</button>
       </div>
     </div>
   </div>
@@ -685,13 +683,11 @@ function renderStats() {
   const active = allEvents.filter(e => e.is_active).length;
   const pub    = allEvents.filter(e => e.is_public && e.is_active).length;
   const priv   = allEvents.filter(e => !e.is_public && e.is_active).length;
-  const synced = allEvents.filter(e => e.wa_id).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-pill"><strong>${total}</strong>Total</div>
     <div class="stat-pill"><strong>${active}</strong>Active</div>
     <div class="stat-pill"><strong>${pub}</strong>Public</div>
-    <div class="stat-pill"><strong>${priv}</strong>Members Only</div>
-    <div class="stat-pill"><strong>${synced}</strong>Synced to WA</div>`;
+    <div class="stat-pill"><strong>${priv}</strong>Members Only</div>`;
 }
 
 // ── TABLE ─────────────────────────────────────────────────────────────────────
@@ -731,9 +727,6 @@ function renderTable() {
       ? `<span class="badge badge-pub">Public</span>`
       : `<span class="badge badge-priv">Members</span>`;
     const archBadge = !ev.is_active ? `<span class="badge badge-arch">Archived</span>` : '';
-    const waBadge = ev.wa_id
-      ? `<span class="badge badge-wa" title="WA ID: ${ev.wa_id}">WA ✓</span>`
-      : `<span style="color:#9ca3af;font-size:0.75rem;">—</span>`;
     return `<tr>
       <td>${thumb}</td>
       <td>
@@ -743,7 +736,6 @@ function renderTable() {
       <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid);">${fmtDate(ev.date_start, ev.date_end)}</td>
       <td>${tags}</td>
       <td>${visBadge} ${archBadge}</td>
-      <td>${waBadge}</td>
       <td><div class="row-actions">
         <button class="icon-btn" onclick="openForm('${ev.id}')">✎ Edit</button>
         <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g,"\\'")}')">🗑</button>
@@ -812,7 +804,6 @@ function openForm(id) {
     const ev = allEvents.find(e => e.id === id);
     if (!ev) return;
     document.getElementById('fId').value        = ev.id;
-    document.getElementById('fWaId').value      = ev.wa_id || '';
     document.getElementById('fTitle').value     = ev.title || '';
     document.getElementById('fDateStart').value = ev.date_start || '';
     document.getElementById('fDateEnd').value   = ev.date_end || '';
@@ -826,10 +817,10 @@ function openForm(id) {
     currentTags = Array.isArray(ev.tags) ? [...ev.tags] : [];
     pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
   } else {
-    ['fId','fWaId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fRsvpUrl','fDesc']
+    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fRsvpUrl','fDesc']
       .forEach(fid => document.getElementById(fid).value = '');
     if (quillBody) quillBody.root.innerHTML = '';
-    document.getElementById('fPublic').checked = true;
+    document.getElementById('fPublic').checked = false;
     document.getElementById('fActive').checked = true;
     currentTags = [];
   }
@@ -931,10 +922,6 @@ async function saveEvent() {
       photo_urls:   finalPhotos
     };
 
-   const waId = document.getElementById('fWaId').value ||
-  (editingId ? (allEvents.find(e => e.id === editingId)?.wa_id || '') : '');
-if (waId) payload.wa_id = waId;
-
     const method = editingId ? 'PUT' : 'POST';
     if (editingId) payload.id = editingId;
 
@@ -948,7 +935,7 @@ if (waId) payload.wa_id = waId;
 
     closeForm();
     await fetchEvents();
-    toast(editingId ? 'Event updated + synced to WA ✓' : 'Event created + synced to WA ✓', 'ok');
+    toast(editingId ? 'Event updated ✓' : 'Event created ✓', 'ok');
   } catch (err) {
     toast(err.message, true);
   } finally {
@@ -972,7 +959,7 @@ async function archiveEvent(id, title) {
 // ── EXPORT CSV ────────────────────────────────────────────────────────────────
 function exportCSV() {
   const cols = ['title','date_start','date_end','time_display','location',
-                'tags','description','body_html','rsvp_url','is_public','is_active','wa_id'];
+                'tags','description','body_html','rsvp_url','is_public','is_active'];
   const esc = v => {
     if (v === null || v === undefined) return '';
     const s = Array.isArray(v) ? v.join('|') : String(v);
