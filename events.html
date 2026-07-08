@@ -269,11 +269,11 @@ async function loadEvents() {
     if (!res.ok) throw new Error('API error');
     allEvents = await res.json();
 
-    // Filter to upcoming + today only
+    // Filter to today and future only; hide undated events
     const today = new Date();
     today.setHours(0,0,0,0);
     allEvents = allEvents.filter(e => {
-      if (!e.date_start) return true; // undated events always show
+      if (!e.date_start) return false; // hide events with no date
       const d = new Date(e.date_start + 'T12:00:00');
       return d >= today;
     });
@@ -359,7 +359,7 @@ function renderEvents(events) {
       </div>
       <div class="events-grid">
         ${evs.map(ev => {
-          const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+          const photos = getPhotos(ev);
           const photoHtml = photos.length
             ? `<img class="event-card-photo" src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`
             : '';
@@ -391,12 +391,19 @@ function renderEvents(events) {
   `).join('');
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+function getPhotos(ev) {
+  let p = ev.photo_urls;
+  if (!p) return [];
+  if (typeof p === 'string') {
+    try { p = JSON.parse(p); } catch { return p ? [p] : []; }
+  }
+  return Array.isArray(p) ? p.filter(Boolean) : [];
+}
 function openModal(id) {
   const ev = allEvents.find(e => e.id === id);
   if (!ev) return;
 
-  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+  const photos = getPhotos(ev);
   const photoEl = document.getElementById('modalPhoto');
   if (photos.length) { photoEl.src = photos[0]; photoEl.style.display = 'block'; }
   else photoEl.style.display = 'none';
