@@ -52,10 +52,10 @@ exports.handler = async (event) => {
       let query = '/rr_events?order=date_start.asc.nullslast,created_at.asc';
 
       if (!isAdmin) {
-        // public: only active public events
+        // Public: always restrict to active public events regardless of any token
         query += '&is_active=eq.true&is_public=eq.true';
       } else {
-        // admin: all events regardless of state
+        // Admin password: show all, or filter to active only
         if (params.all !== 'true') query += '&is_active=eq.true';
       }
 
