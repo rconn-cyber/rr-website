@@ -335,43 +335,6 @@
   .events-redirect h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .events-redirect p { color: var(--text-muted); font-size: 13px; margin-bottom: 1.5rem; }
 
-  /* SYNC */
-  .sync-panel { max-width: 680px; }
-  .sync-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
-  .sync-card h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .sync-card p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 1.25rem; }
-  .sync-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-  .sync-meta-item { font-size: 12px; color: var(--text-secondary); }
-  .sync-meta-item strong { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px; }
-  #syncBtn {
-    background: var(--black); color: var(--white); border: none;
-    border-radius: var(--radius); padding: 0.65rem 1.75rem;
-    font-family: inherit; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    cursor: pointer; transition: background 0.15s;
-  }
-  #syncBtn:hover:not(:disabled) { background: var(--gray-2); }
-  #syncBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-  .sync-status-box { margin-top: 1.25rem; display: none; }
-  .sync-spinner-row {
-    display: flex; align-items: center; gap: 0.75rem;
-    color: var(--text-secondary); font-size: 13px;
-    padding: 0.875rem 1rem; background: var(--gray-11);
-    border: 1px solid var(--border); border-radius: var(--radius);
-  }
-  .sync-results-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0.875rem; }
-  .sync-results-table th { background: var(--gray-11); color: var(--text-muted); padding: 0.5rem 0.875rem; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
-  .sync-results-table th:first-child { text-align: left; }
-  .sync-results-table td { padding: 0.5rem 0.875rem; border-bottom: 1px solid var(--gray-10); text-align: center; color: var(--text-secondary); }
-  .sync-results-table td:first-child { text-align: left; font-weight: 500; color: var(--text-primary); }
-  .sync-success-banner { background: rgba(26,138,69,0.07); border: 1px solid rgba(26,138,69,0.25); border-radius: var(--radius); padding: 0.65rem 0.875rem; display: flex; align-items: center; gap: 0.5rem; font-size: 13px; color: var(--success); margin-bottom: 0.5rem; }
-  .sync-error-banner { background: rgba(217,48,37,0.06); border: 1px solid rgba(217,48,37,0.2); border-radius: var(--radius); padding: 0.65rem 0.875rem; font-size: 13px; color: var(--danger); margin-top: 0.75rem; }
-  .sync-error-banner ul { margin: 0.3rem 0 0 1rem; font-size: 12px; }
-  .sync-info-card { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--black); border-radius: var(--radius); padding: 1rem 1.25rem; }
-  .sync-info-card strong { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); display: block; margin-bottom: 0.4rem; }
-  .sync-info-card p { margin: 0; font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
-  .sync-last-run { font-size: 11.5px; color: var(--text-muted); margin-top: 0.75rem; }
-
   /* TOAST */
   #toast {
     position: fixed; bottom: 1.5rem; right: 1.5rem;
@@ -438,7 +401,6 @@
   <nav class="admin-subbar">
     <button class="tab-btn active" onclick="switchTab('membership',this)">Membership</button>
     <button class="tab-btn" onclick="openEventsAdmin()">Events</button>
-    <button class="tab-btn" onclick="switchTab('sync',this)">WA Sync</button>
   </nav>
 
   <main>
@@ -488,7 +450,6 @@
       <div style="margin-bottom:0.75rem;">
         <button class="btn btn-outline btn-sm" onclick="toggleColChooser()">⊞ Columns</button>
         <div id="colChooser" style="display:none;background:#fff;border:1px solid #e5e5e5;padding:1rem;margin-top:0.5rem;border-radius:3px;flex-wrap:wrap;gap:0.5rem 1.5rem;">
-          <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="waid" checked onchange="applyColVisibility()"> WA ID</label>
           <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="num" checked onchange="applyColVisibility()"> Member #</label>
           <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="name" checked onchange="applyColVisibility()"> Name</label>
           <label style="font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;"><input type="checkbox" data-col="email" checked onchange="applyColVisibility()"> Email</label>
@@ -506,7 +467,6 @@
         <table>
           <thead>
             <tr>
-              <th data-col="waid">WA ID</th>
               <th data-col="num">Member #</th>
               <th data-col="name">Name</th>
               <th data-col="email">Email</th>
@@ -550,40 +510,6 @@
     </div>
 
     <!-- WA SYNC TAB -->
-    <div id="tab-sync" class="tab-panel">
-      <div class="page-header">
-        <div>
-          <h2>Wild Apricot Sync</h2>
-          <p>Bidirectional sync between Wild Apricot and Supabase — members and events</p>
-        </div>
-      </div>
-      <div class="sync-panel">
-        <div class="sync-card">
-          <h3>Manual Sync</h3>
-          <p>Syncs all members and events between Wild Apricot and Supabase in both directions. When the same record has been updated in both places, the most recently modified version wins.</p>
-          <div class="sync-meta">
-            <div class="sync-meta-item"><strong>Direction</strong>WA ↔ Supabase (bidirectional)</div>
-            <div class="sync-meta-item"><strong>Data</strong>Members + Events</div>
-            <div class="sync-meta-item"><strong>Conflict Resolution</strong>Most recent wins</div>
-            <div class="sync-meta-item"><strong>Scheduled</strong>Every hour (automatic)</div>
-          </div>
-          <button id="syncBtn" onclick="runSync()">↺ Run Sync Now</button>
-          <div id="syncLastRun" class="sync-last-run" style="display:none;"></div>
-          <div class="sync-status-box" id="syncStatusBox">
-            <div class="sync-spinner-row" id="syncSpinner">
-              <span class="spinner"></span>
-              Syncing members and events… this may take 15–30 seconds.
-            </div>
-            <div id="syncResults"></div>
-          </div>
-        </div>
-        <div class="sync-info-card">
-          <strong>How It Works</strong>
-          <p>Wild Apricot is the primary source for member status, level, and billing data. Supabase is the primary source for website-specific fields like <em>rank</em>, <em>admin_type</em>, and <em>photo_url</em>. Events created in Wild Apricot sync into Supabase automatically. Events created directly in Supabase are pushed to Wild Apricot as new events. The scheduled sync runs every hour via Netlify.</p>
-        </div>
-      </div>
-    </div>
-
   </main>
 </div>
 
@@ -868,7 +794,7 @@ function renderTable() {
     const statusClass=status.toLowerCase().includes('active')?'status-active':status.toLowerCase().includes('lapsed')?'status-lapsed':status.toLowerCase().includes('pending')?'status-pending':status.toLowerCase().includes('leave')?'status-leave':'';
     const renewedStr=m.date_joined?new Date(m.date_joined).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}):'—';
     return `<tr>
-      <td data-col="waid" style="color:var(--text-muted);font-size:12px;">${m.wa_id||''}</td>
+      <td data-col="num">${m.member_number||''}</td>
       <td data-col="num" style="font-size:12px;font-weight:600;color:var(--text-secondary);">${m.member_number||''}</td>
       <td data-col="name" style="font-weight:500;"><span style="color:var(--text-primary);">${m.last_name||''}</span><span style="color:var(--text-muted);">, ${m.first_name||''}</span></td>
       <td data-col="email" style="font-size:12px;color:var(--text-secondary);">${m.email||''}</td>
@@ -962,33 +888,6 @@ async function confirmDelete(){
   if(!deleteId)return;
   try{await sbFetch(TABLE+'?id=eq.'+deleteId,{method:'DELETE'});allMembers=allMembers.filter(m=>m.id!=deleteId);updateStats();onSearch();closeDeleteModal();showToast('Member removed.','success');}
   catch(e){showToast('Error deleting member: '+e.message,'error');}
-}
-
-async function runSync(){
-  const btn=document.getElementById('syncBtn'),statusBox=document.getElementById('syncStatusBox'),spinner=document.getElementById('syncSpinner'),results=document.getElementById('syncResults'),lastRun=document.getElementById('syncLastRun');
-  btn.disabled=true;btn.textContent='⏳ Syncing…';statusBox.style.display='block';spinner.style.display='flex';
-  results.innerHTML='<p style="color:var(--text-muted);font-size:13px;">Sync triggered — polling for results…</p>';
-  await Promise.all([fetch('/.netlify/functions/sync-members-background',{method:'POST'}),fetch('/.netlify/functions/sync-events-background',{method:'POST'})]);
-  const startedAt=Date.now();
-  const poll=setInterval(async()=>{
-    try{
-      const resp=await fetch('/.netlify/functions/sync-status');const data=await resp.json();
-      const m=data.latest?.members,e=data.latest?.events;
-      const mDone=!m||(m.status==='complete'||m.status==='error');
-      const eDone=!e||(e.status==='complete'||e.status==='error');
-      if(mDone&&eDone&&(m||e)){
-        clearInterval(poll);spinner.style.display='none';btn.disabled=false;btn.textContent='↺ Run Sync Now';
-        const mRes=m.results?.members||{wa_to_sb:0,sb_to_wa:0,skipped:0,errors:[]};
-        const eRes=e.results?.events||{wa_to_sb:0,sb_to_wa:0,skipped:0,errors:[]};
-        const allErrors=[...(mRes.errors||[]),...(eRes.errors||[])];
-        const success=m.status==='complete'&&e.status==='complete';
-        results.innerHTML=`<div class="sync-success-banner">${success?'✓ Sync completed successfully':'⚠ Sync completed with errors'}<span style="margin-left:auto;font-size:11px;opacity:0.7;">${new Date(m.finished_at).toLocaleString()}</span></div><table class="sync-results-table"><thead><tr><th>Category</th><th>WA → Supabase</th><th>Supabase → WA</th><th>Skipped</th><th>Errors</th></tr></thead><tbody><tr><td>Members</td><td>${mRes.wa_to_sb}</td><td>${mRes.sb_to_wa}</td><td>${mRes.skipped}</td><td style="color:${mRes.errors?.length?'var(--danger)':'var(--success)'};">${mRes.errors?.length||0}</td></tr><tr><td>Events</td><td>${eRes.wa_to_sb}</td><td>${eRes.sb_to_wa}</td><td>${eRes.skipped}</td><td style="color:${eRes.errors?.length?'var(--danger)':'var(--success)'};">${eRes.errors?.length||0}</td></tr></tbody></table>${allErrors.length?`<div class="sync-error-banner"><strong>Errors:</strong><ul>${allErrors.map(e=>`<li>${e}</li>`).join('')}</ul></div>`:''}`;
-        lastRun.textContent='Last run: '+new Date(m.finished_at).toLocaleString();lastRun.style.display='block';
-        if(success)loadMembers();
-      }
-      if(Date.now()-startedAt>300000){clearInterval(poll);spinner.style.display='none';btn.disabled=false;btn.textContent='↺ Run Sync Now';results.innerHTML=`<div class="sync-error-banner">⏱ Sync taking longer than expected. Check Netlify logs.</div>`;}
-    }catch(err){}
-  },5000);
 }
 
 function showToast(msg,type='success'){
