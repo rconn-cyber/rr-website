@@ -178,7 +178,7 @@ nav a:hover { color:var(--gold); }
     <button class="filter-btn" data-filter="Social">Socials</button>
     <button class="filter-btn" data-filter="Museum">Museum</button>
     <button class="filter-btn" data-filter="General">General</button>
-    <button class="filter-btn" data-filter="members">Members only</button>
+    <button class="filter-btn" data-filter="members" id="membersFilterBtn" style="display:none">Members only</button>
     <span class="filter-count" id="filter-count"></span>
   </div>
 </div>
@@ -216,7 +216,7 @@ nav a:hover { color:var(--gold); }
   <p>
     <a href="index.html">tamparoughriders.org</a>
     &nbsp;·&nbsp;
-    <a href="mailto:wmdgl1@verizon.net">Contact us</a>
+    <a href="mailto:office@tamparoughriders.org">Contact us</a>
   </p>
   <p style="margin-top:6px;">1st U.S. Volunteer Cavalry Regiment · Rough Riders, Inc. · Tampa, Florida · 501(c)(3)</p>
 </footer>
@@ -244,6 +244,9 @@ function checkMemberStatus() {
     document.getElementById('memberBanner').innerHTML =
       `&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
     document.getElementById('memberBanner').classList.add('visible');
+    // Show Members only filter tab for logged-in members
+    const btn = document.getElementById('membersFilterBtn');
+    if (btn) btn.style.display = '';
   }
 }
 
@@ -274,6 +277,11 @@ async function loadEvents() {
       const d = new Date(e.date_start + 'T12:00:00');
       return d >= today;
     });
+
+    // Belt-and-suspenders: hide members-only events from non-members
+    if (!isMember) {
+      allEvents = allEvents.filter(e => e.is_public !== false);
+    }
 
     renderEvents(allEvents);
   } catch (err) {
