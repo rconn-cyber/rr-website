@@ -26,17 +26,7 @@
 html{scroll-behavior:smooth;}
 body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 
-/* ── NAV ── */
-.nav{background:var(--navy);border-bottom:2px solid var(--gold);padding:0 2rem;position:sticky;top:0;z-index:100;}
-.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
-.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.nav-logo{width:38px;height:38px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.nav-logo svg{width:26px;height:26px;}
-.nav-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--parchment);font-weight:700;line-height:1.1;}
-.nav-name small{display:block;font-family:'Inter',sans-serif;font-size:0.6rem;letter-spacing:2px;color:var(--gold);font-weight:600;text-transform:uppercase;}
-.nav-links{display:flex;gap:1.5rem;list-style:none;}
-.nav-links a{color:#8a9db5;text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .15s;}
-.nav-links a:hover,.nav-links a.active{color:var(--gold);}
+/* ── NAV injected by header.js ── */
 
 /* ── HERO ── */
 .hero{background:var(--navy);border-bottom:3px solid var(--gold);padding:3rem 2rem 2.5rem;text-align:center;}
@@ -116,31 +106,10 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);mi
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-brand">
-      <div class="nav-logo">
-        <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
-          <line x1="7" y1="7" x2="31" y2="31" stroke="#0d1f3c" stroke-width="3" stroke-linecap="round"/>
-          <line x1="31" y1="7" x2="7" y2="31" stroke="#0d1f3c" stroke-width="3" stroke-linecap="round"/>
-          <polygon points="7,7 12,4 4,12" fill="#0d1f3c"/>
-          <polygon points="31,7 26,4 34,12" fill="#0d1f3c"/>
-          <polygon points="7,31 4,26 12,34" fill="#0d1f3c"/>
-          <polygon points="31,31 34,26 26,34" fill="#0d1f3c"/>
-        </svg>
-      </div>
-      <div class="nav-name">Tampa Rough Riders<small>1st U.S. Volunteer Cavalry</small></div>
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html" class="active">Events</a></li>
-      <li><a href="index.html#museum">Museum</a></li>
-      <li><a href="index.html#membership">Membership</a></li>
-      <li><a href="index.html#donate">Donate</a></li>
-    </ul>
-  </div>
-</nav>
+<!-- NAV — injected by header.js -->
+<div id="site-header"></div>
+<script src="header.js"></script>
+<script src="member-auth.js"></script>
 
 <!-- HERO -->
 <section class="hero">
