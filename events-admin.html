@@ -514,7 +514,8 @@ const API_BASE   = '/.netlify/functions/admin-events';
 const LOGIN_API  = '/.netlify/functions/admin-login';
 const UPLOAD_API = '/.netlify/functions/upload-photo';
 
-let adminToken = '';
+// Restore token immediately — don't wait for DOMContentLoaded
+let adminToken = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken') || '';
 let allEvents = [];
 let editingId = null;
 let currentTags = [];
@@ -578,10 +579,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       }
     } catch {}
   }
-  // Normal startup — check stored token
-  const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
-  if (t) {
-    adminToken = t;
+  // Normal startup — adminToken already initialized at script load
+  if (adminToken) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     fetchEvents();
