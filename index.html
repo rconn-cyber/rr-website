@@ -460,7 +460,7 @@ section { position: relative; z-index: 1; }
 }
 .tour-form select option { background: var(--navy-dark); }
 
-/* SQUARE PAYMENT */
+/* STRIPE PAYMENT */
 .payment-note {
   background: rgba(201,168,76,0.1);
   border: 1px solid rgba(201,168,76,0.3);
@@ -773,8 +773,8 @@ footer a:hover { color: var(--gold); }
 }
 .membership-banner a { color: var(--gold); }
 
-/* SQUARE PAYMENT PLACEHOLDER */
-.square-placeholder {
+/* STRIPE PAYMENT PLACEHOLDER */
+.stripe-placeholder {
   background: rgba(255,255,255,0.04);
   border: 1px dashed rgba(201,168,76,0.3);
   border-radius: 4px;
@@ -782,12 +782,12 @@ footer a:hover { color: var(--gold); }
   text-align: center;
   margin-top: 1rem;
 }
-.square-placeholder p {
+.stripe-placeholder p {
   font-size: 0.82rem;
   color: rgba(240,232,208,0.5);
   font-style: italic;
 }
-.square-placeholder .sq-icon {
+.stripe-placeholder .stripe-icon {
   font-size: 2rem; margin-bottom: 0.5rem;
 }
 </style>
@@ -800,7 +800,7 @@ footer a:hover { color: var(--gold); }
 <div class="membership-banner" style="margin-top:64px;">
   &#9733; Membership Applications Open <strong>May 1 &ndash; June 30</strong> each year &nbsp;|&nbsp;
   <a href="#">Apply Now</a>
-  &nbsp;|&nbsp; Contact: <a href="mailto:wmdgl1@verizon.net">wmdgl1@verizon.net</a>
+  &nbsp;|&nbsp; Contact: <a href="mailto:office@tamparoughriders.org">office@tamparoughriders.org</a>
 </div>
 
 <!-- HERO -->
@@ -1003,7 +1003,7 @@ footer a:hover { color: var(--gold); }
           </div>
           <div class="payment-note">
             Admission: Free for members &middot; Suggested donation $10/adult for non-members.<br/>
-            Ticket sales powered by Square Payments &mdash; coming soon for online booking.
+            Ticket sales powered by Stripe &mdash; coming soon for online booking.
           </div>
         </div>
 
@@ -1013,7 +1013,7 @@ footer a:hover { color: var(--gold); }
             By appointment only.<br/>
             &#128205; 601 N. 19th St., Tampa, FL 33605<br/>
             &#128222; Contact via tamparoughriders.org<br/>
-            &#9993;&#65039; wmdgl1@verizon.net
+            &#9993;&#65039; office@tamparoughriders.org
           </p>
         </div>
       </div>
@@ -1142,27 +1142,27 @@ footer a:hover { color: var(--gold); }
         All donations acknowledged for tax purposes.
       </p>
 
-      <!-- Square Payment Integration Placeholder -->
-      <div id="square-payment-form" style="max-width:420px;margin:0 auto;">
+      <!-- Stripe Payment Integration Placeholder -->
+      <div id="stripe-payment-form" style="max-width:420px;margin:0 auto;">
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.3);padding:1.5rem;border-radius:4px;">
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
             <div style="width:36px;height:36px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--navy-dark);font-weight:900;font-size:1.1rem;">&#9633;</div>
             <div>
-              <div style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Square Payments</div>
+              <div style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Stripe</div>
               <div style="font-size:0.8rem;color:rgba(240,232,208,0.6);">Secure card processing</div>
             </div>
           </div>
           <div id="card-container" style="min-height:90px;background:rgba(255,255,255,0.04);border:1px dashed rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;">
             <p style="font-size:0.8rem;color:rgba(240,232,208,0.4);font-style:italic;text-align:center;padding:1rem;">
-              Square Web Payments SDK mounts here<br/>
-              <span style="font-size:0.72rem;">Connect your Square account to activate</span>
+              Stripe payment form mounts here<br/>
+              <span style="font-size:0.72rem;">Connect your Stripe account to activate</span>
             </p>
           </div>
           <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="processDonation()">
             Donate $<span id="donateDisplayAmt">50</span>
           </button>
           <p style="font-size:0.72rem;color:rgba(240,232,208,0.35);text-align:center;margin-top:0.75rem;">
-            &#128274; Secured by Square &middot; PCI Compliant &middot; SSL Encrypted
+            &#128274; Secured by Stripe &middot; PCI Compliant &middot; SSL Encrypted
           </p>
         </div>
       </div>
@@ -1197,8 +1197,8 @@ footer a:hover { color: var(--gold); }
       &nbsp;&nbsp;
       <a href="#" class="btn-outline" style="display:inline-block;margin-top:0.5rem;">Apply for Membership</a>
       <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(240,232,208,0.4);">
-        Member accounts are managed through Wild Apricot.<br/>
-        <a href="https://tamparoughriders.wildapricot.org" style="color:var(--gold);font-size:0.8rem;">Reset Password</a>
+        Member accounts are managed through our membership system.<br/>
+        
       </p>
     </div>
 
@@ -1216,13 +1216,13 @@ footer a:hover { color: var(--gold); }
           <div class="icon">&#128203;</div>
           <h4>My Profile</h4>
           <p>Update contact info, address, emergency contact, and membership preferences.</p>
-          <a href="https://tamparoughriders.wildapricot.org" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">Manage in Wild Apricot &rarr;</a>
+          <a href="https://tamparoughriders.org/members" target="_blank" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">My Account &rarr;</a>
         </div>
         <div class="portal-card">
           <div class="icon">&#127903;</div>
           <h4>Member Events</h4>
           <p>Access member-only events, monthly meetings, and social gatherings. Members receive discounted event tickets.</p>
-          <a href="#" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">View Events &rarr;</a>
+          <a href="events.html" style="color:var(--gold);font-size:0.8rem;text-decoration:none;display:block;margin-top:0.75rem;">View Events &rarr;</a>
         </div>
         <div class="portal-card">
           <div class="icon">&#128179;</div>
@@ -1248,7 +1248,7 @@ footer a:hover { color: var(--gold); }
       <h4>1st U.S. Volunteer Cavalry Regiment<br/>Rough Riders, Inc.</h4>
       <p>A 501(c)(3) nonprofit organization dedicated to preserving the legacy of President Theodore Roosevelt and the men of the 1st U.S. Volunteer Cavalry.</p>
       <p style="margin-top:1rem;">&#128205; 601 N. 19th St., Tampa, FL 33605</p>
-      <p>&#9993;&#65039; wmdgl1@verizon.net</p>
+      <p>&#9993;&#65039; office@tamparoughriders.org</p>
       <p style="margin-top:1rem;font-style:italic;color:rgba(201,168,76,0.7);">"Bully!"</p>
     </div>
     <div>
@@ -1273,7 +1273,7 @@ footer a:hover { color: var(--gold); }
       <a href="#">Sporting Clays</a>
       <a href="#">Donate</a>
       <a href="#">Teddy Bears Program</a>
-      <a href="#events">All Events</a>
+      <a href="events.html">All Events</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -1294,8 +1294,8 @@ footer a:hover { color: var(--gold); }
       <button class="btn-primary" style="width:100%;margin-top:0.5rem;" onclick="memberLoginModal()">Sign In</button>
     </div>
     <p style="margin-top:1.5rem;font-size:0.8rem;color:rgba(240,232,208,0.4);text-align:center;">
-      Membership managed via Wild Apricot &middot;
-      <a href="https://tamparoughriders.wildapricot.org" style="color:var(--gold);">Reset Password</a>
+      
+      
     </p>
     <hr style="border-color:rgba(201,168,76,0.2);margin:1.5rem 0;"/>
     <p style="text-align:center;font-size:0.85rem;color:rgba(240,232,208,0.6);">Not yet a member?</p>
@@ -1337,7 +1337,7 @@ document.getElementById('donationAmount').addEventListener('input', function() {
 });
 function processDonation() {
   var amt = document.getElementById('donationAmount').value;
-  alert('Square Payment integration ready to connect.\n\nDonation amount: $' + amt + '\n\nTo activate: connect your Square account credentials in the site configuration. The Square Web Payments SDK card form will mount in the payment container.');
+  alert('Stripe Payment integration ready to connect.\n\nDonation amount: $' + amt + '\n\nTo activate: connect your Stripe account credentials in the site configuration. The Stripe payment form will mount in the payment container.');
 }
 
 // TOUR REQUEST
