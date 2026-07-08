@@ -1,14 +1,11 @@
-// admin-events.js
-// Netlify function — Events CRUD
-// Writes to Supabase AND Wild Apricot simultaneously
-
-const crypto = require('crypto');
+// netlify/functions/admin-events.js
+// Pure Supabase CRUD for rr_events — no WA sync
+// Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, EVENTS_ADMIN_PASSWORD, JWT_SECRET
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const WA_API_KEY   = process.env.WA_API_KEY;
-const WA_ACCOUNT_ID = process.env.WA_ACCOUNT_ID;
-const WA_BASE      = 'https://api.wildapricot.org/v2.2';
+const ADMIN_PASS   = process.env.EVENTS_ADMIN_PASSWORD;
+const JWT_SECRET   = process.env.JWT_SECRET || ADMIN_PASS;
 
 const corsHeaders = {
   'Content-Type': 'application/json',
@@ -17,20 +14,32 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
 };
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-function verifyToken(authHeader) {
-  if (!authHeader?.startsWith('Bearer ')) return false;
-  const token = authHeader.slice(7);
+// ── JWT helpers ────────────────────────────────────────────────────────────
+const crypto = require('crypto');
+
+function makeToken() {
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + 8 * 3600_000 })).toString('base64url');
+  const sig = crypto.createHmac('sha256', JWT_SECRET).update(payload).digest('base64url');
+  return `${payload}.${sig}`;
+}
+
+function verifyToken(token) {
+  if (!token) return false;
   const [payload, sig] = token.split('.');
   if (!payload || !sig) return false;
-  const expected = crypto.createHmac('sha256', process.env.SESSION_SECRET)
-    .update(payload).digest('base64url');
-  if (sig !== expected) return false;
+  const expected = crypto.createHmac('sha256', JWT_SECRET).update(payload).digest('base64url');
+  if (expected !== sig) return false;
   const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString());
   return Date.now() < exp;
 }
 
-// ── SUPABASE ──────────────────────────────────────────────────────────────────
+function checkAuth(event) {
+  const auth = (event.headers['authorization'] || '').replace('Bearer ', '').trim();
+  if (auth === ADMIN_PASS) return true;   // raw password (login step)
+  return verifyToken(auth);               // JWT token (subsequent calls)
+}
+
+// ── Supabase fetch ─────────────────────────────────────────────────────────
 async function sbFetch(method, path, body) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
     method,
@@ -47,262 +56,109 @@ async function sbFetch(method, path, body) {
   catch { return { ok: res.ok, status: res.status, data: text }; }
 }
 
-// ── WILD APRICOT ──────────────────────────────────────────────────────────────
-let waTokenCache = null;
-let waTokenExpiry = 0;
-
-async function getWAToken() {
-  if (waTokenCache && Date.now() < waTokenExpiry) return waTokenCache;
-  const creds = Buffer.from('APIKEY:' + WA_API_KEY).toString('base64');
-  const resp = await fetch('https://oauth.wildapricot.org/auth/token', {
+// ── Storage upload ─────────────────────────────────────────────────────────
+async function uploadPhoto(base64Data, mimeType, filename) {
+  const buffer = Buffer.from(base64Data, 'base64');
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/event-photos/${filename}`, {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + creds,
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': mimeType,
+      'x-upsert': 'true'
     },
-    body: 'grant_type=client_credentials&scope=auto'
+    body: buffer
   });
-  if (!resp.ok) throw new Error('WA auth failed: ' + resp.status);
-  const data = await resp.json();
-  waTokenCache = data.access_token;
-  waTokenExpiry = Date.now() + (data.expires_in - 60) * 1000;
-  return waTokenCache;
+  if (!res.ok) throw new Error(`Storage upload failed: ${res.status}`);
+  return `${SUPABASE_URL}/storage/v1/object/public/event-photos/${filename}`;
 }
 
-// Convert date string to WA full ISO datetime
-function toWADate(d) {
-  if (!d) return null;
-  // If already has time component, return as-is
-  if (d.includes('T')) return d;
-  // WA requires full datetime
-  return d + 'T00:00:00';
-}
-
-// Map Supabase event → WA event body
-function mapToWA(ev) {
-  const startDate = toWADate(ev.date_start);
-  const endDate   = toWADate(ev.date_end || ev.date_start);
-  const body = {
-    Name:        ev.title      || 'Untitled Event',
-    StartDate:   startDate,
-    EndDate:     endDate,
-    Location:    ev.location   || '',
-    Description: ev.body_html  || ev.description || '',
-    AccessLevel: ev.is_public !== false ? 'Public' : 'AdminOnly',
-    IsDraft:     ev.is_active === false,
-    RegistrationEnabled: false,
-  };
-  // Tags: array of strings → WA Tags array of {Label}
-  if (Array.isArray(ev.tags) && ev.tags.length) {
-    body.Tags = ev.tags.map(t => ({ Label: t }));
-  }
-  return body;
-}
-
-// Look up WA event by title to find existing wa_id
-async function findWAEventByTitle(token, title) {
-  try {
-    const url = `${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events?$top=200&$async=false`;
-    const resp = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    const match = (data.Events || []).find(e => e.Name === title);
-    return match ? String(match.Id) : null;
-  } catch { return null; }
-}
-
-// Create new WA event, return numeric WA ID
-async function createWAEvent(ev) {
-  try {
-    const token = await getWAToken();
-    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(mapToWA(ev))
-    });
-    const responseText = await resp.text();
-    if (!resp.ok) {
-      console.error('WA create event failed:', responseText);
-      console.error('WA create event payload:', JSON.stringify(mapToWA(ev)));
-      return null;
-    }
-    const data = JSON.parse(responseText);
-    return String(data.Id);
-  } catch (e) {
-    console.error('WA create event error:', e.message);
-    return null;
-  }
-}
-
-// Update existing WA event
-async function createWAEvent(ev) {
-  try {
-    const token = await getWAToken();
-    const body = { EventId: 0, ...mapToWA(ev) };
-    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    const responseText = await resp.text();
-    if (!resp.ok) {
-      console.error('WA create event failed:', responseText);
-      console.error('WA create event payload:', JSON.stringify(body));
-      return null;
-    }
-    const data = JSON.parse(responseText);
-    return String(data.Id);
-  } catch (e) {
-    console.error('WA create event error:', e.message);
-    return null;
-  }
-}
-
-// Archive WA event (set as draft)
-async function archiveWAEvent(waId) {
-  try {
-    const token = await getWAToken();
-    // First fetch existing event to get full object
-    const getResp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events/${waId}`, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!getResp.ok) return false;
-    const existing = await getResp.json();
-    existing.IsDraft = true;
-    const resp = await fetch(`${WA_BASE}/accounts/${WA_ACCOUNT_ID}/events/${waId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(existing)
-    });
-    return resp.ok;
-  } catch (e) {
-    console.error('WA archive event error:', e.message);
-    return false;
-  }
-}
-
-// ── HANDLER ───────────────────────────────────────────────────────────────────
+// ── Handler ────────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers: corsHeaders, body: '' };
-  }
-  if (!verifyToken(event.headers.authorization)) {
-    return { statusCode: 401, headers: corsHeaders, body: JSON.stringify({ error: 'Unauthorized' }) };
-  }
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: corsHeaders, body: '' };
 
   const method = event.httpMethod;
+  const params = event.queryStringParameters || {};
+
+  const respond = (status, data) => ({
+    statusCode: status,
+    headers: corsHeaders,
+    body: JSON.stringify(data)
+  });
 
   try {
-    // ── GET — fetch all events ──────────────────────────────────────────────
-    if (method === 'GET') {
-      const r = await sbFetch('GET', '/rr_events?order=date_start.asc.nullslast,created_at.asc');
-      return { statusCode: 200, headers: corsHeaders, body: JSON.stringify(r.data) };
+
+    // ── POST /login ─────────────────────────────────────────────────────
+    if (method === 'POST' && params.action === 'login') {
+      const { password } = JSON.parse(event.body || '{}');
+      if (password !== ADMIN_PASS) return respond(401, { error: 'Invalid password' });
+      return respond(200, { token: makeToken() });
     }
+
+    // ── GET: list all events (admin only) ───────────────────────────────
+    if (method === 'GET') {
+      if (!checkAuth(event)) return respond(401, { error: 'Unauthorized' });
+      let query = '/rr_events?order=date_start.asc.nullslast,created_at.asc';
+      if (params.all !== 'true') query += '&is_active=eq.true';
+      if (params.id) query += `&id=eq.${params.id}`;
+      const r = await sbFetch('GET', query);
+      return respond(r.ok ? 200 : r.status, r.data);
+    }
+
+    // All remaining methods require auth
+    if (!checkAuth(event)) return respond(401, { error: 'Unauthorized' });
 
     const body = event.body ? JSON.parse(event.body) : {};
 
-    // ── POST — create new event ─────────────────────────────────────────────
+    // ── POST: create event ──────────────────────────────────────────────
     if (method === 'POST') {
-      const { created_at, ...payload } = body;
-      payload.updated_at = new Date().toISOString();
-
-      // 1. Save to Supabase first
-      const r = await sbFetch('POST', '/rr_events', payload);
-      if (!r.ok) return { statusCode: 400, headers: corsHeaders, body: JSON.stringify(r.data) };
-
-      const savedEvent = Array.isArray(r.data) ? r.data[0] : r.data;
-
-      // 2. Create in WA, get back wa_id
-      const waId = await createWAEvent(payload);
-      if (waId) {
-        // 3. Store wa_id back in Supabase
-        await sbFetch('PATCH', `/rr_events?id=eq.${savedEvent.id}`, { wa_id: waId });
-        savedEvent.wa_id = waId;
-      }
-
-      return { statusCode: 201, headers: corsHeaders, body: JSON.stringify(savedEvent) };
-    }
-
-    // ── PUT — update existing event ─────────────────────────────────────────
-    if (method === 'PUT') {
-      const { id, created_at, ...updates } = body;
-      if (!id) return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'id required' }) };
-
-      updates.updated_at = new Date().toISOString();
-
-      // 1. Update Supabase
-      const r = await sbFetch('PATCH', `/rr_events?id=eq.${id}`, updates);
-      if (!r.ok) return { statusCode: 400, headers: corsHeaders, body: JSON.stringify(r.data) };
-
-      const savedEvent = Array.isArray(r.data) ? r.data[0] : r.data;
-
-      // 2. Sync to WA
-      const token = await getWAToken();
-      let waId = savedEvent?.wa_id || updates.wa_id || null;
-
-      if (waId) {
-        // Update existing WA event
-        await updateWAEvent(waId, updates);
-      } else {
-        // No wa_id — check if event already exists in WA by title before creating
-        const existingWaId = await findWAEventByTitle(token, updates.title || '');
-        if (existingWaId) {
-          // Found in WA — link and update
-          waId = existingWaId;
-          await updateWAEvent(waId, updates);
-          await sbFetch('PATCH', `/rr_events?id=eq.${id}`, { wa_id: waId });
-          if (savedEvent) savedEvent.wa_id = waId;
-          console.log('Linked existing WA event:', waId);
-        } else {
-          // Truly new — create in WA
-          const newWaId = await createWAEvent(updates);
-          if (newWaId) {
-            await sbFetch('PATCH', `/rr_events?id=eq.${id}`, { wa_id: newWaId });
-            if (savedEvent) savedEvent.wa_id = newWaId;
-            console.log('Created new WA event:', newWaId);
-          }
+      // Handle photo uploads if present
+      if (body._photos) {
+        const urls = [];
+        for (const p of body._photos) {
+          const ext = p.mimeType.split('/')[1] || 'jpg';
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const url = await uploadPhoto(p.data, p.mimeType, filename);
+          urls.push(url);
         }
+        body.photo_urls = [...(body.photo_urls || []), ...urls];
+        delete body._photos;
       }
-
-      return { statusCode: 200, headers: corsHeaders, body: JSON.stringify(savedEvent) };
+      const { id, created_at, ...payload } = body;
+      const r = await sbFetch('POST', '/rr_events', payload);
+      return respond(r.ok ? 201 : 400, r.data);
     }
 
-    // ── DELETE — archive event ──────────────────────────────────────────────
+    // ── PUT: update event ───────────────────────────────────────────────
+    if (method === 'PUT') {
+      if (!params.id && !body.id) return respond(400, { error: 'id required' });
+      const eventId = params.id || body.id;
+      if (body._photos) {
+        const urls = [];
+        for (const p of body._photos) {
+          const ext = p.mimeType.split('/')[1] || 'jpg';
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const url = await uploadPhoto(p.data, p.mimeType, filename);
+          urls.push(url);
+        }
+        body.photo_urls = [...(body.photo_urls || []), ...urls];
+        delete body._photos;
+      }
+      const { id, created_at, ...updates } = body;
+      const r = await sbFetch('PATCH', `/rr_events?id=eq.${eventId}`, updates);
+      return respond(r.ok ? 200 : 400, r.data);
+    }
+
+    // ── DELETE: soft-archive event ──────────────────────────────────────
     if (method === 'DELETE') {
-      const { id } = body;
-      if (!id) return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: 'id required' }) };
-
-      // 1. Get event to find wa_id
-      const getR = await sbFetch('GET', `/rr_events?id=eq.${id}`);
-      const existing = Array.isArray(getR.data) ? getR.data[0] : null;
-
-      // 2. Archive in Supabase (set is_active false)
-      const r = await sbFetch('PATCH', `/rr_events?id=eq.${id}`, {
-        is_active: false,
-        updated_at: new Date().toISOString()
-      });
-
-      // 3. Archive in WA
-      if (existing?.wa_id) {
-        await archiveWAEvent(existing.wa_id);
-      }
-
-      return { statusCode: r.ok ? 200 : 400, headers: corsHeaders, body: JSON.stringify(r.data) };
+      if (!params.id) return respond(400, { error: 'id required' });
+      const r = await sbFetch('PATCH', `/rr_events?id=eq.${params.id}`, { is_active: false });
+      return respond(r.ok ? 200 : 400, r.data);
     }
 
-    return { statusCode: 405, headers: corsHeaders, body: JSON.stringify({ error: 'Method not allowed' }) };
+    return respond(405, { error: 'Method not allowed' });
 
   } catch (err) {
-    console.error('admin-events error:', err.message);
-    return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ error: err.message }) };
+    console.error('admin-events error:', err);
+    return respond(500, { error: err.message });
   }
 };
