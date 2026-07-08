@@ -531,19 +531,20 @@ async function doLogin() {
   if (!pass) return;
   document.getElementById('loginErr').textContent = '';
   try {
-    const r = await fetch(LOGIN_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass })
+    // Verify password directly against admin-events (raw password as Bearer)
+    const r = await fetch(API_BASE, {
+      headers: { 'Authorization': `Bearer ${pass}` }
     });
-    if (!r.ok) { document.getElementById('loginErr').textContent = 'Incorrect password.'; return; }
-    const { token } = await r.json();
-    adminToken = token;
-    sessionStorage.setItem('eventsAdminToken', token);
-    localStorage.setItem('eventsAdminToken', token);
+    if (r.status === 401) { document.getElementById('loginErr').textContent = 'Incorrect password.'; return; }
+    // Password works — store it as the auth credential
+    adminToken = pass;
+    sessionStorage.setItem('eventsAdminToken', pass);
+    localStorage.setItem('eventsAdminToken', pass);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
-    await fetchEvents();
+    allEvents = await r.json();
+    renderTable();
+    renderStats();
   } catch { document.getElementById('loginErr').textContent = 'Connection error.'; }
 }
 
@@ -556,28 +557,18 @@ function doLogout() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // If arriving from admin.html with ?pw=, exchange password for a real token
-  const params = new URLSearchParams(window.location.search);
-  const pw = params.get('pw');
+  // If arriving from admin.html with ?pw=, use password directly
+  const urlParams = new URLSearchParams(window.location.search);
+  const pw = urlParams.get('pw');
   if (pw) {
     history.replaceState(null, '', window.location.pathname);
-    try {
-      const r = await fetch(LOGIN_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pw })
-      });
-      if (r.ok) {
-        const { token } = await r.json();
-        adminToken = token;
-        sessionStorage.setItem('eventsAdminToken', token);
-        localStorage.setItem('eventsAdminToken', token);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminApp').style.display = 'block';
-        fetchEvents();
-        return;
-      }
-    } catch {}
+    adminToken = pw;
+    sessionStorage.setItem('eventsAdminToken', pw);
+    localStorage.setItem('eventsAdminToken', pw);
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    fetchEvents();
+    return;
   }
   // Normal startup — adminToken already initialized at script load
   if (adminToken) {
