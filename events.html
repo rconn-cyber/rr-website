@@ -3,1099 +3,468 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Events CMS – Rough Riders Admin</title>
+<title>Events – 1st U.S. Volunteer Cavalry | Tampa Rough Riders</title>
+<meta name="description" content="Upcoming events for Tampa Rough Riders – reenactments, socials, committee meetings, and member gatherings."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --navy:     #0d1f3c;
-  --navy-mid: #162d55;
-  --gold:     #C9A84C;
-  --gold-dk:  #a07e2a;
-  --gold-lt:  #e8c96a;
-  --bg:       #f7f8fa;
-  --bg2:      #ffffff;
-  --text:     #1a1a2e;
-  --text-mid: #4a4a6a;
-  --border:   #dde0e8;
-  --shadow:   rgba(13,31,60,0.10);
-  --green:    #1a6b3a;
-  --red:      #8b1a1a;
+  --navy:      #0d1f3c;
+  --gold:      #C9A84C;
+  --gold-dk:   #8b6914;
+  --cream:     #f5efe0;
+  --cream2:    #ede4cc;
+  --parchment: #f0e8d0;
+  --text:      #1a1208;
+  --text2:     #4a3c1e;
+  --muted:     #7a6a48;
+  --border:    #d4c9a8;
+  --white:     #ffffff;
+  --radius:    8px;
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Crimson Pro',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; }
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; padding-top:64px; }
 
-/* TOPBAR */
+/* ── NAV — matches index.html ── */
 #topbar {
-  position:fixed; top:0; left:0; right:0; height:64px;
-  background:var(--navy); display:flex; align-items:center;
-  justify-content:space-between; padding:0 2rem;
-  z-index:1000; border-bottom:2px solid var(--gold);
-}
-.logo-nav { display:flex; align-items:center; gap:0.75rem; text-decoration:none;
-  color:var(--gold); font-family:'Cinzel Decorative',serif; font-size:1rem; font-weight:700; white-space:nowrap; }
-#topbar nav { display:flex; align-items:center; gap:1.5rem; }
-#topbar nav a { color:#fff; text-decoration:none; font-family:'Cinzel',serif;
-  font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; transition:color 0.2s; }
-#topbar nav a:hover { color:var(--gold); }
-.nav-toggle { display:none; }
-@media(max-width:768px) {
-  #topbar nav { display:none; }
-  .nav-toggle { display:block; background:none; border:none; color:var(--gold); font-size:1.5rem; cursor:pointer; }
-}
-
-/* LOGIN */
-#loginScreen {
-  min-height:100vh; display:flex; align-items:center; justify-content:center;
-  background:linear-gradient(135deg,var(--navy),var(--navy-mid));
-}
-.login-box {
-  background:var(--bg2); border:1px solid var(--border); border-top:4px solid var(--gold);
-  padding:2.5rem; width:100%; max-width:360px; border-radius:6px;
-  text-align:center; box-shadow:0 8px 32px var(--shadow);
-}
-.login-logo { font-family:'Cinzel',serif; font-size:1.1rem; font-weight:700; color:var(--navy); margin-bottom:0.25rem; }
-.login-sub  { font-size:0.8rem; color:var(--text-mid); margin-bottom:1.75rem; letter-spacing:0.05em; }
-.login-input {
-  width:100%; padding:0.7rem 1rem; margin-bottom:1rem;
-  background:var(--bg); border:1px solid var(--border);
-  color:var(--text); font-family:'Crimson Pro',serif; font-size:1rem;
-  border-radius:4px; outline:none; transition:border-color 0.2s;
-}
-.login-input:focus { border-color:var(--gold); }
-.login-btn {
-  width:100%; padding:0.75rem; font-family:'Cinzel',serif;
-  font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase;
-  background:var(--navy); color:var(--gold); border:none;
-  cursor:pointer; font-weight:700; border-radius:4px; transition:all 0.2s;
-}
-.login-btn:hover { background:var(--navy-mid); }
-.login-err { color:#c0392b; font-size:0.85rem; margin-top:0.75rem; }
-
-/* LAYOUT */
-#adminApp { display:none; padding-top:64px; }
-.admin-header {
-  background:var(--navy); border-bottom:3px solid var(--gold);
-  padding:0.75rem 1.5rem;
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  background:linear-gradient(180deg,rgba(7,20,41,0.98) 0%,rgba(13,31,60,0.95) 100%);
+  border-bottom:2px solid var(--gold);
   display:flex; align-items:center; justify-content:space-between;
-  position:sticky; top:64px; z-index:100;
-  box-shadow:0 2px 12px var(--shadow);
+  padding:0 2rem; height:64px; backdrop-filter:blur(8px);
 }
-.admin-title { font-family:'Cinzel',serif; font-size:0.88rem; color:var(--gold); letter-spacing:0.08em; }
-.admin-actions { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
-
-/* BUTTONS */
-.btn {
-  font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.1em;
-  text-transform:uppercase; padding:0.48rem 0.9rem; border-radius:4px;
-  cursor:pointer; transition:all 0.2s; border:none; white-space:nowrap;
-}
-.btn-primary { background:var(--navy); color:var(--gold); font-weight:700; }
-.btn-primary:hover { background:var(--navy-mid); }
-.btn-ghost { background:transparent; color:rgba(240,232,208,0.7); border:1px solid rgba(201,168,76,0.4); }
-.btn-ghost:hover { color:var(--gold); border-color:var(--gold); }
-.btn-outline { background:var(--bg2); color:var(--text-mid); border:1px solid var(--border); }
-.btn-outline:hover { border-color:var(--navy); color:var(--navy); }
-.btn-success { background:#1a6b3a; color:#fff; }
-.btn-success:hover { filter:brightness(1.15); }
-.btn-danger { background:var(--red); color:#fff; }
-.btn-danger:hover { filter:brightness(1.2); }
-.btn-sm { padding:0.3rem 0.65rem; font-size:0.58rem; }
-
-/* BODY */
-.admin-body { padding:1.5rem; max-width:1300px; margin:0 auto; }
-
-/* TOOLBAR */
-.toolbar {
-  display:flex; gap:0.75rem; align-items:center; margin-bottom:1.25rem;
-  flex-wrap:wrap; justify-content:space-between;
-}
-.toolbar-left  { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
-.toolbar-right { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
-.search-input {
-  padding:0.45rem 0.9rem; border:1px solid var(--border); border-radius:4px;
-  background:var(--bg2); color:var(--text); font-family:'Crimson Pro',serif;
-  font-size:0.95rem; outline:none; width:220px; transition:border-color 0.2s;
-}
-.search-input:focus { border-color:var(--gold); }
-
-/* STATS */
-.stats-bar { display:flex; gap:1rem; margin-bottom:1.25rem; flex-wrap:wrap; }
-.stat-pill {
-  background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--gold);
-  padding:0.6rem 1.2rem; border-radius:4px;
-  font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:0.06em;
-  color:var(--text-mid); box-shadow:0 1px 4px var(--shadow);
-}
-.stat-pill strong { color:var(--navy); font-size:1.1rem; margin-right:0.3rem; }
-
-/* TABLE */
-.table-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; box-shadow:0 2px 12px var(--shadow); }
-table { width:100%; border-collapse:collapse; }
-thead th {
-  font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--text-mid);
-  padding:0.8rem 1rem; border-bottom:2px solid var(--border);
-  text-align:left; background:var(--bg);
-}
-tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
-tbody tr:hover { background:#f0f4ff; }
-td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
-.event-thumb { width:48px; height:36px; object-fit:cover; border-radius:3px; border:1px solid var(--border); }
-.badge {
-  font-family:'Cinzel',serif; font-size:0.55rem; letter-spacing:0.1em;
-  padding:0.18rem 0.5rem; border-radius:3px; display:inline-block; margin:1px;
-}
-.badge-tag  { background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; }
-.badge-pub  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
-.badge-priv { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
-.badge-arch { background:#f9fafb; color:#9ca3af; border:1px solid #e5e7eb; }
-.row-actions { display:flex; gap:0.35rem; }
-.icon-btn {
-  padding:0.28rem 0.6rem; border-radius:3px; cursor:pointer;
-  font-size:0.72rem; border:1px solid var(--border);
-  background:var(--bg); color:var(--text-mid); transition:all 0.2s;
-}
-.icon-btn:hover { border-color:var(--navy); color:var(--navy); background:#eef2ff; }
-.icon-btn-del:hover { border-color:var(--red); color:var(--red); background:#fef2f2; }
-
-/* TAGS INPUT */
-.tags-input-wrap {
-  display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center;
-  padding:0.45rem 0.6rem; border:1px solid var(--border);
-  border-radius:4px; background:var(--bg); min-height:2.5rem;
-  cursor:text; transition:border-color 0.2s;
-}
-.tags-input-wrap:focus-within { border-color:var(--gold); background:var(--bg2); }
-.tag-chip {
-  display:inline-flex; align-items:center; gap:0.3rem;
-  background:var(--navy); color:var(--gold);
-  padding:0.18rem 0.55rem; border-radius:3px;
-  font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.08em;
-}
-.tag-chip button {
-  background:none; border:none; color:var(--gold); cursor:pointer;
-  font-size:0.75rem; padding:0; line-height:1; opacity:0.7;
-}
-.tag-chip button:hover { opacity:1; }
-.tags-text-input {
-  border:none; outline:none; background:transparent;
-  font-family:'Crimson Pro',serif; font-size:0.95rem;
-  color:var(--text); min-width:120px; flex:1;
+.logo-nav { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+.logo-nav span { font-family:'Playfair Display',serif; color:var(--gold); font-size:0.9rem; font-weight:700; line-height:1.3; }
+nav { display:flex; align-items:center; gap:0.25rem; }
+nav a { color:var(--parchment); text-decoration:none; font-family:'Source Serif 4',serif; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.5rem 0.75rem; border-radius:2px; transition:color 0.2s; }
+nav a:hover { color:var(--gold); }
+.member-btn { background:transparent; border:1px solid var(--gold); color:var(--gold) !important; padding:0.4rem 1rem; border-radius:2px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; font-family:'Source Serif 4',serif; cursor:pointer; transition:all 0.2s; }
+.member-btn:hover { background:var(--gold); color:var(--navy) !important; }
+.member-btn-active { background:#c9a84c !important; color:#0d1f3c !important; font-weight:700; border:none; padding:0.4rem 1rem; border-radius:2px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; font-family:'Source Serif 4',serif; cursor:pointer; }
+.member-btn-active:hover { background:#a07e2a !important; color:#0d1f3c !important; }
+.nav-toggle { display:none; background:none; border:none; color:var(--gold); font-size:1.5rem; cursor:pointer; }
+@media(max-width:768px) {
+  .nav-toggle { display:block; }
+  #topbar nav { display:none; flex-direction:column; position:absolute; top:64px; left:0; right:0; background:rgba(7,20,41,0.98); padding:1rem; gap:0.5rem; }
+  #topbar nav.open { display:flex; }
 }
 
-/* MODAL */
-.modal-overlay {
-  display:none; position:fixed; inset:0; z-index:500;
-  background:rgba(13,31,60,0.5); backdrop-filter:blur(3px);
-  align-items:flex-start; justify-content:center;
-  padding:1.5rem 1rem; overflow-y:auto;
+/* ── HERO ── */
+.hero { background:var(--navy); border-bottom:3px solid var(--gold); padding:3rem 2rem 2.5rem; text-align:center; }
+.hero-eyebrow { font-size:0.7rem; letter-spacing:4px; color:var(--gold); font-weight:600; text-transform:uppercase; margin-bottom:0.75rem; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.8rem); color:var(--parchment); font-weight:700; margin-bottom:0.75rem; line-height:1.2; }
+.hero p { font-family:'Source Serif 4',serif; font-size:1rem; color:#8a9db5; max-width:520px; margin:0 auto 1.5rem; line-height:1.7; font-style:italic; }
+.hero-actions { display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:0.6rem 1.25rem; border-radius:var(--radius); font-size:0.85rem; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:opacity .15s,transform .1s; }
+.btn:hover { opacity:.88; transform:translateY(-1px); }
+.btn-gold { background:var(--gold); color:var(--navy); }
+.btn-outline { background:transparent; color:var(--gold); border:1px solid var(--gold); }
+
+/* ── MEMBER BANNER ── */
+.member-banner {
+  display:none; background:#0a1829; border-bottom:1px solid #1e3a6e;
+  padding:0.6rem 2rem; text-align:center;
+  font-size:0.82rem; color:#8a9db5;
 }
+.member-banner.visible { display:block; }
+.member-banner strong { color:var(--gold); }
+
+/* ── FILTER BAR ── */
+.filter-bar { background:var(--cream2); border-bottom:1px solid var(--border); padding:0.75rem 2rem; position:sticky; top:64px; z-index:90; }
+.filter-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.filter-label { font-size:0.72rem; font-weight:600; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-right:0.25rem; }
+.filter-btn { padding:0.35rem 0.85rem; border-radius:20px; border:1px solid var(--border); background:var(--white); font-size:0.78rem; font-weight:500; color:var(--text2); cursor:pointer; transition:all .15s; }
+.filter-btn:hover { border-color:var(--gold); color:var(--gold-dk); }
+.filter-btn.active { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.filter-count { margin-left:auto; font-size:0.75rem; color:var(--muted); }
+
+/* ── MAIN ── */
+.main { max-width:1100px; margin:0 auto; padding:2rem; }
+
+/* ── MONTH GROUPS ── */
+.month-group { margin-bottom:2.5rem; }
+.month-heading { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+.month-heading h2 { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--navy); font-weight:700; }
+.month-rule { flex:1; height:1px; background:var(--border); }
+.month-star { color:var(--gold); font-size:0.9rem; }
+
+/* ── EVENT CARDS ── */
+.events-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+.event-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:border-color .15s,box-shadow .15s; display:flex; flex-direction:column; cursor:pointer; }
+.event-card:hover { border-color:var(--gold); box-shadow:0 4px 16px rgba(13,31,60,.08); }
+.event-card.featured { border-left:4px solid var(--gold); }
+.event-card.members-only { border-left:4px solid #3b82f6; }
+.event-card-photo { width:100%; height:120px; object-fit:cover; background:var(--cream2); display:block; }
+.event-card-body { padding:1rem 1.1rem 0.9rem; flex:1; display:flex; flex-direction:column; }
+.event-card-tag { font-size:0.65rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dk); margin-bottom:0.4rem; }
+.event-card-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--navy); line-height:1.3; margin-bottom:0.6rem; }
+.event-card-meta { display:flex; flex-direction:column; gap:3px; margin-bottom:0.75rem; }
+.event-card-meta span { font-size:0.78rem; color:var(--text2); display:flex; align-items:flex-start; gap:5px; line-height:1.4; }
+.event-card-desc { font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:0.5rem; font-family:'Source Serif 4',serif; flex:1; }
+.event-card-footer { padding:0.7rem 1.1rem; border-top:1px solid #f0ece2; display:flex; align-items:center; justify-content:space-between; }
+.event-card-rsvp { font-size:0.78rem; font-weight:600; color:var(--gold-dk); text-decoration:none; display:flex; align-items:center; gap:4px; transition:color .15s; background:none; border:none; cursor:pointer; padding:0; font-family:'Inter',sans-serif; }
+.event-card-rsvp:hover { color:var(--navy); }
+.event-card-badge { font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:10px; letter-spacing:0.5px; }
+.badge-free { background:#EAF3DE; color:#27500A; }
+.badge-members { background:#DBEAFE; color:#1e40af; }
+.badge-social { background:#FEF3C7; color:#92400e; }
+.badge-museum { background:#F3E8FF; color:#6b21a8; }
+
+/* ── DETAIL MODAL ── */
+.modal-overlay { display:none; position:fixed; inset:0; z-index:500; background:rgba(13,31,60,0.6); backdrop-filter:blur(4px); align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow-y:auto; }
 .modal-overlay.open { display:flex; }
-.modal-box {
-  background:var(--bg2); border:1px solid var(--border); border-top:4px solid var(--gold);
-  border-radius:6px; width:100%; max-width:900px;
-  box-shadow:0 16px 48px rgba(13,31,60,0.2);
-  animation:modalIn 0.2s ease;
-}
-@keyframes modalIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-.modal-header {
-  padding:1.1rem 1.5rem; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between; background:var(--bg);
-}
-.modal-header-title { font-family:'Cinzel',serif; font-size:0.9rem; color:var(--navy); letter-spacing:0.06em; }
-.modal-body-inner { padding:1.5rem; }
-.form-grid   { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
-.form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-bottom:1rem; }
-.form-full   { grid-column:1/-1; }
-.form-group  { display:flex; flex-direction:column; gap:0.3rem; }
-.form-label  { font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-mid); }
-.form-input,.form-select,.form-textarea {
-  padding:0.55rem 0.75rem; background:var(--bg);
-  border:1px solid var(--border); color:var(--text);
-  font-family:'Crimson Pro',serif; font-size:0.95rem;
-  border-radius:4px; outline:none; width:100%; transition:border-color 0.2s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--gold); background:var(--bg2); }
-.form-textarea { resize:vertical; min-height:90px; }
-.form-hint { font-size:0.78rem; color:#9ca3af; margin-top:0.2rem; }
-.form-check-row { display:flex; gap:1.5rem; align-items:center; margin-bottom:1rem; }
-.form-check { display:flex; align-items:center; gap:0.45rem; cursor:pointer; }
-.form-check input { accent-color:var(--navy); width:15px; height:15px; cursor:pointer; }
-.form-check span { font-size:0.9rem; color:var(--text-mid); }
-.modal-footer {
-  padding:1rem 1.5rem; border-top:1px solid var(--border);
-  display:flex; gap:0.75rem; justify-content:space-between; align-items:center; background:var(--bg);
-}
-.wa-sync-note { font-size:0.75rem; color:var(--text-mid); font-style:italic; }
-.wa-sync-note span { color:var(--gold-dk); font-weight:600; }
+.modal-box { background:var(--white); border-radius:10px; width:100%; max-width:680px; overflow:hidden; box-shadow:0 20px 60px rgba(13,31,60,0.25); animation:modalIn 0.2s ease; }
+@keyframes modalIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.modal-photo { width:100%; height:220px; object-fit:cover; background:var(--cream2); display:block; }
+.modal-body { padding:1.5rem 1.75rem; }
+.modal-eyebrow { font-size:0.68rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dk); margin-bottom:0.5rem; }
+.modal-title { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--navy); line-height:1.2; margin-bottom:1rem; }
+.modal-meta { display:flex; flex-direction:column; gap:6px; margin-bottom:1.25rem; padding:1rem; background:var(--cream); border-radius:6px; border:1px solid var(--border); }
+.modal-meta span { font-size:0.85rem; color:var(--text2); display:flex; align-items:flex-start; gap:8px; }
+.modal-desc { font-family:'Source Serif 4',serif; font-size:0.95rem; color:var(--text2); line-height:1.75; margin-bottom:1.25rem; }
+.modal-body-html { font-family:'Source Serif 4',serif; font-size:0.95rem; color:var(--text); line-height:1.75; margin-bottom:1.5rem; }
+.modal-body-html h2,.modal-body-html h3 { font-family:'Playfair Display',serif; color:var(--navy); margin:1rem 0 0.5rem; }
+.modal-body-html ul,.modal-body-html ol { padding-left:1.5rem; margin:0.5rem 0; }
+.modal-body-html a { color:var(--gold-dk); }
+.modal-footer { padding:1rem 1.75rem 1.5rem; display:flex; gap:0.75rem; align-items:center; justify-content:space-between; border-top:1px solid var(--border); }
+.modal-close { background:none; border:1px solid var(--border); color:var(--muted); padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font-size:0.82rem; transition:all .15s; }
+.modal-close:hover { border-color:var(--navy); color:var(--navy); }
 
-/* QUILL */
-.quill-wrapper {
-  border:1px solid var(--border); border-radius:4px; overflow:hidden;
-  background:var(--bg2); transition:border-color 0.2s;
-}
-.quill-wrapper:focus-within { border-color:var(--gold); }
-.quill-wrapper .ql-toolbar {
-  border:none; border-bottom:1px solid var(--border);
-  background:var(--bg); padding:6px 8px;
-}
-.quill-wrapper .ql-container {
-  border:none; font-family:'Crimson Pro',Georgia,serif;
-  font-size:0.95rem; color:var(--text);
-}
-.quill-wrapper .ql-editor {
-  min-height:260px; padding:0.75rem;
-}
-.quill-wrapper .ql-editor.ql-blank::before {
-  color:#9ca3af; font-style:italic; content:attr(data-placeholder);
-}
-.ql-toolbar .ql-stroke { stroke:var(--text-mid); }
-.ql-toolbar .ql-fill  { fill:var(--text-mid); }
-.ql-toolbar .ql-picker-label { color:var(--text-mid); }
-.ql-toolbar button:hover .ql-stroke,
-.ql-toolbar button.ql-active .ql-stroke { stroke:var(--navy); }
-.ql-toolbar button:hover .ql-fill,
-.ql-toolbar button.ql-active .ql-fill   { fill:var(--navy); }
+/* ── LOADING / EMPTY ── */
+.loading-state { text-align:center; padding:4rem 1rem; color:var(--muted); }
+.loading-state .spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 1rem; }
+@keyframes spin { to{transform:rotate(360deg);} }
+.empty-state { text-align:center; padding:4rem 1rem; }
+.empty-state p { color:var(--muted); font-size:0.9rem; margin-bottom:1rem; }
 
-/* PHOTO UPLOAD */
-.photo-upload-zone {
-  border:2px dashed var(--border); border-radius:4px;
-  padding:1rem; text-align:center; cursor:pointer;
-  transition:border-color 0.2s; background:var(--bg);
-}
-.photo-upload-zone:hover { border-color:var(--gold); background:#fffbf0; }
-.photo-upload-zone input { display:none; }
-.photo-preview-grid { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.75rem; }
-.photo-prev { position:relative; width:80px; height:60px; border-radius:3px; overflow:hidden; border:1px solid var(--border); }
-.photo-prev img { width:100%; height:100%; object-fit:cover; }
-.photo-prev-del {
-  position:absolute; top:2px; right:2px;
-  background:rgba(139,26,26,0.9); color:#fff;
-  border:none; cursor:pointer; font-size:0.62rem; padding:2px 4px; border-radius:2px;
-}
-.upload-progress { font-size:0.8rem; color:var(--gold-dk); margin-top:0.5rem; }
+/* ── FOOTER ── */
+.footer { background:var(--navy); border-top:3px solid var(--gold); padding:2rem; text-align:center; margin-top:3rem; }
+.footer p { font-size:0.78rem; color:#3d5570; line-height:1.8; }
+.footer a { color:var(--gold); text-decoration:none; }
 
-/* IMPORT */
-.import-box { padding:1.5rem; }
-.import-drop {
-  border:2px dashed var(--border); border-radius:4px; padding:2rem;
-  text-align:center; cursor:pointer; transition:all 0.2s; background:var(--bg);
-}
-.import-drop:hover,.import-drop.drag-over { border-color:var(--gold); background:#fffbf0; }
-.import-drop input { display:none; }
-.import-preview {
-  margin-top:1rem; font-size:0.85rem; color:var(--text-mid);
-  max-height:200px; overflow-y:auto;
-  border:1px solid var(--border); border-radius:4px; padding:0.75rem;
-  background:var(--bg); font-family:monospace;
-}
-
-/* TOAST */
-.toast {
-  position:fixed; bottom:2rem; right:2rem; z-index:999;
-  font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.08em;
-  padding:0.75rem 1.25rem; border-radius:4px;
-  background:var(--navy); border-left:4px solid var(--gold);
-  color:#fff; transform:translateY(100px); opacity:0;
-  transition:all 0.3s; box-shadow:0 4px 16px var(--shadow);
-}
-.toast.show { transform:translateY(0); opacity:1; }
-.toast.err  { border-left-color:#e74c3c; background:#7f1d1d; }
-.toast.ok   { border-left-color:#16a34a; }
-
-.empty-state { text-align:center; padding:3rem 2rem; color:var(--text-mid); font-style:italic; }
-
-@media(max-width:640px){
-  .form-grid,.form-grid-3 { grid-template-columns:1fr; }
-  .form-full { grid-column:auto; }
-  .admin-body { padding:1rem; }
+@media(max-width:640px) {
+  .main { padding:1.25rem 1rem; }
+  .events-grid { grid-template-columns:1fr; }
+  .filter-bar { padding:0.6rem 1rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Tampa Rough Riders</div>
-    <div class="login-sub">Events CMS — Admin Access</div>
-    <div style="position:relative;">
-      <input type="password" id="loginPass" class="login-input" placeholder="Admin password"
-             onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:2.5rem;width:100%;"/>
-      <span id="pwToggle" onclick="var i=document.getElementById('loginPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';"
-            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none;">👁</span>
-    </div>
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
-    <div class="login-err" id="loginErr"></div>
-  </div>
-</div>
-
+<!-- NAV -->
 <div id="site-header"></div>
 
-<!-- ADMIN APP -->
-<div id="adminApp">
-  <header class="admin-header">
-    <div class="admin-title">⭐ Rough Riders — Events CMS</div>
-    <div class="admin-actions">
-      <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page ↗</a>
-      <a href="/events-dashboard.html" target="_blank" class="btn btn-ghost">📊 Dashboard ↗</a>
-      <button class="btn btn-outline" onclick="exportCSV()">↓ Export CSV</button>
-      <button class="btn btn-outline" onclick="openImport()">↑ Import CSV</button>
-      <button class="btn btn-primary" onclick="openForm()">+ New Event</button>
-      <button class="btn btn-ghost" onclick="doLogout()">Sign Out</button>
-    </div>
-  </header>
+<!-- MEMBER BANNER -->
+<div class="member-banner" id="memberBanner">
+  &#9733; You're logged in as a member — <strong>member-only events</strong> are shown below
+</div>
 
-  <div class="admin-body">
-    <div class="stats-bar" id="statsBar"></div>
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <input type="text" class="search-input" placeholder="Search events…" oninput="searchEvents(this.value)"/>
-        <input type="text" class="search-input" placeholder="Filter by tag…" oninput="filterTag(this.value)" style="width:160px;"/>
-      </div>
-      <div class="toolbar-right">
-        <label class="form-check">
-          <input type="checkbox" id="showArchived" onchange="renderTable()"/>
-          <span style="font-size:0.82rem">Show archived</span>
-        </label>
-      </div>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Photo</th><th>Event</th><th>Date</th><th>Tags</th><th>Status</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="eventsTableBody">
-          <tr><td colspan="7" class="empty-state">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">&#10022; &nbsp; Tampa Rough Riders &nbsp; &#10022;</p>
+  <h1>Upcoming Events</h1>
+  <p>Reenactments, socials, committee meetings, and member gatherings.</p>
+  <div class="hero-actions">
+    <a href="index.html#donate" class="btn btn-outline">Support the Mission</a>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">Show</span>
+    <button class="filter-btn active" data-filter="all">All events</button>
+    <button class="filter-btn" data-filter="Social">Socials</button>
+    <button class="filter-btn" data-filter="Museum">Museum</button>
+    <button class="filter-btn" data-filter="General">General</button>
+    <button class="filter-btn" data-filter="members" id="membersFilterBtn" style="display:none">Members only</button>
+    <span class="filter-count" id="filter-count"></span>
   </div>
 </div>
 
-<!-- EVENT FORM MODAL -->
-<div class="modal-overlay" id="formModal">
+<!-- EVENTS -->
+<main class="main">
+  <div id="events-container">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading events…</p>
+    </div>
+  </div>
+</main>
+
+<!-- EVENT DETAIL MODAL -->
+<div class="modal-overlay" id="eventModal" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-header-title" id="formTitle">New Event</div>
-      <button class="btn btn-outline btn-sm" onclick="closeForm()">✕ Cancel</button>
+    <img class="modal-photo" id="modalPhoto" src="" alt="" style="display:none"/>
+    <div class="modal-body">
+      <div class="modal-eyebrow" id="modalTags"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-body-html" id="modalBodyHtml"></div>
     </div>
-    <div class="modal-body-inner">
-      <input type="hidden" id="fId"/>
-
-      <!-- Title -->
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Event Title *</label>
-        <input type="text" id="fTitle" class="form-input" placeholder="31st Annual Charity Fishing Tournament"/>
-      </div>
-
-      <!-- Dates + Time -->
-      <div class="form-grid-3">
-        <div class="form-group">
-          <label class="form-label">Start Date</label>
-          <input type="date" id="fDateStart" class="form-input"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">End Date</label>
-          <input type="date" id="fDateEnd" class="form-input"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Time Display</label>
-          <input type="text" id="fTime" class="form-input" placeholder="7:00 AM – 5:00 PM"/>
-        </div>
-      </div>
-
-      <!-- Location -->
-      <div class="form-grid" style="margin-bottom:1rem;">
-        <div class="form-group">
-          <label class="form-label">Location</label>
-          <input type="text" id="fLocation" class="form-input" placeholder="Treasure Island, FL"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">RSVP / Registration URL</label>
-          <input type="text" id="fRsvpUrl" class="form-input" placeholder="https://…"/>
-        </div>
-      </div>
-
-      <!-- Tags -->
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Tags <span style="font-weight:400;text-transform:none;letter-spacing:0;">(press Enter or comma to add)</span></label>
-        <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagsTextInput').focus()">
-          <input type="text" id="tagsTextInput" class="tags-text-input" placeholder="Add a tag…"
-                 onkeydown="handleTagKey(event)" oninput="handleTagInput(event)"/>
-        </div>
-        <div class="form-hint">Examples: Social, Parade, Fishing, Members Only</div>
-      </div>
-
-      <!-- Short Description -->
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Short Description <span style="font-weight:400;text-transform:none;letter-spacing:0;">(card teaser — auto-generated from body if left blank)</span></label>
-        <textarea id="fDesc" class="form-textarea" placeholder="1–2 sentence teaser shown on the event card…"></textarea>
-      </div>
-
-      <!-- Rich Text Body -->
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Full Detail Body</label>
-        <div class="quill-wrapper">
-          <div id="fBodyEditor"></div>
-        </div>
-        <div class="form-hint">Full HTML event description shown on the event detail page.</div>
-      </div>
-
-      <!-- Visibility -->
-      <div class="form-check-row">
-        <label class="form-check"><input type="checkbox" id="fPublic"/><span>Public <span style="font-weight:400;font-size:0.8em;opacity:0.7;">(visible to non-members)</span></span></label>
-        <label class="form-check"><input type="checkbox" id="fActive" checked/><span>Active <span style="font-weight:400;font-size:0.8em;opacity:0.7;">(shows on events page; uncheck to hide/archive)</span></span></label>
-      </div>
-
-      <!-- Photos -->
-      <div class="form-group">
-        <label class="form-label">Photos</label>
-        <div class="photo-upload-zone" onclick="document.getElementById('photoFileInput').click()">
-          <input type="file" id="photoFileInput" multiple accept="image/*" onchange="handlePhotoSelect(event)"/>
-          <div style="font-size:0.85rem;color:var(--text-mid);">📷 Click to upload photos (JPG, PNG, WebP) — stored in Supabase Storage</div>
-        </div>
-        <div class="upload-progress" id="uploadProgress"></div>
-        <div class="photo-preview-grid" id="photoPreviews"></div>
-      </div>
-    </div>
-   <div class="modal-footer" style="position:sticky;bottom:0;background:var(--bg);z-index:10;">
-      <div class="wa-sync-note">Saves to Supabase</div>
-      <div style="display:flex;gap:0.75rem;">
-        <button class="btn btn-outline" onclick="closeForm()">Cancel</button>
-        <button class="btn btn-primary" id="saveBtn" onclick="saveEvent()">Save Event</button>
-      </div>
+    <div class="modal-footer">
+      <button class="modal-close" onclick="closeModal()">← Back to events</button>
+      <a id="modalRsvp" href="#" target="_blank" class="btn btn-gold" style="display:none">RSVP &amp; details →</a>
     </div>
   </div>
 </div>
 
-<!-- IMPORT MODAL -->
-<div class="modal-overlay" id="importModal">
-  <div class="modal-box" style="max-width:600px;">
-    <div class="modal-header">
-      <div class="modal-header-title">Import Events from CSV</div>
-      <button class="btn btn-outline btn-sm" onclick="closeImport()">✕ Cancel</button>
-    </div>
-    <div class="import-box">
-      <p style="font-size:0.9rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.6;">
-        Upload a CSV with columns:<br/>
-        <code style="font-size:0.8rem;background:var(--bg);padding:0.2rem 0.4rem;border-radius:3px;">
-          title, date_start, date_end, time_display, location, tags, description, body_html, rsvp_url, is_public, is_active
-        </code>
-      </p>
-      <div class="import-drop" id="importDrop"
-           ondragover="event.preventDefault();this.classList.add('drag-over')"
-           ondragleave="this.classList.remove('drag-over')"
-           ondrop="handleImportDrop(event)"
-           onclick="document.getElementById('csvFileInput').click()">
-        <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvSelect(event)"/>
-        <div style="font-size:2rem;margin-bottom:0.5rem;">📁</div>
-        <div style="font-size:0.9rem;color:var(--text-mid);">Click or drag &amp; drop a CSV file here</div>
-      </div>
-      <div class="import-preview" id="importPreview" style="display:none;"></div>
-      <div id="importStats" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-mid);"></div>
-    </div>
-    <div class="modal-footer" style="justify-content:flex-end;">
-      <button class="btn btn-outline" onclick="closeImport()">Cancel</button>
-      <button class="btn btn-success" id="importBtn" onclick="doImport()" style="display:none;">↑ Import Events</button>
-    </div>
-  </div>
-</div>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>
+    <a href="index.html">tamparoughriders.org</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:office@tamparoughriders.org">Contact us</a>
+  </p>
+  <p style="margin-top:6px;">1st U.S. Volunteer Cavalry Regiment · Rough Riders, Inc. · Tampa, Florida · 501(c)(3)</p>
+</footer>
 
-<div class="toast" id="toast"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
-const API_BASE   = '/.netlify/functions/admin-events';
-const LOGIN_API  = '/.netlify/functions/admin-login';
-const UPLOAD_API = '/.netlify/functions/upload-photo';
+const EVENTS_API = '/.netlify/functions/events-api';
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-let adminToken = '';
-let allEvents = [];
-let editingId = null;
-let currentTags = [];
-let pendingPhotoUrls = [];
-let pendingPhotoFiles = [];
-let parsedImportRows = [];
-let searchQuery = '';
-let tagQuery = '';
+let allEvents  = [];
+let isMember   = false;
+let activeFilter = 'all';
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-async function doLogin() {
-  const pass = document.getElementById('loginPass').value.trim();
-  if (!pass) return;
-  document.getElementById('loginErr').textContent = '';
+// ── Check member login status from member-auth.js ────────────────────────────
+// member-auth.js stores session in localStorage('rr_member_session')
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('rr_member_session')); } catch { return null; }
+}
+
+function checkMemberStatus() {
+  const sess = getSession();
+  isMember = !!(sess && sess.token);
+  if (isMember) {
+    const name = sess.first_name || sess.email || 'Member';
+    document.getElementById('memberBanner').innerHTML =
+      `&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
+    document.getElementById('memberBanner').classList.add('visible');
+    // Show Members only filter tab for logged-in members
+    const btn = document.getElementById('membersFilterBtn');
+    if (btn) btn.style.display = '';
+  }
+}
+
+// ── Load events from Supabase via Netlify function ───────────────────────────
+async function loadEvents() {
   try {
-    const r = await fetch(LOGIN_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass })
+    // Build headers — if member is logged in, pass token so API can return member-only events
+    const fetchHeaders = { 'Accept': 'application/json' };
+    if (isMember && getSession()?.token) {
+      fetchHeaders['Authorization'] = `Bearer ${getSession().token}`;
+    }
+
+    // Public endpoint returns is_active=true&is_public=true only
+    // Member endpoint (with auth) returns all active events including members-only
+    const url = isMember
+      ? `${EVENTS_API}?all=false`
+      : EVENTS_API;
+
+    const res = await fetch(url, { headers: fetchHeaders });
+    if (!res.ok) throw new Error('API error');
+    allEvents = await res.json();
+
+    // Filter to upcoming + today only
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    allEvents = allEvents.filter(e => {
+      if (!e.date_start) return true; // undated events always show
+      const d = new Date(e.date_start + 'T12:00:00');
+      return d >= today;
     });
-    if (!r.ok) { document.getElementById('loginErr').textContent = 'Incorrect password.'; return; }
-    const { token } = await r.json();
-    adminToken = token;
-    sessionStorage.setItem('eventsAdminToken', token);
-    localStorage.setItem('eventsAdminToken', token);
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'block';
-    await fetchEvents();
-  } catch { document.getElementById('loginErr').textContent = 'Connection error.'; }
-}
 
-function doLogout() {
-  adminToken = '';
-  sessionStorage.removeItem('eventsAdminToken');
-  localStorage.removeItem('eventsAdminToken');
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('adminApp').style.display = 'none';
-}
-
-window.addEventListener('DOMContentLoaded', async () => {
-  // If arriving from admin.html with ?pw=, exchange password for a real token
-  const params = new URLSearchParams(window.location.search);
-  const pw = params.get('pw');
-  if (pw) {
-    history.replaceState(null, '', window.location.pathname);
-    try {
-      const r = await fetch(LOGIN_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pw })
-      });
-      if (r.ok) {
-        const { token } = await r.json();
-        adminToken = token;
-        sessionStorage.setItem('eventsAdminToken', token);
-        localStorage.setItem('eventsAdminToken', token);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminApp').style.display = 'block';
-        fetchEvents();
-        return;
-      }
-    } catch {}
-  }
-  // Normal startup — check stored token
-  const t = sessionStorage.getItem('eventsAdminToken') || localStorage.getItem('eventsAdminToken');
-  if (t) {
-    adminToken = t;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'block';
-    fetchEvents();
-  }
-});
-
-// ── QUILL INIT ────────────────────────────────────────────────────────────────
-let quillBody = null;
-
-window.addEventListener('DOMContentLoaded', () => {
-  // Custom image handler — uploads to Supabase Storage
-  function imageHandler() {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
-    input.click();
-    input.onchange = async () => {
-      const file = input.files[0];
-      if (!file) return;
-      try {
-        toast('Uploading image…');
-        const b64 = await new Promise((res, rej) => {
-          const r = new FileReader();
-          r.onload = () => res(r.result.split(',')[1]);
-          r.onerror = rej;
-          r.readAsDataURL(file);
-        });
-        const resp = await fetch(UPLOAD_API, {
-          method: 'POST',
-          headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-          body: JSON.stringify({ filename: file.name, contentType: file.type || 'image/jpeg', data: b64 })
-        });
-        if (!resp.ok) throw new Error('Upload failed');
-        const { url } = await resp.json();
-        const range = quillBody.getSelection(true);
-        quillBody.insertEmbed(range.index, 'image', url);
-        quillBody.setSelection(range.index + 1);
-        toast('Image inserted ✓', 'ok');
-      } catch (e) {
-        toast('Image upload failed: ' + e.message, true);
-      }
-    };
-  }
-
-  quillBody = new Quill('#fBodyEditor', {
-    theme: 'snow',
-    placeholder: 'Full event details — headings, bullet lists, links, images…',
-    modules: {
-      toolbar: {
-        container: [
-          [{ header: [2, 3, 4, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ color: [] }, { background: [] }],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ indent: '-1' }, { indent: '+1' }],
-          ['link', 'image'],
-          [{ align: [] }],
-          ['blockquote', 'code-block'],
-          ['clean']
-        ],
-        handlers: { image: imageHandler }
-      }
+    // Belt-and-suspenders: hide members-only events from non-members
+    if (!isMember) {
+      allEvents = allEvents.filter(e => e.is_public !== false);
     }
-  });
-});
 
-function authHeaders(extra) {
-  return Object.assign({ 'Authorization': `Bearer ${adminToken}` }, extra || {});
+    renderEvents(allEvents);
+  } catch (err) {
+    document.getElementById('events-container').innerHTML =
+      `<div class="empty-state"><p>Could not load events. Please try again shortly.</p></div>`;
+    console.error(err);
+  }
 }
 
-// ── FETCH EVENTS ──────────────────────────────────────────────────────────────
-async function fetchEvents() {
-  try {
-    const r = await fetch(API_BASE, { headers: authHeaders() });
-    if (r.status === 401) { doLogout(); return; }
-    allEvents = await r.json();
-    renderTable();
-    renderStats();
-  } catch { toast('Failed to load events', true); }
+// ── Format helpers ────────────────────────────────────────────────────────────
+function formatDate(start, end) {
+  if (!start) return 'Date TBD';
+  const s = new Date(start + 'T12:00:00');
+  const opts = { month:'long', day:'numeric', year:'numeric' };
+  const dayName = DAYS[s.getDay()];
+  if (end && end !== start) {
+    const e = new Date(end + 'T12:00:00');
+    return `${dayName}, ${s.toLocaleDateString('en-US',opts)} – ${e.toLocaleDateString('en-US',opts)}`;
+  }
+  return `${dayName}, ${s.toLocaleDateString('en-US',opts)}`;
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function fmtDate(s, e) {
-  if (!s) return 'TBD';
-  const d = new Date(s + 'T12:00:00');
-  const opts = { month:'short', day:'numeric', year:'numeric' };
-  if (e && e !== s)
-    return d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) +
-           ' – ' + new Date(e + 'T12:00:00').toLocaleDateString('en-US', opts);
-  return d.toLocaleDateString('en-US', opts);
+function formatDateShort(start) {
+  if (!start) return 'TBD';
+  const d = new Date(start + 'T12:00:00');
+  return d.toLocaleDateString('en-US',{ month:'short', day:'numeric', year:'numeric' });
 }
 
-function searchEvents(q) { searchQuery = q.toLowerCase(); renderTable(); }
-function filterTag(v)    { tagQuery = v.toLowerCase(); renderTable(); }
-
-// ── STATS ─────────────────────────────────────────────────────────────────────
-function renderStats() {
-  const total  = allEvents.length;
-  const active = allEvents.filter(e => e.is_active).length;
-  const pub    = allEvents.filter(e => e.is_public && e.is_active).length;
-  const priv   = allEvents.filter(e => !e.is_public && e.is_active).length;
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat-pill"><strong>${total}</strong>Total</div>
-    <div class="stat-pill"><strong>${active}</strong>Active</div>
-    <div class="stat-pill"><strong>${pub}</strong>Public</div>
-    <div class="stat-pill"><strong>${priv}</strong>Members Only</div>`;
+function getMonthKey(dateStr) {
+  if (!dateStr) return 'Date TBD';
+  const [y,m] = dateStr.split('-');
+  return `${MONTHS[parseInt(m)-1]} ${y}`;
 }
 
-// ── TABLE ─────────────────────────────────────────────────────────────────────
-function renderTable() {
-  const showArch = document.getElementById('showArchived').checked;
-  let list = allEvents.filter(e => {
-    if (!showArch && !e.is_active) return false;
-    if (tagQuery) {
-      const tags = Array.isArray(e.tags) ? e.tags.join(' ').toLowerCase() : '';
-      if (!tags.includes(tagQuery)) return false;
-    }
-    if (searchQuery) {
-      const hay = (e.title + ' ' + (e.description || '') + ' ' + (e.location || '')).toLowerCase();
-      if (!hay.includes(searchQuery)) return false;
-    }
-    return true;
-  });
-  list.sort((a, b) => {
-    if (!a.date_start) return 1;
-    if (!b.date_start) return -1;
-    return a.date_start.localeCompare(b.date_start);
-  });
-  const tbody = document.getElementById('eventsTableBody');
-  if (!list.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No events found.</td></tr>';
+function badgeFor(ev) {
+  if (!ev.is_public) return `<span class="event-card-badge badge-members">Members only</span>`;
+  const tags = Array.isArray(ev.tags) ? ev.tags.map(t=>t.toLowerCase()) : [];
+  if (tags.includes('museum')) return `<span class="event-card-badge badge-museum">Museum</span>`;
+  if (tags.includes('social')) return `<span class="event-card-badge badge-social">Social</span>`;
+  return `<span class="event-card-badge badge-free">Open to public</span>`;
+}
+
+function tagsLabel(ev) {
+  if (!ev.is_public) return '★ Members Only Event';
+  const tags = Array.isArray(ev.tags) ? ev.tags : [];
+  if (tags.length) return tags.join(' · ');
+  return '';
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderEvents(events) {
+  const container = document.getElementById('events-container');
+  document.getElementById('filter-count').textContent = `${events.length} event${events.length!==1?'s':''}`;
+
+  if (!events.length) {
+    container.innerHTML = `<div class="empty-state"><p>No events found for this filter.</p></div>`;
     return;
   }
-  tbody.innerHTML = list.map(ev => {
-    const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-    const thumb  = photos.length
-      ? `<img class="event-thumb" src="${photos[0]}" alt=""/>`
-      : `<div style="width:48px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);border-radius:3px;font-size:1.2rem;">📅</div>`;
-    const tags = Array.isArray(ev.tags) && ev.tags.length
-      ? ev.tags.map(t => `<span class="badge badge-tag">${t}</span>`).join(' ')
-      : '<span style="color:#9ca3af;font-size:0.75rem;">—</span>';
-    const visBadge = ev.is_public
-      ? `<span class="badge badge-pub">Public</span>`
-      : `<span class="badge badge-priv">Members</span>`;
-    const archBadge = !ev.is_active ? `<span class="badge badge-arch">Archived</span>` : '';
-    return `<tr>
-      <td>${thumb}</td>
-      <td>
-        <strong style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--navy);">${ev.title}</strong>
-        <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.15rem;">${(ev.description||'').slice(0,65)}${(ev.description||'').length>65?'…':''}</div>
-      </td>
-      <td style="white-space:nowrap;font-size:0.85rem;color:var(--text-mid);">${fmtDate(ev.date_start, ev.date_end)}</td>
-      <td>${tags}</td>
-      <td>${visBadge} ${archBadge}</td>
-      <td><div class="row-actions">
-        <button class="icon-btn" onclick="openForm('${ev.id}')">✎ Edit</button>
-        <button class="icon-btn icon-btn-del" onclick="archiveEvent('${ev.id}','${ev.title.replace(/'/g,"\\'")}')">🗑</button>
-      </div></td>
-    </tr>`;
-  }).join('');
-}
 
-// ── TAGS ──────────────────────────────────────────────────────────────────────
-function renderTags() {
-  const wrap = document.getElementById('tagsWrap');
-  const input = document.getElementById('tagsTextInput');
-  // Remove all chips
-  wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
-  // Re-insert chips before input
-  currentTags.forEach((tag, i) => {
-    const chip = document.createElement('span');
-    chip.className = 'tag-chip';
-    chip.innerHTML = `${tag}<button type="button" onclick="removeTag(${i})">✕</button>`;
-    wrap.insertBefore(chip, input);
+  // Group by month
+  const groups = {};
+  events.forEach(ev => {
+    const key = getMonthKey(ev.date_start);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(ev);
   });
+
+  container.innerHTML = Object.entries(groups).map(([month, evs]) => `
+    <div class="month-group">
+      <div class="month-heading">
+        <h2>${month}</h2>
+        <div class="month-rule"></div>
+        <span class="month-star">&#10022;</span>
+      </div>
+      <div class="events-grid">
+        ${evs.map(ev => {
+          const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+          const photoHtml = photos.length
+            ? `<img class="event-card-photo" src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`
+            : '';
+          const isMembersOnly = !ev.is_public;
+          const cardClass = isMembersOnly ? 'event-card members-only' : 'event-card';
+          const desc = ev.description
+            ? `<div class="event-card-desc">${ev.description.slice(0,100)}${ev.description.length>100?'…':''}</div>`
+            : '';
+          return `
+            <div class="${cardClass}" onclick="openModal('${ev.id}')">
+              ${photoHtml}
+              <div class="event-card-body">
+                ${tagsLabel(ev) ? `<div class="event-card-tag">${tagsLabel(ev)}</div>` : ''}
+                <div class="event-card-name">${ev.title}</div>
+                <div class="event-card-meta">
+                  <span>&#128197; ${formatDateShort(ev.date_start)}${ev.time_display ? ' &middot; ' + ev.time_display : ''}</span>
+                  ${ev.location ? `<span>&#128205; ${ev.location}</span>` : ''}
+                </div>
+                ${desc}
+              </div>
+              <div class="event-card-footer">
+                <button class="event-card-rsvp">View details →</button>
+                ${badgeFor(ev)}
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
 }
 
-function addTag(val) {
-  const tag = val.trim().replace(/,+$/, '').trim();
-  if (!tag || currentTags.includes(tag)) return;
-  currentTags.push(tag);
-  renderTags();
-}
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const ev = allEvents.find(e => e.id === id);
+  if (!ev) return;
 
-function removeTag(i) {
-  currentTags.splice(i, 1);
-  renderTags();
-}
+  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
+  const photoEl = document.getElementById('modalPhoto');
+  if (photos.length) { photoEl.src = photos[0]; photoEl.style.display = 'block'; }
+  else photoEl.style.display = 'none';
 
-function handleTagKey(e) {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    addTag(e.target.value);
-    e.target.value = '';
-  } else if (e.key === 'Backspace' && !e.target.value && currentTags.length) {
-    currentTags.pop();
-    renderTags();
-  }
-}
+  document.getElementById('modalTags').textContent = tagsLabel(ev);
+  document.getElementById('modalTitle').textContent = ev.title;
 
-function handleTagInput(e) {
-  if (e.target.value.includes(',')) {
-    const parts = e.target.value.split(',');
-    parts.slice(0, -1).forEach(p => addTag(p));
-    e.target.value = parts[parts.length - 1];
-  }
-}
+  const metaParts = [];
+  if (ev.date_start) metaParts.push(`<span>&#128197; ${formatDate(ev.date_start, ev.date_end)}${ev.time_display ? ' &middot; ' + ev.time_display : ''}</span>`);
+  if (ev.location)   metaParts.push(`<span>&#128205; ${ev.location}</span>`);
+  document.getElementById('modalMeta').innerHTML = metaParts.join('');
 
-// ── FORM ──────────────────────────────────────────────────────────────────────
-function openForm(id) {
-  editingId = id || null;
-  currentTags = [];
-  pendingPhotoUrls = [];
-  pendingPhotoFiles = [];
-  document.getElementById('photoPreviews').innerHTML = '';
-  document.getElementById('uploadProgress').textContent = '';
-  document.getElementById('formTitle').textContent = id ? 'Edit Event' : 'New Event';
+  document.getElementById('modalDesc').textContent = ev.description || '';
+  document.getElementById('modalBodyHtml').innerHTML = ev.body_html || '';
 
-  if (id) {
-    const ev = allEvents.find(e => e.id === id);
-    if (!ev) return;
-    document.getElementById('fId').value        = ev.id;
-    document.getElementById('fTitle').value     = ev.title || '';
-    document.getElementById('fDateStart').value = ev.date_start || '';
-    document.getElementById('fDateEnd').value   = ev.date_end || '';
-    document.getElementById('fTime').value      = ev.time_display || '';
-    document.getElementById('fLocation').value  = ev.location || '';
-    document.getElementById('fRsvpUrl').value   = ev.rsvp_url || '';
-    document.getElementById('fDesc').value      = ev.description || '';
-    if (quillBody) quillBody.root.innerHTML     = ev.body_html || '';
-    document.getElementById('fPublic').checked  = ev.is_public !== false;
-    document.getElementById('fActive').checked  = ev.is_active !== false;
-    currentTags = Array.isArray(ev.tags) ? [...ev.tags] : [];
-    pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
-  } else {
-    ['fId','fTitle','fDateStart','fDateEnd','fTime','fLocation','fRsvpUrl','fDesc']
-      .forEach(fid => document.getElementById(fid).value = '');
-    if (quillBody) quillBody.root.innerHTML = '';
-    document.getElementById('fPublic').checked = false;
-    document.getElementById('fActive').checked = true;
-    currentTags = [];
-  }
+  const rsvpBtn = document.getElementById('modalRsvp');
+  const rsvpUrl = ev.luma_url || ev.rsvp_url;
+  if (rsvpUrl) { rsvpBtn.href = rsvpUrl; rsvpBtn.style.display = 'inline-flex'; }
+  else rsvpBtn.style.display = 'none';
 
-  renderTags();
-  renderPhotoPreviews();
-  document.getElementById('tagsTextInput').value = '';
-  document.getElementById('formModal').classList.add('open');
+  document.getElementById('eventModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function closeForm() {
-  document.getElementById('formModal').classList.remove('open');
+function closeModal() {
+  document.getElementById('eventModal').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-// ── PHOTOS ────────────────────────────────────────────────────────────────────
-function handlePhotoSelect(e) {
-  pendingPhotoFiles = [...pendingPhotoFiles, ...Array.from(e.target.files)];
-  renderPhotoPreviews();
-}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-function renderPhotoPreviews() {
-  const grid = document.getElementById('photoPreviews');
-  const up = pendingPhotoUrls.map((url, i) =>
-    `<div class="photo-prev"><img src="${url}"/><button class="photo-prev-del" onclick="removeExisting(${i})">✕</button></div>`
-  ).join('');
-  const st = pendingPhotoFiles.map((f, i) => {
-    const obj = URL.createObjectURL(f);
-    return `<div class="photo-prev"><img src="${obj}"/><button class="photo-prev-del" onclick="removeStaged(${i})">✕</button></div>`;
-  }).join('');
-  grid.innerHTML = up + st;
-}
-
-function removeExisting(i) { pendingPhotoUrls.splice(i, 1); renderPhotoPreviews(); }
-function removeStaged(i)   { pendingPhotoFiles.splice(i, 1); renderPhotoPreviews(); }
-
-async function uploadStagedPhotos() {
-  if (!pendingPhotoFiles.length) return pendingPhotoUrls;
-  const prog = document.getElementById('uploadProgress');
-  const uploaded = [...pendingPhotoUrls];
-  for (let i = 0; i < pendingPhotoFiles.length; i++) {
-    const file = pendingPhotoFiles[i];
-    prog.textContent = `Uploading photo ${i + 1} of ${pendingPhotoFiles.length}…`;
-    const b64 = await new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result.split(',')[1]);
-      r.onerror = rej;
-      r.readAsDataURL(file);
-    });
-    const resp = await fetch(UPLOAD_API, {
-      method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-      body: JSON.stringify({ filename: file.name, contentType: file.type || 'image/jpeg', data: b64 })
-    });
-    if (resp.ok) { const { url } = await resp.json(); uploaded.push(url); }
-    else throw new Error('Photo upload failed');
-  }
-  prog.textContent = '';
-  return uploaded;
-}
-
-// ── SAVE ──────────────────────────────────────────────────────────────────────
-async function saveEvent() {
-  const title = document.getElementById('fTitle').value.trim();
-  if (!title) { toast('Title is required', true); return; }
-
-  // Flush any pending tag text
-  const tagInput = document.getElementById('tagsTextInput');
-  if (tagInput.value.trim()) { addTag(tagInput.value); tagInput.value = ''; }
-
-  const btn = document.getElementById('saveBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  try {
-    const finalPhotos = await uploadStagedPhotos();
-
-    // Auto-generate description from body_html if blank
-    const bodyHtml = quillBody && quillBody.root.innerHTML.trim() !== '<p><br></p>'
-      ? quillBody.root.innerHTML.trim() : null;
-    let description = document.getElementById('fDesc').value.trim();
-    if (!description && bodyHtml) {
-      description = bodyHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
-    }
-
-    const payload = {
-      title,
-      date_start:   document.getElementById('fDateStart').value || null,
-      date_end:     document.getElementById('fDateEnd').value   || null,
-      time_display: document.getElementById('fTime').value.trim()     || null,
-      location:     document.getElementById('fLocation').value.trim() || null,
-      rsvp_url:     document.getElementById('fRsvpUrl').value.trim()  || null,
-      description:  description || null,
-      body_html:    bodyHtml,
-      is_public:    document.getElementById('fPublic').checked,
-      is_active:    document.getElementById('fActive').checked,
-      tags:         currentTags,
-      photo_urls:   finalPhotos
-    };
-
-    const method = editingId ? 'PUT' : 'POST';
-    if (editingId) payload.id = editingId;
-
-    const r = await fetch(API_BASE, {
-      method,
-      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-      body: JSON.stringify(payload)
-    });
-    if (r.status === 401) { doLogout(); return; }
-    if (!r.ok) throw new Error(`Save failed: ${r.status}`);
-
-    closeForm();
-    await fetchEvents();
-    toast(editingId ? 'Event updated ✓' : 'Event created ✓', 'ok');
-  } catch (err) {
-    toast(err.message, true);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Save Event';
-  }
-}
-
-async function archiveEvent(id, title) {
-  if (!confirm(`Archive "${title}"?\n\nHidden from public but not deleted.`)) return;
-  const r = await fetch(API_BASE, {
-    method: 'DELETE',
-    headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-    body: JSON.stringify({ id })
+// ── Filters ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    const filtered = filterEvents(activeFilter);
+    renderEvents(filtered);
   });
-  if (r.status === 401) { doLogout(); return; }
-  if (r.ok) { await fetchEvents(); toast('Event archived ✓', 'ok'); }
-  else toast('Archive failed', true);
+});
+
+function filterEvents(filter) {
+  if (filter === 'all') return allEvents;
+  if (filter === 'members') return allEvents.filter(e => !e.is_public);
+  // Filter by tag (case-insensitive)
+  return allEvents.filter(e => {
+    const tags = Array.isArray(e.tags) ? e.tags.map(t=>t.toLowerCase()) : [];
+    return tags.includes(filter.toLowerCase());
+  });
 }
 
-// ── EXPORT CSV ────────────────────────────────────────────────────────────────
-function exportCSV() {
-  const cols = ['title','date_start','date_end','time_display','location',
-                'tags','description','body_html','rsvp_url','is_public','is_active'];
-  const esc = v => {
-    if (v === null || v === undefined) return '';
-    const s = Array.isArray(v) ? v.join('|') : String(v);
-    return s.includes(',') || s.includes('"') || s.includes('\n')
-      ? '"' + s.replace(/"/g, '""') + '"' : s;
-  };
-  const rows = [cols.join(',')];
-  allEvents.forEach(ev => rows.push(cols.map(c => esc(ev[c])).join(',')));
-  const blob = new Blob([rows.join('\n')], { type:'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `rr-events-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  toast(`Exported ${allEvents.length} events ✓`, 'ok');
+// ── Mobile nav toggle ─────────────────────────────────────────────────────────
+function toggleNav() {
+  const nav = document.querySelector('#topbar nav');
+  if (nav) nav.classList.toggle('open');
 }
 
-// ── IMPORT CSV ────────────────────────────────────────────────────────────────
-function openImport() {
-  parsedImportRows = [];
-  document.getElementById('importPreview').style.display = 'none';
-  document.getElementById('importStats').textContent = '';
-  document.getElementById('importBtn').style.display = 'none';
-  document.getElementById('csvFileInput').value = '';
-  document.getElementById('importModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeImport() {
-  document.getElementById('importModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function handleImportDrop(e) {
-  e.preventDefault();
-  document.getElementById('importDrop').classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) processCSVFile(file);
-}
-
-function handleCsvSelect(e) {
-  const file = e.target.files[0];
-  if (file) processCSVFile(file);
-}
-
-function parseCSVLine(line) {
-  const result = []; let cur = ''; let inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur);
-  return result.map(v => v.trim());
-}
-
-function parseCSV(text) {
-  const lines = text.split('\n').filter(l => l.trim());
-  if (!lines.length) return [];
-  const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
-  return lines.slice(1).map(line => {
-    const vals = parseCSVLine(line);
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = vals[i] || ''; });
-    return obj;
-  }).filter(r => r.title);
-}
-
-function processCSVFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    parsedImportRows = parseCSV(e.target.result);
-    const prev  = document.getElementById('importPreview');
-    const stats = document.getElementById('importStats');
-    if (!parsedImportRows.length) {
-      stats.textContent = 'No valid rows found.';
-      document.getElementById('importBtn').style.display = 'none';
-      return;
-    }
-    prev.style.display = 'block';
-    prev.innerHTML = parsedImportRows.slice(0, 5).map(r =>
-      `<div style="padding:0.25rem 0;border-bottom:1px solid var(--border);">${r.title} — ${r.date_start || 'No date'} — ${r.tags || 'No tags'}</div>`
-    ).join('') + (parsedImportRows.length > 5
-      ? `<div style="color:#9ca3af;padding-top:0.25rem;">…and ${parsedImportRows.length - 5} more</div>` : '');
-    stats.innerHTML = `<strong>${parsedImportRows.length} events</strong> ready to import.`;
-    document.getElementById('importBtn').style.display = 'inline-block';
-  };
-  reader.readAsText(file);
-}
-
-async function doImport() {
-  if (!parsedImportRows.length) return;
-  const btn = document.getElementById('importBtn');
-  btn.disabled = true; btn.textContent = 'Importing…';
-  let created = 0, skipped = 0;
-  const existingTitles = new Set(allEvents.map(e => e.title.trim().toLowerCase()));
-  for (const row of parsedImportRows) {
-    if (existingTitles.has(row.title.trim().toLowerCase())) { skipped++; continue; }
-    const tags = row.tags ? row.tags.split('|').map(t => t.trim()).filter(Boolean) : [];
-    const payload = {
-      title:        row.title.trim(),
-      date_start:   row.date_start  || null,
-      date_end:     row.date_end    || null,
-      time_display: row.time_display || null,
-      location:     row.location    || null,
-      tags,
-      description:  row.description || null,
-      body_html:    row.body_html   || null,
-      rsvp_url:     row.rsvp_url    || null,
-      is_public:    row.is_public !== 'false' && row.is_public !== '0',
-      is_active:    row.is_active  !== 'false' && row.is_active !== '0',
-      photo_urls:   []
-    };
-    const r = await fetch(API_BASE, {
-      method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-      body: JSON.stringify(payload)
-    });
-    if (r.ok) created++; else skipped++;
-  }
-  closeImport();
-  await fetchEvents();
-  toast(`Imported ${created} events${skipped ? ' (' + skipped + ' skipped)' : ''} ✓`, 'ok');
-  btn.disabled = false; btn.textContent = '↑ Import Events';
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function toast(msg, type) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show' + (type === 'ok' ? ' ok' : type === true ? ' err' : '');
-  setTimeout(() => { el.className = 'toast'; }, 3500);
-}
+// ── Init ──────────────────────────────────────────────────────────────────────
+// Wait for member-auth.js to finish setting window.rrMember before loading events
+window.addEventListener('DOMContentLoaded', () => {
+  // Small delay to let member-auth.js initialize
+  setTimeout(() => {
+    checkMemberStatus();
+    loadEvents();
+  }, 100);
+});
 </script>
+
 <script src="header.js"></script>
 <script src="member-auth.js"></script>
 </body>
