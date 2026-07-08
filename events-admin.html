@@ -681,8 +681,8 @@ function filterTag(v)    { tagQuery = v.toLowerCase(); renderTable(); }
 function renderStats() {
   const total  = allEvents.length;
   const active = allEvents.filter(e => e.is_active).length;
-  const pub    = allEvents.filter(e => e.is_public && e.is_active).length;
-  const priv   = allEvents.filter(e => !e.is_public && e.is_active).length;
+  const pub    = allEvents.filter(e => e.is_public === true && e.is_active).length;
+  const priv   = allEvents.filter(e => e.is_public !== true && e.is_active).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-pill"><strong>${total}</strong>Total</div>
     <div class="stat-pill"><strong>${active}</strong>Active</div>
@@ -723,7 +723,7 @@ function renderTable() {
     const tags = Array.isArray(ev.tags) && ev.tags.length
       ? ev.tags.map(t => `<span class="badge badge-tag">${t}</span>`).join(' ')
       : '<span style="color:#9ca3af;font-size:0.75rem;">—</span>';
-    const visBadge = ev.is_public
+    const visBadge = ev.is_public === true
       ? `<span class="badge badge-pub">Public</span>`
       : `<span class="badge badge-priv">Members</span>`;
     const archBadge = !ev.is_active ? `<span class="badge badge-arch">Archived</span>` : '';
@@ -812,7 +812,7 @@ function openForm(id) {
     document.getElementById('fRsvpUrl').value   = ev.rsvp_url || '';
     document.getElementById('fDesc').value      = ev.description || '';
     if (quillBody) quillBody.root.innerHTML     = ev.body_html || '';
-    document.getElementById('fPublic').checked  = ev.is_public !== false;
+    document.getElementById('fPublic').checked  = ev.is_public === true;
     document.getElementById('fActive').checked  = ev.is_active !== false;
     currentTags = Array.isArray(ev.tags) ? [...ev.tags] : [];
     pendingPhotoUrls = Array.isArray(ev.photo_urls) ? [...ev.photo_urls] : [];
