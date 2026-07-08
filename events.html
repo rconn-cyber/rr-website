@@ -95,7 +95,7 @@ nav a:hover { color:var(--gold); }
 .event-card:hover { border-color:var(--gold); box-shadow:0 4px 16px rgba(13,31,60,.08); }
 .event-card.featured { border-left:4px solid var(--gold); }
 .event-card.members-only { border-left:4px solid #3b82f6; }
-.event-card-photo { width:100%; height:120px; object-fit:cover; background:var(--cream2); display:block; }
+.event-card-photo { width:100%; height:180px; object-fit:cover; background:var(--cream2); display:block; }
 .event-card-body { padding:1rem 1.1rem 0.9rem; flex:1; display:flex; flex-direction:column; }
 .event-card-tag { font-size:0.65rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dk); margin-bottom:0.4rem; }
 .event-card-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--navy); line-height:1.3; margin-bottom:0.6rem; }
@@ -279,8 +279,9 @@ async function loadEvents() {
     });
 
     // Belt-and-suspenders: hide members-only events from non-members
+    // Treat null as non-public (members-only by default)
     if (!isMember) {
-      allEvents = allEvents.filter(e => e.is_public !== false);
+      allEvents = allEvents.filter(e => e.is_public === true);
     }
 
     renderEvents(allEvents);
@@ -317,7 +318,7 @@ function getMonthKey(dateStr) {
 }
 
 function badgeFor(ev) {
-  if (!ev.is_public) return `<span class="event-card-badge badge-members">Members only</span>`;
+  if (ev.is_public !== true) return `<span class="event-card-badge badge-members">Members only</span>`;
   const tags = Array.isArray(ev.tags) ? ev.tags.map(t=>t.toLowerCase()) : [];
   if (tags.includes('museum')) return `<span class="event-card-badge badge-museum">Museum</span>`;
   if (tags.includes('social')) return `<span class="event-card-badge badge-social">Social</span>`;
@@ -325,7 +326,7 @@ function badgeFor(ev) {
 }
 
 function tagsLabel(ev) {
-  if (!ev.is_public) return '★ Members Only Event';
+  if (ev.is_public !== true) return '★ Members Only Event';
   const tags = Array.isArray(ev.tags) ? ev.tags : [];
   if (tags.length) return tags.join(' · ');
   return '';
@@ -408,8 +409,18 @@ function openModal(id) {
   if (ev.location)   metaParts.push(`<span>&#128205; ${ev.location}</span>`);
   document.getElementById('modalMeta').innerHTML = metaParts.join('');
 
-  document.getElementById('modalDesc').textContent = ev.description || '';
-  document.getElementById('modalBodyHtml').innerHTML = ev.body_html || '';
+  document.getElementById('modalDesc').textContent = '';
+  const bodyHtmlEl = document.getElementById('modalBodyHtml');
+  if (ev.body_html && ev.body_html.trim() && ev.body_html.trim() !== '<p><br></p>') {
+    bodyHtmlEl.innerHTML = ev.body_html;
+    document.getElementById('modalDesc').textContent = '';
+  } else if (ev.description) {
+    bodyHtmlEl.innerHTML = '';
+    document.getElementById('modalDesc').textContent = ev.description;
+  } else {
+    bodyHtmlEl.innerHTML = '';
+    document.getElementById('modalDesc').textContent = '';
+  }
 
   const rsvpBtn = document.getElementById('modalRsvp');
   const rsvpUrl = ev.luma_url || ev.rsvp_url;
