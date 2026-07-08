@@ -106,18 +106,10 @@
         letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-weight:700;">
         SIGN IN
       </button>
-      <a href="https://tamparoughriders.org/membership" target="_blank" style="
-        flex:1;display:flex;align-items:center;justify-content:center;
-        border:1px solid #c9a84c;color:#c9a84c;
-        padding:0.85rem;font-family:'Cinzel',serif;font-size:0.8rem;
-        letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">
-        APPLY FOR MEMBERSHIP
-      </a>
     </div>
     <p style="color:#6b7280;font-size:0.78rem;text-align:center;margin-top:1.5rem;margin-bottom:0;">
-      Member accounts are managed through Wild Apricot.<br>
-      <a href="https://tamparoughriders.org/Sys/ResetPasswordRequest" target="_blank"
-        style="color:#c9a84c;">Reset Password</a>
+      <a href="mailto:office@tamparoughriders.org"
+        style="color:#c9a84c;">Contact us for account help</a>
     </p>
   </div>
 </div>`);
