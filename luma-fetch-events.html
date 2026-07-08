@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luma → Supabase Event Fetcher</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#f5f4f0;color:#1a1a1a;padding:2rem 1rem;}
+.card{background:#fff;border:1px solid #e0ddd6;border-radius:10px;padding:1.5rem;max-width:680px;margin:0 auto;}
+h1{font-size:1.3rem;font-weight:600;margin-bottom:0.25rem;}
+.sub{font-size:0.85rem;color:#666;margin-bottom:1.5rem;}
+.btn{display:inline-block;padding:0.65rem 1.5rem;border-radius:6px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;transition:opacity .15s;}
+.btn-primary{background:#0d1f3c;color:#C9A84C;}
+.btn-primary:hover{opacity:0.88;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-download{background:#166534;color:#fff;margin-left:0.5rem;}
+.btn-download:hover{opacity:0.88;}
+.status{margin-top:1rem;font-size:0.85rem;color:#555;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#C9A84C;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.log{max-height:260px;overflow-y:auto;font-size:0.78rem;font-family:monospace;background:#f8f7f3;border:1px solid #e0ddd6;border-radius:6px;padding:0.75rem;margin-top:0.75rem;}
+.log-entry{padding:2px 0;border-bottom:1px solid #ede9e0;}
+.log-entry:last-child{border-bottom:none;}
+.ok{color:#166534;}.err{color:#991b1b;}.info{color:#1e40af;}
+.preview{margin-top:1rem;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.75rem;}
+th{background:#0d1f3c;color:#C9A84C;padding:0.4rem 0.6rem;text-align:left;font-size:0.68rem;letter-spacing:0.05em;text-transform:uppercase;}
+td{padding:0.4rem 0.6rem;border-bottom:1px solid #f0ece2;color:#333;}
+tr:hover td{background:#fafaf8;}
+.badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.65rem;font-weight:600;}
+.badge-public{background:#EAF3DE;color:#27500A;}
+.badge-members{background:#DBEAFE;color:#1e40af;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Luma → Supabase Event Fetcher</h1>
+  <p class="sub">Fetches all Tampa Rough Riders events from Luma and exports a CSV ready to import into Supabase <code>rr_events</code>.</p>
+
+  <button class="btn btn-primary" id="fetchBtn" onclick="fetchEvents()">Fetch all events from Luma</button>
+  <button class="btn btn-download" id="downloadBtn" onclick="downloadCSV()" style="display:none">⬇ Download CSV for Supabase</button>
+
+  <div class="status" id="status"></div>
+  <div class="log" id="log" style="display:none"></div>
+  <div class="preview" id="preview" style="display:none"></div>
+</div>
+
+<script>
+const CALENDAR_SLUG = 'cal-8UAsjnn9qBmt8nK';
+let allEvents = [];
+
+function log(msg, cls='info') {
+  const el = document.getElementById('log');
+  el.style.display = 'block';
+  const d = document.createElement('div');
+  d.className = `log-entry ${cls}`;
+  d.textContent = msg;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+function setStatus(html) {
+  document.getElementById('status').innerHTML = html;
+}
+
+async function fetchPage(cursor) {
+  let url = `https://api.lu.ma/calendar/get-items?calendarSlug=${CALENDAR_SLUG}&pagination_limit=50&sort_column=start_at&sort_direction=asc`;
+  if (cursor) url += `&pagination_cursor=${encodeURIComponent(cursor)}`;
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function fetchEvents() {
+  const btn = document.getElementById('fetchBtn');
+  btn.disabled = true;
+  allEvents = [];
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('downloadBtn').style.display = 'none';
+  setStatus('<span class="spinner"></span> Fetching events from Luma…');
+  log('Connecting to Luma calendar: ' + CALENDAR_SLUG, 'info');
+
+  try {
+    let cursor = null;
+    let page = 1;
+    while (true) {
+      log(`Fetching page ${page}…`, 'info');
+      const data = await fetchPage(cursor);
+      const entries = data.entries || [];
+      log(`  → ${entries.length} events returned`, 'ok');
+
+      entries.forEach(e => {
+        const ev = e.event || e;
+        allEvents.push(ev);
+      });
+
+      if (!data.has_more || !data.next_cursor) break;
+      cursor = data.next_cursor;
+      page++;
+    }
+
+    log(`Total: ${allEvents.length} events fetched`, 'ok');
+    setStatus(`✅ Fetched <strong>${allEvents.length} events</strong> from Luma.`);
+    renderPreview();
+    document.getElementById('downloadBtn').style.display = 'inline-block';
+
+  } catch(err) {
+    log(`Error: ${err.message}`, 'err');
+    setStatus(`❌ Failed: ${err.message}`);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function parseDate(iso) {
+  if (!iso) return null;
+  return iso.slice(0, 10); // YYYY-MM-DD
+}
+
+function parseTime(iso) {
+  if (!iso) return null;
+  try {
+    const d = new Date(iso);
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
+  } catch { return null; }
+}
+
+function getLocation(ev) {
+  const g = ev.geo_address_json;
+  if (!g) return ev.location || null;
+  return g.full_address || g.address || ev.location || null;
+}
+
+function mapEvent(ev) {
+  const dateStart = parseDate(ev.start_at);
+  const dateEnd   = parseDate(ev.end_at);
+  const timeStart = parseTime(ev.start_at);
+  const timeEnd   = parseTime(ev.end_at);
+  let timeDisplay = null;
+  if (timeStart) {
+    timeDisplay = timeEnd ? `${timeStart} – ${timeEnd}` : timeStart;
+  }
+
+  return {
+    title:        ev.name || '',
+    date_start:   dateStart,
+    date_end:     (dateEnd && dateEnd !== dateStart) ? dateEnd : null,
+    time_display: timeDisplay,
+    location:     getLocation(ev),
+    description:  ev.description || null,
+    body_html:    null,
+    rsvp_url:     ev.url ? `https://lu.ma/${ev.url}` : null,
+    luma_url:     ev.url ? `https://lu.ma/${ev.url}` : null,
+    is_public:    true,
+    is_active:    !(ev.status === 'cancelled' || ev.status === 'canceled'),
+    tags:         null,
+    photo_urls:   ev.cover_url ? JSON.stringify([ev.cover_url]) : null,
+  };
+}
+
+function renderPreview() {
+  const preview = document.getElementById('preview');
+  const mapped = allEvents.map(mapEvent);
+  const show = mapped.slice(0, 10);
+
+  let html = `<p style="font-size:0.78rem;color:#666;margin:0.75rem 0 0.5rem;">Showing first ${show.length} of ${mapped.length} events — all will be included in the CSV.</p>`;
+  html += `<table><thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Location</th><th>RSVP</th></tr></thead><tbody>`;
+  show.forEach(ev => {
+    html += `<tr>
+      <td>${ev.title}</td>
+      <td style="white-space:nowrap">${ev.date_start || '—'}</td>
+      <td style="white-space:nowrap">${ev.time_display || '—'}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.location || '—'}</td>
+      <td>${ev.rsvp_url ? '<a href="'+ev.rsvp_url+'" target="_blank" style="color:#C9A84C;font-size:0.7rem;">↗ Luma</a>' : '—'}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+  preview.innerHTML = html;
+  preview.style.display = 'block';
+}
+
+function escapeCSV(val) {
+  if (val === null || val === undefined) return '';
+  const s = String(val);
+  if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+function downloadCSV() {
+  const cols = ['title','date_start','date_end','time_display','location',
+                'description','body_html','rsvp_url','luma_url',
+                'is_public','is_active','tags','photo_urls'];
+
+  const rows = [cols.join(',')];
+  allEvents.map(mapEvent).forEach(ev => {
+    rows.push(cols.map(c => escapeCSV(ev[c])).join(','));
+  });
+
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `rr_events_from_luma_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  log(`Downloaded CSV with ${allEvents.length} events`, 'ok');
+}
+</script>
+</body>
+</html>
