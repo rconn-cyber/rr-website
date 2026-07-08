@@ -4,722 +4,388 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Events – 1st U.S. Volunteer Cavalry | Tampa Rough Riders</title>
+<meta name="description" content="Upcoming events for Tampa Rough Riders – reenactments, socials, committee meetings, and member gatherings."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --navy:      #0d1f3c;
-  --navy-mid:  #162d55;
-  --gold:      #C9A84C;
-  --gold-dark: #a07e2a;
-  --gold-lt:   #e8c96a;
-  --cream:     #f0e8d0;
-  --parchment: #e8dfc0;
-  --burgundy:  #6B1A1A;
-  --bg:        #f7f8fa;
-  --bg2:       #ffffff;
-  --text:      #1a1a2e;
-  --text-mid:  #4a4a6a;
-  --border:    #dde0e8;
-  --shadow:    rgba(13,31,60,0.10);
+  --navy:   #0d1f3c;
+  --gold:   #C9A84C;
+  --gold-dk:#8b6914;
+  --cream:  #f5efe0;
+  --cream2: #ede4cc;
+  --parchment: #f0e8d0;
+  --text:   #1a1208;
+  --text2:  #4a3c1e;
+  --muted:  #7a6a48;
+  --border: #d4c9a8;
+  --white:  #ffffff;
+  --radius: 8px;
 }
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
-body {
-  font-family: 'Crimson Pro', Georgia, serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-  /* ── TOPBAR (shared header) ── */
-#topbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 64px;
-  background: var(--navy);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  z-index: 1000;
-  border-bottom: 2px solid var(--gold);
-}
-.logo-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  text-decoration: none;
-  color: var(--gold);
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-#topbar nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-#topbar nav a {
-  color: #fff;
-  text-decoration: none;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-#topbar nav a:hover { color: var(--gold); }
-.member-btn {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  padding: 0.4rem 1rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.member-btn:hover { background: var(--gold); color: var(--navy); }
-.cta-btn {
-  background: var(--gold);
-  color: var(--navy);
-  padding: 0.5rem 1.4rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-weight: 700;
-  transition: background 0.2s;
-}
-.cta-btn:hover { background: var(--gold-dark); }
-.nav-toggle { display: none; }
-@media (max-width: 768px) {
-  #topbar nav { display: none; }
-  .nav-toggle {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--gold);
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 
-/* ── HEADER ──────────────────────────────────────────────────────────────── */
-.site-header {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--navy);
-  border-bottom: 3px solid var(--gold);
-  padding: 0.75rem 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.header-brand { text-decoration: none; }
-.header-logo-text {
-  font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700;
-  color: var(--gold); letter-spacing: 0.05em; line-height: 1.3;
-}
-.header-logo-text span {
-  display: block; font-size: 0.65rem; font-weight: 400;
-  color: rgba(240,232,208,0.6); letter-spacing: 0.15em; text-transform: uppercase;
-}
-.header-nav { display: flex; gap: 1.5rem; }
-.header-nav a {
-  font-family: 'Cinzel', serif; font-size: 0.68rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: rgba(240,232,208,0.7); text-decoration: none; transition: color 0.2s;
-}
-.header-nav a:hover, .header-nav a.active { color: var(--gold); }
+/* ── NAV ── */
+.nav{background:var(--navy);border-bottom:2px solid var(--gold);padding:0 2rem;position:sticky;top:0;z-index:100;}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo{width:38px;height:38px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-logo svg{width:26px;height:26px;}
+.nav-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--parchment);font-weight:700;line-height:1.1;}
+.nav-name small{display:block;font-family:'Inter',sans-serif;font-size:0.6rem;letter-spacing:2px;color:var(--gold);font-weight:600;text-transform:uppercase;}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{color:#8a9db5;text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);}
 
-/* ── HERO ─────────────────────────────────────────────────────────────────── */
-.events-hero {
-  background: linear-gradient(135deg, var(--navy) 0%, #162d55 100%);
-  padding: 3.5rem 2rem 3rem; text-align: center;
-  border-bottom: 1px solid var(--border);
-}
-.hero-label {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 0.75rem;
-}
-.hero-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 700; color: #fff;
-  text-shadow: 0 2px 20px rgba(201,168,76,0.3);
-  margin-bottom: 0.5rem;
-}
-.hero-rule {
-  width: 100px; height: 2px; margin: 1rem auto;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-}
-.hero-subtitle {
-  font-size: 1rem; color: rgba(240,232,208,0.75);
-  max-width: 500px; margin: 0 auto; font-style: italic;
-}
+/* ── HERO ── */
+.hero{background:var(--navy);border-bottom:3px solid var(--gold);padding:3rem 2rem 2.5rem;text-align:center;}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:4px;color:var(--gold);font-weight:600;text-transform:uppercase;margin-bottom:0.75rem;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);color:var(--parchment);font-weight:700;margin-bottom:0.75rem;line-height:1.2;}
+.hero p{font-family:'Source Serif 4',serif;font-size:1rem;color:#8a9db5;max-width:520px;margin:0 auto 1.5rem;line-height:1.7;font-style:italic;}
+.hero-actions{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0.6rem 1.25rem;border-radius:var(--radius);font-size:0.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:opacity .15s,transform .1s;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold);}
 
-/* ── FILTER BAR ───────────────────────────────────────────────────────────── */
-.filter-bar {
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  padding: 0.9rem 2rem;
-  display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-.filter-btn {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 0.4rem 1rem; border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent; color: var(--text-mid);
-  cursor: pointer; transition: all 0.2s;
-}
-.filter-btn:hover { border-color: var(--gold); color: var(--navy); }
-.filter-btn.active {
-  background: var(--navy); color: var(--gold);
-  border-color: var(--navy); font-weight: 600;
-}
+/* ── FILTER BAR ── */
+.filter-bar{background:var(--cream2);border-bottom:1px solid var(--border);padding:0.75rem 2rem;position:sticky;top:64px;z-index:90;}
+.filter-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+.filter-label{font-size:0.72rem;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-right:0.25rem;}
+.filter-btn{padding:0.35rem 0.85rem;border-radius:20px;border:1px solid var(--border);background:var(--white);font-size:0.78rem;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;}
+.filter-btn:hover{border-color:var(--gold);color:var(--gold-dk);}
+.filter-btn.active{background:var(--navy);color:var(--gold);border-color:var(--navy);}
+.filter-count{margin-left:auto;font-size:0.75rem;color:var(--muted);}
 
-/* ── MAIN ─────────────────────────────────────────────────────────────────── */
-.events-main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+/* ── MAIN LAYOUT ── */
+.main{max-width:1100px;margin:0 auto;padding:2rem;}
 
-/* ── LOADING ──────────────────────────────────────────────────────────────── */
-.state-msg {
-  text-align: center; padding: 4rem 2rem;
-  color: var(--text-mid); font-style: italic; font-size: 1.05rem;
-}
-.spinner {
-  width: 36px; height: 36px;
-  border: 3px solid var(--border); border-top-color: var(--gold);
-  border-radius: 50%; animation: spin 0.9s linear infinite;
-  margin: 0 auto 1rem;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+/* ── MONTH GROUPS ── */
+.month-group{margin-bottom:2.5rem;}
+.month-heading{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+.month-heading h2{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--navy);font-weight:700;}
+.month-rule{flex:1;height:1px;background:var(--border);}
+.month-star{color:var(--gold);font-size:0.9rem;}
 
-/* ── FEATURED ─────────────────────────────────────────────────────────────── */
-.featured-section { margin-bottom: 2.5rem; }
-.section-label {
-  font-family: 'Cinzel', serif; font-size: 0.62rem;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--gold-dark); margin-bottom: 1rem;
-  display: flex; align-items: center; gap: 0.75rem;
-}
-.section-label::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-.featured-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 6px; overflow: hidden;
-  display: grid; grid-template-columns: 1.1fr 1fr;
-  box-shadow: 0 4px 20px var(--shadow);
-  transition: box-shadow 0.2s, transform 0.2s;
-  cursor: pointer; margin-bottom: 1rem;
-}
-.featured-card:hover {
-  box-shadow: 0 8px 32px rgba(13,31,60,0.15);
-  transform: translateY(-2px);
-}
-.featured-photo {
-  aspect-ratio: 4/3; overflow: hidden; background: var(--parchment);
-  position: relative;
-}
-.featured-photo img { width:100%; height:100%; object-fit:cover; }
-.featured-photo-empty {
-  height: 100%; display: flex; align-items: center; justify-content: center;
-  font-size: 5rem;
-  background: linear-gradient(135deg, var(--cream), var(--parchment));
-}
-.featured-body {
-  padding: 2.5rem; display: flex; flex-direction: column;
-  justify-content: space-between; border-left: 4px solid var(--gold);
-}
-.featured-meta {
-  font-family: 'Cinzel', serif; font-size: 0.8rem;
-  letter-spacing: 0.08em; color: var(--navy); font-weight: 600; margin-bottom: 0.6rem;
-}
-.featured-title {
-  font-family: 'Cinzel', serif; font-size: clamp(1.2rem,2.5vw,1.6rem);
-  font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 0.6rem;
-}
-.featured-location {
-  font-size: 0.85rem; color: var(--text-mid); margin-bottom: 0.75rem;
-}
-.featured-desc {
-  font-size: 1rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 1.5rem; flex: 1;
-}
-.event-cta {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: 'Cinzel', serif; font-size: 0.7rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  background: var(--navy); color: var(--gold);
-  padding: 0.7rem 1.5rem; text-decoration: none; font-weight: 600;
-  border-radius: 4px; width: fit-content; border: none; cursor: pointer;
-  transition: all 0.2s;
-}
-.event-cta:hover { background: var(--navy-mid); box-shadow: 0 4px 16px var(--shadow); }
+/* ── EVENT CARDS ── */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.event-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;}
+.event-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(13,31,60,.08);}
+.event-card.featured{border-left:4px solid var(--gold);}
+.event-card-body{padding:1rem 1.1rem 0.9rem;flex:1;display:flex;flex-direction:column;}
+.event-card-tag{font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dk);margin-bottom:0.4rem;}
+.event-card-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:0.6rem;}
+.event-card-meta{display:flex;flex-direction:column;gap:3px;margin-bottom:0.75rem;}
+.event-card-meta span{font-size:0.78rem;color:var(--text2);display:flex;align-items:flex-start;gap:5px;line-height:1.4;}
+.event-card-meta .icon{flex-shrink:0;margin-top:1px;}
+.event-card-footer{padding:0.7rem 1.1rem;border-top:1px solid #f0ece2;display:flex;align-items:center;justify-content:space-between;}
+.event-card-rsvp{font-size:0.78rem;font-weight:600;color:var(--gold-dk);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .15s;}
+.event-card-rsvp:hover{color:var(--navy);}
+.event-card-badge{font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.5px;}
+.badge-free{background:#EAF3DE;color:#27500A;}
+.badge-members{background:#E6F1FB;color:#0C447C;}
+.badge-paid{background:#FEF3CD;color:#7A4F00;}
+.badge-canceled{background:#FCEBEB;color:#791F1F;text-decoration:line-through;}
 
-/* ── GRID ─────────────────────────────────────────────────────────────────── */
-.events-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-.event-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 6px; overflow: hidden; cursor: pointer;
-  box-shadow: 0 2px 10px var(--shadow);
-  transition: box-shadow 0.2s, transform 0.2s;
-  display: flex; flex-direction: column;
-}
-.event-card:hover {
-  box-shadow: 0 6px 24px rgba(13,31,60,0.15);
-  transform: translateY(-3px);
-}
-.card-photo {
-  height: 170px; overflow: hidden; background: var(--parchment); position: relative;
-}
-.card-photo img { width:100%; height:100%; object-fit:cover; transition: transform 0.3s; }
-.event-card:hover .card-photo img { transform: scale(1.04); }
-.card-photo-empty {
-  height:100%; display:flex; align-items:center; justify-content:center;
-  font-size:3rem; background: linear-gradient(135deg, var(--cream), var(--parchment));
-}
-.card-cat-badge {
-  position: absolute; top: 0.6rem; left: 0.6rem;
-  font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.12em;
-  text-transform: uppercase; background: var(--navy); color: var(--gold);
-  padding: 0.2rem 0.6rem; border-radius: 3px;
-}
-.card-top-stripe {
-  height: 3px; background: var(--gold);
-}
-.card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
-.card-date {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.12em; color: var(--gold-dark); margin-bottom: 0.4rem;
-}
-.card-title {
-  font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 600;
-  color: var(--navy); line-height: 1.4; margin-bottom: 0.4rem;
-}
-.card-location {
-  font-size: 0.82rem; color: var(--text-mid); margin-bottom: 0.5rem;
-}
-.card-desc { font-size: 0.9rem; color: var(--text-mid); line-height: 1.6; flex: 1; margin-bottom: 1rem; }
-.card-btn {
-  display: flex; align-items: center; justify-content: center; gap: 0.35rem;
-  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--navy); text-decoration: none;
-  border: 1px solid var(--navy); padding: 0.5rem 1rem; border-radius: 4px;
-  transition: all 0.2s; width: 100%; background: transparent; cursor: pointer;
-}
-.card-btn:hover { background: var(--navy); color: var(--gold); }
+/* ── LOADING / EMPTY ── */
+.loading-state{text-align:center;padding:4rem 1rem;color:var(--muted);}
+.loading-state .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty-state{text-align:center;padding:4rem 1rem;}
+.empty-state p{color:var(--muted);font-size:0.9rem;margin-bottom:1rem;}
 
-/* ── LIST ITEM (non-featured events) ─────────────────────────────────────── */
-.events-list { display: flex; flex-direction: column; gap: 0.5rem; }
-.event-list-item {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-left: 3px solid var(--gold);
-  border-radius: 4px; cursor: pointer;
-  display: flex; align-items: center; gap: 1.25rem;
-  padding: 0.85rem 1.25rem;
-  box-shadow: 0 1px 4px var(--shadow);
-  transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
-  margin-bottom: 1rem;
-}
-.event-list-item:hover {
-  background: #fffbf0;
-  box-shadow: 0 3px 12px rgba(13,31,60,0.12);
-  transform: translateX(2px);
-}
-.list-item-date {
-  font-family: 'Cinzel', serif; font-size: 0.78rem;
-  letter-spacing: 0.06em; color: var(--navy);
-  white-space: nowrap; min-width: 130px; font-weight: 600;
-}
-.list-item-title {
-  font-family: 'Cinzel', serif; font-size: 0.88rem;
-  font-weight: 600; color: var(--navy); flex: 1; line-height: 1.3;
-}
-.list-item-location {
-  font-size: 0.82rem; color: var(--text-mid);
-  white-space: nowrap; display: flex; align-items: center; gap: 0.3rem;
-}
-.list-item-arrow {
-  font-size: 0.8rem; color: var(--gold-dark); flex-shrink: 0;
-}
-@media(max-width:600px) {
-  .event-list-item { flex-wrap: wrap; gap: 0.35rem; }
-  .list-item-date  { min-width: auto; }
-  .list-item-location { display: none; }
-}
+/* ── LUMA EMBED FALLBACK ── */
+.luma-section{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);}
+.luma-section h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;}
+.luma-embed-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
 
-/* ── MODAL ────────────────────────────────────────────────────────────────── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(7,20,41,0.6); backdrop-filter: blur(4px);
-  align-items: flex-start; justify-content: center;
-  padding: 2rem 1rem; overflow-y: auto;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: var(--bg2); border-radius: 8px;
-  width: 100%; max-width: 760px; position: relative; overflow: hidden;
-  box-shadow: 0 20px 60px rgba(13,31,60,0.3);
-  animation: modalIn 0.25s ease;
-}
-@keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.modal-top-stripe { height: 4px; background: linear-gradient(to right, var(--navy), var(--gold)); }
-.modal-close {
-  position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;
-  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.1em;
-  color: var(--text-mid); background: var(--bg); border: 1px solid var(--border);
-  padding: 0.35rem 0.75rem; cursor: pointer; border-radius: 4px; transition: all 0.2s;
-}
-.modal-close:hover { background: var(--navy); color: var(--gold); border-color: var(--navy); }
-.modal-photo-strip {
-  height: 240px; overflow: hidden; background: var(--parchment); position: relative;
-}
-.modal-photo-strip img { width:100%; height:100%; object-fit:cover; }
-.modal-photo-empty {
-  height:100%; display:flex; align-items:center; justify-content:center;
-  font-size:5rem; background: linear-gradient(135deg, var(--cream), var(--parchment));
-}
-.modal-photo-nav {
-  position:absolute; inset:0; display:flex;
-  align-items:center; justify-content:space-between; padding:0 1rem;
-}
-.photo-nav-btn {
-  background: rgba(255,255,255,0.9); border: 1px solid var(--border);
-  color: var(--navy); font-size: 1.2rem; width:36px; height:36px;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; border-radius:50%; box-shadow: 0 2px 8px var(--shadow);
-  transition: all 0.2s;
-}
-.photo-nav-btn:hover { background: var(--navy); color: var(--gold); }
-.photo-counter {
-  position:absolute; bottom:0.75rem; right:1rem;
-  font-family:'Cinzel',serif; font-size:0.62rem;
-  background: rgba(255,255,255,0.9); color: var(--text-mid);
-  padding:0.2rem 0.6rem; border-radius:3px;
-}
-.modal-content { padding: 1.75rem 2rem 2rem; }
-.modal-category {
-  font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.15em;
-  text-transform:uppercase; color: var(--gold-dark); margin-bottom:0.5rem;
-}
-.modal-title {
-  font-family:'Cinzel',serif; font-size:clamp(1.3rem,3vw,1.8rem);
-  font-weight:700; color: var(--navy); line-height:1.3; margin-bottom:1rem;
-}
-.modal-details {
-  display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1.25rem;
-  padding-bottom:1.25rem; border-bottom:1px solid var(--border);
-}
-.detail-item { display:flex; flex-direction:column; gap:0.2rem; }
-.detail-label {
-  font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.15em;
-  text-transform:uppercase; color: var(--text-mid);
-}
-.detail-value { font-size:0.95rem; color: var(--text); }
-.detail-value a { color: var(--navy); }
-.modal-body { font-size:1rem; color:var(--text-mid); line-height:1.8; margin-bottom:1.5rem; }
-.modal-body p { margin-bottom:0.85rem; }
-.modal-body p:last-child { margin-bottom:0; }
-/* Quill rich-text rendering inside modal */
-.modal-body h2 { font-family:'Cinzel',serif; font-size:1.15rem; font-weight:700; color:var(--navy); margin:1.25rem 0 0.5rem; }
-.modal-body h3 { font-family:'Cinzel',serif; font-size:1rem; font-weight:600; color:var(--navy); margin:1rem 0 0.4rem; }
-.modal-body strong { font-weight:600; color:var(--text); }
-.modal-body em { font-style:italic; }
-.modal-body ul, .modal-body ol { padding-left:1.5rem; margin-bottom:0.75rem; }
-.modal-body ul li { list-style:disc; margin-bottom:0.25rem; }
-.modal-body ol li { list-style:decimal; margin-bottom:0.25rem; }
-.modal-body a { color:var(--navy); text-decoration:underline; }
-.modal-body a:hover { color:var(--gold-dark); }
-/* Override Quill Snow's p { margin: 0 } reset */
-.ql-snow .ql-editor p, .modal-body p { margin-bottom:0.85rem; }
-.modal-body p { margin-bottom:0.9rem !important; margin-top:0 !important; }
-.modal-cta-row { display:flex; gap:1rem; flex-wrap:wrap; }
-.photo-thumbs {
-  display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;
-  padding-top:1.25rem; border-top:1px solid var(--border);
-}
-.photo-thumb {
-  width:68px; height:52px; border-radius:4px; overflow:hidden;
-  cursor:pointer; border:2px solid transparent; transition:border-color 0.2s;
-}
-.photo-thumb.active { border-color: var(--gold); }
-.photo-thumb img { width:100%; height:100%; object-fit:cover; }
+/* ── FOOTER ── */
+.footer{background:var(--navy);border-top:3px solid var(--gold);padding:2rem;text-align:center;margin-top:3rem;}
+.footer p{font-size:0.78rem;color:#3d5570;line-height:1.8;}
+.footer a{color:var(--gold);text-decoration:none;}
 
-/* ── NO EVENTS ────────────────────────────────────────────────────────────── */
-.no-events {
-  text-align:center; padding:4rem 2rem; color:var(--text-mid);
-  font-style:italic; font-size:1.05rem; grid-column:1/-1;
-}
-
-/* ── FOOTER ───────────────────────────────────────────────────────────────── */
-.events-footer {
-  background: var(--navy); border-top: 3px solid var(--gold);
-  padding: 2rem; text-align: center;
-}
-.footer-brand {
-  font-family:'Cinzel',serif; font-size:0.8rem;
-  letter-spacing:0.1em; color:var(--gold); margin-bottom:0.5rem;
-}
-.footer-sub { font-size:0.85rem; color:rgba(240,232,208,0.5); }
-.footer-sub a { color:rgba(201,168,76,0.7); text-decoration:none; }
-.footer-sub a:hover { color:var(--gold); }
-
-@media(max-width:768px){
-  .featured-card { grid-template-columns:1fr; }
-  .featured-photo { aspect-ratio:16/7; }
-  .header-nav { display:none; }
-  .events-main { padding:1.5rem 1rem 4rem; }
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .main{padding:1.25rem 1rem;}
+  .events-grid{grid-template-columns:1fr;}
+  .filter-bar{padding:0.6rem 1rem;}
 }
 </style>
 </head>
 <body>
 
-<div id="site-header"></div>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <div class="nav-logo">
+        <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+          <line x1="7" y1="7" x2="31" y2="31" stroke="#0d1f3c" stroke-width="3" stroke-linecap="round"/>
+          <line x1="31" y1="7" x2="7" y2="31" stroke="#0d1f3c" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="7,7 12,4 4,12" fill="#0d1f3c"/>
+          <polygon points="31,7 26,4 34,12" fill="#0d1f3c"/>
+          <polygon points="7,31 4,26 12,34" fill="#0d1f3c"/>
+          <polygon points="31,31 34,26 26,34" fill="#0d1f3c"/>
+        </svg>
+      </div>
+      <div class="nav-name">Tampa Rough Riders<small>1st U.S. Volunteer Cavalry</small></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html" class="active">Events</a></li>
+      <li><a href="index.html#museum">Museum</a></li>
+      <li><a href="index.html#membership">Membership</a></li>
+      <li><a href="index.html#donate">Donate</a></li>
+    </ul>
+  </div>
+</nav>
 
-<section class="events-hero">
-  <div class="hero-label">Community &amp; Mission</div>
-  <h1 class="hero-title">Upcoming Events</h1>
-  <div class="hero-rule"></div>
-  <p class="hero-subtitle">Public events open to all. Members log in at tamparoughriders.org for member-only events.</p>
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">&#10022; &nbsp; Tampa Rough Riders &nbsp; &#10022;</p>
+  <h1>Upcoming Events</h1>
+  <p>Reenactments, socials, committee meetings, and member gatherings — open to members and the public.</p>
+  <div class="hero-actions">
+    <a href="https://lu.ma/cal-8UAsjnn9qBmt8nK" target="_blank" class="btn btn-gold">Follow our calendar</a>
+    <a href="index.html#donate" class="btn btn-outline">Support the Mission</a>
+  </div>
 </section>
 
-<div class="filter-bar" id="filterBar">
-  <button class="filter-btn active" data-cat="all" onclick="filterEvents('all',this)">All Events</button>
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">Show</span>
+    <button class="filter-btn active" data-filter="all">All events</button>
+    <button class="filter-btn" data-filter="public">Public</button>
+    <button class="filter-btn" data-filter="members">Members</button>
+    <button class="filter-btn" data-filter="social">Socials</button>
+    <button class="filter-btn" data-filter="committee">Committees</button>
+    <span class="filter-count" id="filter-count"></span>
+  </div>
 </div>
 
-<main class="events-main" id="eventsMain">
-  <div class="state-msg" id="loadingMsg">
-    <div class="spinner"></div>Loading events…
+<!-- EVENTS MAIN -->
+<main class="main">
+  <div id="events-container">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading events…</p>
+    </div>
+  </div>
+
+  <!-- LUMA EMBED as always-visible fallback / supplement -->
+  <div class="luma-section">
+    <h3>&#9135;&#9135; &nbsp; Full event calendar &nbsp; &#9135;&#9135;</h3>
+    <div class="luma-embed-wrap">
+      <iframe
+        src="https://lu.ma/embed/calendar/cal-8UAsjnn9qBmt8nK/events"
+        width="100%"
+        height="600"
+        frameborder="0"
+        style="border:none;border-radius:8px;"
+        allowfullscreen=""
+        aria-hidden="false"
+        tabindex="0"
+        title="Tampa Rough Riders event calendar"
+      ></iframe>
+    </div>
   </div>
 </main>
 
-<!-- Detail Modal -->
-<div class="modal-overlay" id="eventModal" onclick="handleModalClick(event)">
-  <div class="modal-box" id="modalBox">
-    <div class="modal-top-stripe"></div>
-    <button class="modal-close" onclick="closeModal()">✕ Close</button>
-    <div class="modal-photo-strip" id="modalPhotoStrip">
-      <div class="modal-photo-empty" id="modalPhotoEmpty"></div>
-      <img id="modalPhotoImg" src="" alt="" style="display:none"/>
-      <div class="modal-photo-nav" id="modalPhotoNav" style="display:none">
-        <button class="photo-nav-btn" onclick="changePhoto(-1)">&#8249;</button>
-        <button class="photo-nav-btn" onclick="changePhoto(1)">&#8250;</button>
-      </div>
-      <div class="photo-counter" id="photoCounter" style="display:none"></div>
-    </div>
-    <div class="modal-content">
-      <div class="modal-category" id="modalCategory"></div>
-      <h2 class="modal-title" id="modalTitle"></h2>
-      <div class="modal-details" id="modalDetails"></div>
-      <div class="modal-body" id="modalBody"></div>
-      <div class="modal-cta-row" id="modalCta"></div>
-      <div class="photo-thumbs" id="photoThumbs"></div>
-    </div>
-  </div>
-</div>
-
-<footer class="events-footer">
-  <div class="footer-brand">1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc.</div>
-  <div class="footer-sub">601 N. 19th St., Tampa, FL 33605 · <a href="https://tamparoughriders.org">tamparoughriders.org</a></div>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>
+    <a href="index.html">tamparoughriders.org</a>
+    &nbsp;·&nbsp;
+    <a href="https://lu.ma/cal-8UAsjnn9qBmt8nK" target="_blank">Full event calendar</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:wmdgl1@verizon.net">Contact us</a>
+  </p>
+  <p style="margin-top:6px;">1st U.S. Volunteer Cavalry Regiment · Rough Riders, Inc. · Tampa, Florida · 501(c)(3)</p>
 </footer>
 
 <script>
-// Fetch through Netlify function (uses service key, bypasses RLS)
-const API = '/.netlify/functions/events-api';
+// ─────────────────────────────────────────────
+// CONFIG — swap in your real Luma calendar slug
+// Calendar: lu.ma/cal-8UAsjnn9qBmt8nK
+// ─────────────────────────────────────────────
+const LUMA_CALENDAR_SLUG = 'cal-8UAsjnn9qBmt8nK';
 
-let allEvents = [], activeFilter = 'all', modalEvent = null, photoIndex = 0;
+// ─────────────────────────────────────────────
+// FALLBACK: hardcoded events shown if Luma API
+// is unavailable or slug not yet set
+// ─────────────────────────────────────────────
+const FALLBACK_EVENTS = [
+  { name:"3rd Quarterly History Exhibit Sponsorship", date:"2026-05-25", time:"", location:"Bartley Hall", url:"#", type:"public" },
+  { name:"Strategic Planning Committee", date:"2026-07-07", time:"6:30 PM", location:"Clubhouse Bully Bar", url:"#", type:"committee" },
+  { name:"2027 Sporting Clays Committee Meeting", date:"2026-07-07", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Badlands Presidential Trip Meeting", date:"2026-07-08", time:"6:00 PM", location:"Bartley Hall", url:"#", type:"members" },
+  { name:"Alaska Meeting", date:"2026-07-08", time:"7:15 PM", location:"Bully Bar", url:"#", type:"members" },
+  { name:"Teddy Bear Run – Honor Walk - LifePath Hospice", date:"2026-07-11", time:"2:00 PM", location:"LifePath Hospice Community Hall, Sun City, FL", url:"#", type:"public" },
+  { name:"Board of Directors July Meeting (Canceled)", date:"2026-07-13", time:"7:00 PM", location:"Clubhouse", url:"#", type:"members", canceled:true },
+  { name:"Brewers Guild July Meeting", date:"2026-07-14", time:"6:00 PM", location:"Tampa Bay Brewing, 13937 Monroes Business Park", url:"#", type:"social" },
+  { name:"America 250 Clubhouse Social", date:"2026-07-17", time:"6:00 PM", location:"Bartley Hall", url:"#", type:"social" },
+  { name:"Cigar Club July Social", date:"2026-07-22", time:"6:00 PM", location:"JR Cigar, 1418 E Busch Blvd", url:"#", type:"social" },
+  { name:"Executive Board August Meeting (Closed)", date:"2026-08-03", time:"7:00 PM", location:"Bully Bar", url:"#", type:"members" },
+  { name:"2027 Sporting Clays Committee Meeting – August", date:"2026-08-04", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Margaritaville Meets Marley Party", date:"2026-08-08", time:"7:00 PM", location:"Clubhouse", url:"#", type:"social" },
+  { name:"Board of Directors August Meeting", date:"2026-08-10", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"members" },
+  { name:"August Social", date:"2026-08-14", time:"6:30 PM", location:"Clubhouse", url:"#", type:"social" },
+  { name:"Presidential Trip – North Dakota Badlands Interest List", date:"2026-08-15", time:"", location:"North and South Dakota", url:"#", type:"members" },
+  { name:"2026 Presidential Trip to North Dakota – Deposits Paid", date:"2026-08-15", time:"8:00 PM", location:"Medora, North Dakota", url:"#", type:"members" },
+  { name:"Brewer's Guild August Meeting", date:"2026-08-18", time:"6:00 PM", location:"Magnanimous Brewing, 1420 N Florida Ave", url:"#", type:"social" },
+  { name:"Board of Directors 2026-27 Budget Review", date:"2026-08-18", time:"6:00 PM", location:"Bartley Hall", url:"#", type:"members" },
+  { name:"Cigar Club August Social", date:"2026-08-27", time:"6:00 PM", location:"Grand Cathedral Cigars, 2201 N Florida Ave", url:"#", type:"social" },
+  { name:"Krag Rifle, Revolver and Open Pistol Shoot", date:"2026-08-29", time:"9:00 AM", location:"Wyoming Antelope Club, Clearwater, FL", url:"#", type:"public" },
+  { name:"Executive Board September Meeting (Closed)", date:"2026-08-31", time:"8:00 PM", location:"Bully Bar", url:"#", type:"members" },
+  { name:"2027 Sporting Clays Committee Meeting – September", date:"2026-09-01", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Fantasy Fest Meeting", date:"2026-09-02", time:"6:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Mission BBQ: September 11 Honor & Remember Day", date:"2026-09-04", time:"8:00 PM", location:"Mission BBQ, 13612 Bruce B. Downs Blvd", url:"#", type:"public" },
+  { name:"Committee Chair 2026-27 Financial Meeting", date:"2026-09-09", time:"6:00 PM", location:"Bully Bar", url:"#", type:"committee" },
+  { name:"Rough Riders 39th Annual Charity Golf Tournament", date:"2026-09-14", time:"10:00 AM", location:"Hunters Green Country Club", url:"#", type:"public", featured:true },
+  { name:"Brewer's Guild September Meeting", date:"2026-09-15", time:"6:00 PM", location:"Hidden Springs Ale Works, 1631 N Franklin St", url:"#", type:"social" },
+  { name:"Honor Flight", date:"2026-09-15", time:"7:30 PM", location:"St. Pete-Clearwater International Airport", url:"#", type:"public" },
+  { name:"2026 Fallen Member Ceremony", date:"2026-09-17", time:"6:30 PM", location:"Rough Riders Clubhouse", url:"#", type:"public", featured:true },
+  { name:"Teddy Bear Run – Faces of Courage – Women's Camp", date:"2026-09-18", time:"7:00 PM", location:"Rotary's Camp Florida, Brandon, FL", url:"#", type:"public" },
+  { name:"Cigar Club September Social", date:"2026-09-24", time:"6:00 PM", location:"Riveter Tampa, 2301 N Dale Mabry Hwy", url:"#", type:"social" },
+  { name:"2027 Sporting Clays Committee Meeting – October", date:"2026-10-06", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Change of Command Ceremony", date:"2026-10-10", time:"5:30 PM", location:"Higgins Hall, 5225 N Himes Ave", url:"#", type:"public", featured:true },
+  { name:"Rough Riders Halloween Event", date:"2026-10-17", time:"6:30 PM", location:"Bartley Hall", url:"#", type:"social" },
+  { name:"Fantasy Fest Key West", date:"2026-10-19", time:"5:00 PM", location:"Key West, FL", url:"#", type:"social" },
+  { name:"Executive Board Meeting – October", date:"2026-10-26", time:"8:00 PM", location:"Bully Bar", url:"#", type:"members" },
+  { name:"2027 Sporting Clays Committee Meeting – November", date:"2026-11-03", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"2027 Sporting Clays Committee Meeting – December", date:"2026-12-08", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"Rough Riders Christmas Holiday Ball", date:"2026-12-12", time:"6:00 PM", location:"Carrolwood Country Club", url:"#", type:"social", featured:true },
+  { name:"2027 Sporting Clays Committee Meeting – January", date:"2027-01-05", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+  { name:"2027 Sporting Clays Committee Loadout Meeting", date:"2027-01-07", time:"7:00 PM", location:"Bartley Hall", url:"#", type:"committee" },
+];
 
-async function loadEvents() {
-  try {
-    const res = await fetch(API);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    allEvents = await res.json();
-    buildFilters();
-    renderEvents();
-  } catch(e) {
-    document.getElementById('loadingMsg').innerHTML =
-      '<p style="color:#888">Could not load events. Please try again later.</p>';
-  }
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+function formatDate(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return `${DAYS[dt.getDay()]}, ${MONTHS[m-1]} ${d}, ${y}`;
 }
 
-function fmtDate(s, e) {
-  if (!s) return 'By Appointment';
-  const d = new Date(s + 'T12:00:00');
-  const opts = {month:'long',day:'numeric',year:'numeric'};
-  if (e && e !== s) {
-    const d2 = new Date(e + 'T12:00:00');
-    return d.toLocaleDateString('en-US',{month:'long',day:'numeric'}) +
-           ' \u2013 ' + d2.toLocaleDateString('en-US',opts);
-  }
-  return d.toLocaleDateString('en-US', opts);
-}
-function fmtDateShort(s, e) {
-  if (!s) return 'By Appointment';
-  const d = new Date(s + 'T12:00:00');
-  if (e && e !== s) {
-    const d2 = new Date(e + 'T12:00:00');
-    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
-           '\u2013' + d2.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  }
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+function getMonthKey(dateStr) {
+  const [y,m] = dateStr.split('-');
+  return `${MONTHS[parseInt(m)-1]} ${y}`;
 }
 
-function buildFilters() {
-  const cats = [...new Set(allEvents.map(e=>e.category).filter(Boolean))];
-  const bar = document.getElementById('filterBar');
-  cats.forEach(cat => {
-    const b = document.createElement('button');
-    b.className = 'filter-btn'; b.dataset.cat = cat; b.textContent = cat;
-    b.onclick = () => filterEvents(cat, b);
-    bar.appendChild(b);
+function badgeFor(ev) {
+  if (ev.canceled) return `<span class="event-card-badge badge-canceled">Canceled</span>`;
+  if (ev.type === 'members') return `<span class="event-card-badge badge-members">Members</span>`;
+  if (ev.type === 'committee') return `<span class="event-card-badge badge-members">Committee</span>`;
+  return `<span class="event-card-badge badge-free">Free / Open</span>`;
+}
+
+function renderEvents(events) {
+  if (!events.length) {
+    return `<div class="empty-state"><p>No events found for this filter.</p><a href="https://lu.ma/cal-8UAsjnn9qBmt8nK" class="btn btn-gold" target="_blank">View full event calendar</a></div>`;
+  }
+
+  // Group by month
+  const groups = {};
+  events.forEach(ev => {
+    const key = getMonthKey(ev.date);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(ev);
   });
-}
 
-function filterEvents(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderEvents();
-}
-
-function renderEvents() {
-  const main = document.getElementById('eventsMain');
-  document.getElementById('loadingMsg')?.remove();
-  const list = (activeFilter === 'all' ? allEvents : allEvents.filter(e=>e.category===activeFilter))
-    .slice().sort((a, b) => {
-      if (!a.date_start) return 1;
-      if (!b.date_start) return -1;
-      return a.date_start.localeCompare(b.date_start);
-    });
-  if (!list.length) { main.innerHTML = '<div class="no-events">No events in this category right now.</div>'; return; }
-  main.innerHTML = list.map(ev => ev.is_featured ? featuredHTML(ev) : listItemHTML(ev)).join('');
-}
-
-function photoEl(ev, cls) {
-  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-  if (photos.length) return `<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`;
-  return `<div class="${cls}">${ev.emoji||'⭐'}</div>`;
-}
-
-function featuredHTML(ev) {
-  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-  return `<div class="featured-card" onclick="openModal('${ev.id}')">
-    <div class="featured-photo">${photoEl(ev,'featured-photo-empty')}</div>
-    <div class="featured-body">
-      <div>
-        <div class="featured-meta">${fmtDate(ev.date_start,ev.date_end)}${ev.time_display?' · '+ev.time_display:''}</div>
-        <h3 class="featured-title">${ev.title}</h3>
-        ${ev.location?`<div class="featured-location">&#128205; ${ev.location}</div>`:''}
-        <p class="featured-desc">${ev.description||''}</p>
+  return Object.entries(groups).map(([month, evs]) => `
+    <div class="month-group">
+      <div class="month-heading">
+        <h2>${month}</h2>
+        <div class="month-rule"></div>
+        <span class="month-star">&#10022;</span>
       </div>
-      ${ev.rsvp_url&&ev.rsvp_url!=='#'
-        ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta" onclick="event.stopPropagation()">${ev.emoji||''} ${ev.rsvp_label||'View Details'}</a>`
-        :`<button class="event-cta" onclick="event.stopPropagation();openModal('${ev.id}')">View Details &rarr;</button>`}
+      <div class="events-grid">
+        ${evs.map(ev => `
+          <div class="event-card${ev.featured ? ' featured' : ''}" data-type="${ev.type}">
+            <div class="event-card-body">
+              ${ev.featured ? `<div class="event-card-tag">&#9733; Featured Event</div>` : ''}
+              <div class="event-card-name">${ev.name}</div>
+              <div class="event-card-meta">
+                <span><span class="icon">&#128197;</span>${formatDate(ev.date)}${ev.time ? ' &middot; ' + ev.time : ''}</span>
+                <span><span class="icon">&#128205;</span>${ev.location}</span>
+              </div>
+            </div>
+            <div class="event-card-footer">
+              ${ev.canceled
+                ? `<span style="font-size:.78rem;color:#791F1F;font-weight:600;">This event was canceled</span>`
+                : `<a href="${ev.url}" target="_blank" class="event-card-rsvp">RSVP &amp; details &rarr;</a>`}
+              ${badgeFor(ev)}
+            </div>
+          </div>
+        `).join('')}
+      </div>
     </div>
-  </div>`;
+  `).join('');
 }
 
-function listItemHTML(ev) {
-  return `<div class="event-list-item" onclick="openModal('${ev.id}')">
-    <div class="list-item-date">${fmtDateShort(ev.date_start, ev.date_end)}</div>
-    <div class="list-item-title">${ev.title}</div>
-    ${ev.location ? `<div class="list-item-location">&#128205; ${ev.location}</div>` : ''}
-    <div class="list-item-arrow">&#8250;</div>
-  </div>`;
-}
+// ─── Try Luma public API first, fall back to hardcoded ───
+async function loadEvents() {
+  const container = document.getElementById('events-container');
 
-function cardHTML(ev) {
-  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-  return `<div class="event-card" onclick="openModal('${ev.id}')">
-    <div class="card-photo">
-      ${photos.length?`<img src="${photos[0]}" alt="${ev.title}" loading="lazy"/>`:`<div class="card-photo-empty">${ev.emoji||'⭐'}</div>`}
-      ${ev.category?`<div class="card-cat-badge">${ev.category}</div>`:''}
-    </div>
-    <div class="card-top-stripe"></div>
-    <div class="card-body">
-      <div class="card-date">${fmtDateShort(ev.date_start,ev.date_end)}</div>
-      <h3 class="card-title">${ev.title}</h3>
-      ${ev.location?`<div class="card-location">&#128205; ${ev.location}</div>`:''}
-      <p class="card-desc">${ev.description||''}</p>
-      <button class="card-btn">${ev.rsvp_label||'View Details'} &rarr;</button>
-    </div>
-  </div>`;
-}
-
-function openModal(id) {
-  modalEvent = allEvents.find(e=>e.id===id);
-  if (!modalEvent) return;
-  photoIndex = 0;
-  populateModal(modalEvent);
-  document.getElementById('eventModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-  document.getElementById('eventModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function handleModalClick(e) { if(e.target===document.getElementById('eventModal')) closeModal(); }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
-
-function populateModal(ev) {
-  const photos = Array.isArray(ev.photo_urls) ? ev.photo_urls : [];
-  const img = document.getElementById('modalPhotoImg');
-  const empty = document.getElementById('modalPhotoEmpty');
-  if (photos.length) {
-    img.src = photos[0]; img.style.display='block'; empty.style.display='none';
-    const nav = document.getElementById('modalPhotoNav');
-    const ctr = document.getElementById('photoCounter');
-    nav.style.display = photos.length>1?'flex':'none';
-    ctr.style.display = photos.length>1?'block':'none';
-    if (photos.length>1) ctr.textContent = `1 / ${photos.length}`;
-  } else {
-    img.style.display='none'; empty.style.display='flex'; empty.textContent=ev.emoji||'⭐';
-    document.getElementById('modalPhotoNav').style.display='none';
-    document.getElementById('photoCounter').style.display='none';
+  // If slug not set yet, use fallback immediately
+  if (!LUMA_CALENDAR_SLUG) {
+    renderAll(FALLBACK_EVENTS);
+    return;
   }
-  document.getElementById('photoThumbs').innerHTML = photos.length>1
-    ? photos.map((u,i)=>`<div class="photo-thumb ${i===0?'active':''}" onclick="setPhoto(${i})"><img src="${u}" loading="lazy"/></div>`).join('') : '';
-  document.getElementById('modalCategory').textContent = ev.category||'';
-  document.getElementById('modalTitle').textContent = ev.title;
-  let det='';
-  if(ev.date_start) det+=`<div class="detail-item"><span class="detail-label">Date</span><span class="detail-value">${fmtDate(ev.date_start,ev.date_end)}</span></div>`;
-  if(ev.time_display) det+=`<div class="detail-item"><span class="detail-label">Time</span><span class="detail-value">${ev.time_display}</span></div>`;
-  if(ev.location) det+=`<div class="detail-item"><span class="detail-label">Location</span><span class="detail-value">${ev.location_url?`<a href="${ev.location_url}" target="_blank">${ev.location}</a>`:ev.location}</span></div>`;
-  document.getElementById('modalDetails').innerHTML = det;
-  const bodyHtml = ev.body_html || `<p>${ev.description||''}</p>`;
-  const modalBody = document.getElementById('modalBody');
-  modalBody.innerHTML = bodyHtml;
-  // Ensure Quill paragraph spacing renders correctly regardless of CSS cascade
-  modalBody.querySelectorAll('p').forEach(p => { p.style.marginBottom = '0.9rem'; });
-  document.getElementById('modalCta').innerHTML = (ev.rsvp_url&&ev.rsvp_url!=='#')
-    ?`<a href="${ev.rsvp_url}" target="_blank" class="event-cta">${ev.emoji||''} ${ev.rsvp_label||'Register'}</a>`:'';
+
+  try {
+    const res = await fetch(
+      `https://api.lu.ma/calendar/get-items?calendarSlug=${LUMA_CALENDAR_SLUG}&pagination_limit=100&series=false`,
+      { headers: { 'Accept': 'application/json' } }
+    );
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    const events = (data.entries || []).map(e => ({
+      name: e.event?.name || '',
+      date: (e.event?.start_at || '').slice(0,10),
+      time: e.event?.start_at ? new Date(e.event.start_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}) : '',
+      location: e.event?.geo_address_json?.address || e.event?.geo_address_json?.full_address || '',
+      url: `https://lu.ma/${e.event?.url || ''}`,
+      type: 'public',
+      featured: false,
+    })).filter(e => e.name && e.date);
+    renderAll(events.length ? events : FALLBACK_EVENTS);
+  } catch {
+    renderAll(FALLBACK_EVENTS);
+  }
 }
-function setPhoto(i) {
-  const photos = Array.isArray(modalEvent.photo_urls)?modalEvent.photo_urls:[];
-  if(i<0||i>=photos.length) return;
-  photoIndex=i;
-  document.getElementById('modalPhotoImg').src=photos[i];
-  document.getElementById('photoCounter').textContent=`${i+1} / ${photos.length}`;
-  document.querySelectorAll('.photo-thumb').forEach((t,j)=>t.classList.toggle('active',j===i));
+
+let allEvents = [];
+
+function renderAll(events) {
+  allEvents = events;
+  document.getElementById('filter-count').textContent = `${events.length} events`;
+  document.getElementById('events-container').innerHTML = renderEvents(events);
+  updateLumaLinks(events);
 }
-function changePhoto(d) {
-  const photos = Array.isArray(modalEvent.photo_urls)?modalEvent.photo_urls:[];
-  setPhoto((photoIndex+d+photos.length)%photos.length);
+
+function updateLumaLinks(events) {
+  // Update all "#" hrefs if we have real Luma URLs
+  // Already set in Luma fetch path above
 }
+
+// ─── Filters ───
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    const filtered = filter === 'all' ? allEvents : allEvents.filter(e => e.type === filter);
+    document.getElementById('filter-count').textContent = `${filtered.length} events`;
+    document.getElementById('events-container').innerHTML = renderEvents(filtered);
+  });
+});
 
 loadEvents();
 </script>
-<script src="header.js"></script>
-<script src="member-auth.js"></script>
 </body>
 </html>
