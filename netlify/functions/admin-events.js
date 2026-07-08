@@ -14,6 +14,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
 };
 
+// ── JWT helpers ────────────────────────────────────────────────────────────
 const crypto = require('crypto');
 
 function makeToken() {
@@ -34,10 +35,11 @@ function verifyToken(token) {
 
 function checkAuth(event) {
   const auth = (event.headers['authorization'] || '').replace('Bearer ', '').trim();
-  if (auth === ADMIN_PASS) return true;
-  return verifyToken(auth);
+  if (auth === ADMIN_PASS) return true;   // raw password (login step)
+  return verifyToken(auth);               // JWT token (subsequent calls)
 }
 
+// ── Supabase fetch ─────────────────────────────────────────────────────────
 async function sbFetch(method, path, body) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
     method,
@@ -54,6 +56,23 @@ async function sbFetch(method, path, body) {
   catch { return { ok: res.ok, status: res.status, data: text }; }
 }
 
+// ── Storage upload ─────────────────────────────────────────────────────────
+async function uploadPhoto(base64Data, mimeType, filename) {
+  const buffer = Buffer.from(base64Data, 'base64');
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/event-photos/${filename}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': mimeType,
+      'x-upsert': 'true'
+    },
+    body: buffer
+  });
+  if (!res.ok) throw new Error(`Storage upload failed: ${res.status}`);
+  return `${SUPABASE_URL}/storage/v1/object/public/event-photos/${filename}`;
+}
+
+// ── Handler ────────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers: corsHeaders, body: '' };
 
@@ -66,35 +85,16 @@ exports.handler = async (event) => {
     body: JSON.stringify(data)
   });
 
-  // ── DEBUG endpoint — remove after fixing ──────────────────────────────────
-  if (params.action === 'debug') {
-    const auth = (event.headers['authorization'] || '').replace('Bearer ', '').trim();
-    const [payload, sig] = (auth || '.').split('.');
-    let tokenAge = null;
-    try {
-      const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString());
-      tokenAge = Math.round((exp - Date.now()) / 1000 / 60) + ' minutes remaining';
-    } catch {}
-    const expected = payload ? crypto.createHmac('sha256', JWT_SECRET).update(payload).digest('base64url') : null;
-    return respond(200, {
-      has_session_secret: !!process.env.SESSION_SECRET,
-      has_jwt_secret: !!process.env.JWT_SECRET,
-      jwt_secret_source: process.env.SESSION_SECRET ? 'SESSION_SECRET' : process.env.JWT_SECRET ? 'JWT_SECRET' : 'ADMIN_PASS',
-      token_received: !!auth,
-      token_parts: auth ? auth.split('.').length : 0,
-      sig_match: expected === sig,
-      token_age: tokenAge,
-      auth_result: checkAuth(event)
-    });
-  }
-
   try {
+
+    // ── POST /login ─────────────────────────────────────────────────────
     if (method === 'POST' && params.action === 'login') {
       const { password } = JSON.parse(event.body || '{}');
       if (password !== ADMIN_PASS) return respond(401, { error: 'Invalid password' });
       return respond(200, { token: makeToken() });
     }
 
+    // ── GET: list all events (admin only) ───────────────────────────────
     if (method === 'GET') {
       if (!checkAuth(event)) return respond(401, { error: 'Unauthorized' });
       let query = '/rr_events?order=date_start.asc.nullslast,created_at.asc';
@@ -104,24 +104,51 @@ exports.handler = async (event) => {
       return respond(r.ok ? 200 : r.status, r.data);
     }
 
+    // All remaining methods require auth
     if (!checkAuth(event)) return respond(401, { error: 'Unauthorized' });
 
     const body = event.body ? JSON.parse(event.body) : {};
 
+    // ── POST: create event ──────────────────────────────────────────────
     if (method === 'POST') {
+      // Handle photo uploads if present
+      if (body._photos) {
+        const urls = [];
+        for (const p of body._photos) {
+          const ext = p.mimeType.split('/')[1] || 'jpg';
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const url = await uploadPhoto(p.data, p.mimeType, filename);
+          urls.push(url);
+        }
+        body.photo_urls = [...(body.photo_urls || []), ...urls];
+        delete body._photos;
+      }
       const { id, created_at, ...payload } = body;
       const r = await sbFetch('POST', '/rr_events', payload);
       return respond(r.ok ? 201 : 400, r.data);
     }
 
+    // ── PUT: update event ───────────────────────────────────────────────
     if (method === 'PUT') {
       if (!params.id && !body.id) return respond(400, { error: 'id required' });
       const eventId = params.id || body.id;
+      if (body._photos) {
+        const urls = [];
+        for (const p of body._photos) {
+          const ext = p.mimeType.split('/')[1] || 'jpg';
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const url = await uploadPhoto(p.data, p.mimeType, filename);
+          urls.push(url);
+        }
+        body.photo_urls = [...(body.photo_urls || []), ...urls];
+        delete body._photos;
+      }
       const { id, created_at, ...updates } = body;
       const r = await sbFetch('PATCH', `/rr_events?id=eq.${eventId}`, updates);
       return respond(r.ok ? 200 : 400, r.data);
     }
 
+    // ── DELETE: soft-archive event ──────────────────────────────────────
     if (method === 'DELETE') {
       if (!params.id) return respond(400, { error: 'id required' });
       const r = await sbFetch('PATCH', `/rr_events?id=eq.${params.id}`, { is_active: false });
