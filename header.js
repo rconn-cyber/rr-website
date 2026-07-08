@@ -2,27 +2,24 @@
 // Usage: <div id="site-header"></div>
 //        <script src="header.js"></script>
 //        <script src="member-auth.js"></script>
-
 (function () {
   const page = window.location.pathname.split('/').pop() || 'index.html';
   const onIndex = (page === 'index.html' || page === '');
-
   function anchor(hash, label) {
     const href = onIndex ? hash : 'index.html' + hash;
     return '<a href="' + href + '">' + label + '</a>';
   }
-
   function pageLink(href, label) {
     const active = (page === href) ? ' style="color:#c9a84c;border-bottom:2px solid #c9a84c;"' : '';
     return '<a href="' + href + '"' + active + '>' + label + '</a>';
   }
-
   const html = '<header id="topbar">'
     + '<a href="index.html" class="logo-nav">'
     + '<img src="logo.png" alt="Tampa Rough Riders Logo" style="width:48px;height:48px;object-fit:contain;flex-shrink:0;"/>'
     + '<span>Tampa Rough Riders</span>'
     + '</a>'
     + '<nav>'
+    + pageLink('index.html', 'Home')
     + anchor('#history', 'History')
     + anchor('#gallery', 'Tampa 1898')
     + anchor('#museum', 'Museum')
@@ -37,7 +34,6 @@
     + '</nav>'
     + '<button class="nav-toggle" onclick="toggleNav()">&#9776;</button>'
     + '</header>';
-
   const target = document.getElementById('site-header');
   if (target) { target.outerHTML = html; }
   else { document.body.insertAdjacentHTML('afterbegin', html); }
