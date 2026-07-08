@@ -1,11 +1,11 @@
 // netlify/functions/admin-events.js
 // Pure Supabase CRUD for rr_events — no WA sync
-// Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, EVENTS_ADMIN_PASSWORD, JWT_SECRET
+// Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, EVENTS_ADMIN_PASSWORD, SESSION_SECRET
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ADMIN_PASS   = process.env.EVENTS_ADMIN_PASSWORD;
-const JWT_SECRET   = process.env.JWT_SECRET || ADMIN_PASS;
+const JWT_SECRET   = process.env.SESSION_SECRET || process.env.JWT_SECRET || ADMIN_PASS;
 
 const corsHeaders = {
   'Content-Type': 'application/json',
