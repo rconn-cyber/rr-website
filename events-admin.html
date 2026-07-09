@@ -557,20 +557,46 @@ function doLogout() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // If arriving from admin.html with ?pw=, use password directly
   const urlParams = new URLSearchParams(window.location.search);
-  const pw = urlParams.get('pw');
-  if (pw) {
+
+  // Accept signed token passed from admin.html (?token=)
+  const token = urlParams.get('token');
+  if (token) {
     history.replaceState(null, '', window.location.pathname);
-    adminToken = pw;
-    sessionStorage.setItem('eventsAdminToken', pw);
-    localStorage.setItem('eventsAdminToken', pw);
+    adminToken = token;
+    sessionStorage.setItem('eventsAdminToken', token);
+    localStorage.setItem('eventsAdminToken', token);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     fetchEvents();
     return;
   }
-  // Normal startup — adminToken already initialized at script load
+
+  // Legacy ?pw= support — kept for backward compat but now calls admin-login
+  // to exchange the raw password for a signed token
+  const pw = urlParams.get('pw');
+  if (pw) {
+    history.replaceState(null, '', window.location.pathname);
+    try {
+      const r = await fetch('/.netlify/functions/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      if (r.ok) {
+        const { token: signedToken } = await r.json();
+        adminToken = signedToken;
+        sessionStorage.setItem('eventsAdminToken', signedToken);
+        localStorage.setItem('eventsAdminToken', signedToken);
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+        fetchEvents();
+        return;
+      }
+    } catch { /* fall through to login screen */ }
+  }
+
+  // Normal startup — use stored token if present
   if (adminToken) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
