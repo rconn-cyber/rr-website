@@ -695,7 +695,19 @@ function checkLogin() {
 }
 
 async function openEventsAdmin() {
-  window.location.href = 'events-admin.html?pw=' + encodeURIComponent(PASSWORD);
+  try {
+    const r = await fetch('/.netlify/functions/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: PASSWORD })
+    });
+    if (!r.ok) { showToast('Could not open Events Admin — password rejected.', 'error'); return; }
+    const { token } = await r.json();
+    // Pass the signed token (not the raw password) in the URL
+    window.location.href = 'events-admin.html?token=' + encodeURIComponent(token);
+  } catch (e) {
+    showToast('Could not reach server: ' + e.message, 'error');
+  }
 }
 document.getElementById('pwInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
 
