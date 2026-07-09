@@ -721,9 +721,18 @@ function renderTable() {
     }
     return true;
   });
+const today = new Date().toISOString().slice(0, 10);
   list.sort((a, b) => {
+    // No date → always sink to bottom
+    if (!a.date_start && !b.date_start) return 0;
     if (!a.date_start) return 1;
     if (!b.date_start) return -1;
+    // Past events sink below today's and future events
+    const aFuture = a.date_start >= today;
+    const bFuture = b.date_start >= today;
+    if (aFuture && !bFuture) return -1;
+    if (!aFuture && bFuture) return 1;
+    // Within the same group, sort chronologically
     return a.date_start.localeCompare(b.date_start);
   });
   const tbody = document.getElementById('eventsTableBody');
