@@ -30,8 +30,8 @@ exports.handler = async (event) => {
 
     while (true) {
       const url = `${SUPABASE_URL}/rest/v1/rr_members` +
-        `?select=first_name,last_name,organization,photo_url,member_number,membership_level,email,phone` +
-        `&status=eq.Active` +
+        `?select=first_name,last_name,organization,photo_url,member_number,membership_level,email,phone,status` +
+        `&status=in.(Active,PendingRenewal)` +
         `&order=last_name.asc,first_name.asc` +
         `&limit=${PAGE}&offset=${offset}`;
 
