@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clara Barton &amp; the American Red Cross in 1898</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0e1f3d; --navy-dk: #08132a; --gold: #C9A84C;
+    --gold-lt: #e8cc80; --warm-gray: #7a7060;
+  }
+  body { background: var(--navy); color: rgba(255,255,255,0.85); font-family: 'EB Garamond', Georgia, serif; font-size: 18px; line-height: 1.8; }
+
+  .masthead { background: var(--navy-dk); background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px); border-bottom: 5px solid var(--gold); padding: 52px 24px 40px; text-align: center; position: relative; overflow: hidden; }
+  .masthead::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.13) 0%, transparent 68%); pointer-events: none; }
+  .masthead-eyebrow { font-family: 'EB Garamond', serif; font-size: 12.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-lt); margin-bottom: 16px; }
+  .masthead h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(24px, 5vw, 46px); font-weight: 900; color: #fff; line-height: 1.12; max-width: 820px; margin: 0 auto 10px; text-shadow: 0 2px 14px rgba(0,0,0,0.4); }
+  .masthead h1 em { color: var(--gold); font-style: italic; }
+  .masthead-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: 18px; color: rgba(255,255,255,0.72); margin-top: 8px; }
+  .ornament { display: block; color: var(--gold); font-size: 24px; letter-spacing: 0.18em; margin: 22px auto 0; opacity: 0.7; }
+
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 56px 24px 88px; }
+
+  .lead { font-size: 20px; font-style: italic; color: rgba(255,255,255,0.9); border-left: 4px solid var(--gold); padding-left: 22px; margin-bottom: 44px; line-height: 1.68; }
+
+  .section-head { display: flex; align-items: center; gap: 16px; margin: 52px 0 18px; }
+  .section-head h2 { font-family: 'Playfair Display', serif; font-size: clamp(18px, 3vw, 24px); font-weight: 700; color: var(--gold); white-space: nowrap; }
+  .section-rule { flex: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
+
+  p { margin-bottom: 1.3em; color: rgba(255,255,255,0.82); }
+
+  /* photo */
+  .landmark-photo { margin: 0 0 44px; border: 1px solid rgba(201,168,76,0.25); border-top: 4px solid var(--gold); overflow: hidden; }
+  .landmark-photo img { display: block; width: 100%; height: auto; opacity: 0.92; }
+  .landmark-photo-caption { background: var(--navy-dk); padding: 12px 20px; font-family: 'EB Garamond', serif; font-style: italic; font-size: 15px; color: rgba(255,255,255,0.5); text-align: center; border-top: 1px solid rgba(201,168,76,0.15); }
+
+  /* marker inscription box */
+  .inscription-box { background: var(--navy-dk); border: 1px solid rgba(201,168,76,0.3); border-left: 5px solid var(--gold); padding: 28px 32px; margin: 44px 0; }
+  .inscription-box h3 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(201,168,76,0.2); }
+  .inscription-box p { font-size: 16.5px; color: rgba(255,255,255,0.82); font-style: italic; margin: 0; line-height: 1.75; }
+  .inscription-box .erected { font-style: normal; font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.07); }
+
+  /* location box */
+  .location-box { background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.22); padding: 22px 26px; margin: 44px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .location-icon { font-size: 28px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .location-box h3 { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold); margin-bottom: 6px; }
+  .location-box p { margin: 0; font-size: 15.5px; color: rgba(255,255,255,0.75); line-height: 1.65; }
+  .location-box a { color: var(--gold-lt) !important; text-decoration: none !important; border-bottom: 1px solid rgba(201,168,76,0.35); }
+  .location-box a:hover { color: var(--gold) !important; }
+
+  /* nav buttons */
+  .landmark-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 56px; padding-top: 28px; border-top: 1px solid rgba(201,168,76,0.2); }
+  .nav-btn { display: inline-block; padding: 10px 22px; font-family: 'EB Garamond', serif; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none !important; border: 2px solid rgba(201,168,76,0.35); color: var(--gold-lt) !important; transition: all 0.2s; }
+  .nav-btn:hover { border-color: var(--gold); color: var(--gold) !important; }
+  .nav-btn-back { background: var(--gold); color: var(--navy-dk) !important; border-color: var(--gold); font-weight: 600; }
+  .nav-btn-back:hover { background: var(--gold-lt); border-color: var(--gold-lt); color: var(--navy-dk) !important; }
+
+  .page-footer { margin-top: 64px; padding-top: 24px; border-top: 2px solid var(--gold); text-align: center; }
+  .page-footer p { font-size: 13.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--warm-gray); margin: 0; }
+
+  @media (max-width: 600px) { .section-head { flex-wrap: wrap; } .section-rule { display: none; } .location-box { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <p class="masthead-eyebrow">Tampa Landmarks &nbsp;&middot;&nbsp; Bayshore Boulevard</p>
+  <h1><em>Clara Barton</em> &amp; the American Red Cross</h1>
+  <p class="masthead-sub">How the founder of the Red Cross came to Tampa — and followed the Rough Riders to Cuba</p>
+  <span class="ornament">&#10022; &nbsp; &#10022; &nbsp; &#10022;</span>
+</div>
+
+<div class="page-wrap">
+
+  <p class="lead">
+    In 1898, at the age of 77, Clara Barton — founder of the American Red Cross — traveled through Tampa on her way to Cuba, treating wounded soldiers including Theodore Roosevelt's Rough Riders in what became the first wartime deployment of the American Red Cross.
+  </p>
+
+  <!-- PHOTO -->
+  <div class="landmark-photo">
+    <img src="https://tamparoughriders.org/resources/Pictures/Webpage/Landmarks/Clara_Barton_Highway.jpg" alt="Clara Barton historical marker on Bayshore Boulevard, Tampa, Florida">
+    <div class="landmark-photo-caption">Historical marker on Bayshore Boulevard at South Plant Avenue, Tampa, FL — erected 2018</div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section-head">
+    <h2>Clara Barton in Tampa, 1898</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <p>When the United States declared war on Spain on April 25, 1898, Clara Barton was already mobilizing. She obtained permission from the government to deploy the American Red Cross in support of military operations — the first time the organization would provide medical aid in wartime.</p>
+
+  <p>Barton established Red Cross headquarters in Tampa, where her nurses received intensive emergency medical training while thousands of soldiers — including the Rough Riders — assembled in the city before departing for Cuba. Barton followed the military across the Florida Strait, bringing nurses and supplies to the front.</p>
+
+  <p>On the battlefields of Cuba, the Red Cross treated the wounded Rough Riders led by Theodore Roosevelt. This mission cemented the American Red Cross as the nation's premier wartime relief organization — a legacy that endures to this day.</p>
+
+  <!-- MARKER INSCRIPTION -->
+  <div class="inscription-box">
+    <h3>Historical Marker — Full Inscription</h3>
+    <p>Clarissa "Clara" Harlowe Barton, founder of THE AMERICAN RED CROSS, traveled through Tampa, in 1898, on her way to Cuba during the Spanish American War. In 1898, at the age of 77, Barton obtained permission to travel to Cuba, and on April 25, 1898, the U.S. Government declared war on Spain. Barton waited here, at the Red Cross headquarters, while soldiers assembled in Tampa before embarking to Cuba. While in Tampa, her nurses received intensive emergency medical training. Barton followed the military to Cuba bringing nurses and supplies. The first time the American Red Cross gave medical aid in wartime was during the Spanish-American War of 1898. Miss Barton treated the wounded Rough Riders, who were led by Theodore Roosevelt.</p>
+    <p class="erected">Erected 2018 by the Tampa Chapter, National Society of the Daughters of the American Revolution &amp; the Hillsborough County Historical Advisory Council.</p>
+  </div>
+
+  <!-- LOCATION -->
+  <div class="section-head">
+    <h2>Marker Location</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="location-box">
+    <span class="location-icon">📍</span>
+    <div>
+      <h3>Bayshore Boulevard at South Plant Avenue</h3>
+      <p>
+        Coordinates: 27° 56.315' N, 82° 27.751' W<br>
+        Located at the intersection of Bayshore Boulevard and South Plant Ave, on the right when traveling south on Bayshore Blvd. The marker is beside the South Plant Street overpass, on the north side of the road.<br>
+        <em>Approximate address:</em> 501 Bayshore Blvd., Tampa, FL<br><br>
+        <a href="https://maps.google.com/?q=27.938583,-82.462517" target="_blank" rel="noopener noreferrer">Open in Google Maps &rarr;</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- LEARN MORE -->
+  <div class="section-head">
+    <h2>Learn More</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <p>The Red Cross Chat published a detailed account of how Clara Barton and her nurses served the U.S. military — including the Rough Riders — during the Spanish-American War of 1898.</p>
+
+  <p><a href="https://redcrosschat.org/2022/04/04/how-the-red-cross-supported-us-military-troops-during-the-spanish-american-war/" target="_blank" rel="noopener noreferrer" style="color:var(--gold-lt) !important; text-decoration:none !important; border-bottom: 1px solid rgba(201,168,76,0.35);">Read: How the Red Cross Supported U.S. Military Troops During the Spanish-American War &rarr;</a></p>
+
+  <!-- NAV -->
+  <div class="landmark-nav">
+    <a href="/Rough_Riders_Embark_SS_Yucatan" class="nav-btn">&larr; S.S. Yucatan Embarkation</a>
+    <a href="/Landmarks_and_Markers" class="nav-btn-back nav-btn">All Tampa Landmarks</a>
+    <a href="/Roosevelt_Elementary_School" class="nav-btn">Roosevelt Elementary &rarr;</a>
+  </div>
+
+  <div class="page-footer">
+    <p>1st U.S. Volunteer Cavalry Regiment &ndash; Rough Riders, Inc. &nbsp;&middot;&nbsp; Tampa, Florida</p>
+  </div>
+
+</div>
+</body>
+</html>
