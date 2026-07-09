@@ -531,21 +531,21 @@ async function doLogin() {
   if (!pass) return;
   document.getElementById('loginErr').textContent = '';
   try {
-    // Verify password directly against admin-events (raw password as Bearer)
-    const r = await fetch(API_BASE, {
-      headers: { 'Authorization': `Bearer ${pass}` }
+    const r = await fetch('/.netlify/functions/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass })
     });
     if (r.status === 401) { document.getElementById('loginErr').textContent = 'Incorrect password.'; return; }
-    // Password works — store it as the auth credential
-    adminToken = pass;
-    sessionStorage.setItem('eventsAdminToken', pass);
-    localStorage.setItem('eventsAdminToken', pass);
+    if (!r.ok) throw new Error('Server error');
+    const { token } = await r.json();
+    adminToken = token;
+    sessionStorage.setItem('eventsAdminToken', token);
+    localStorage.setItem('eventsAdminToken', token);
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
-    allEvents = await r.json();
-    renderTable();
-    renderStats();
-  } catch { document.getElementById('loginErr').textContent = 'Connection error.'; }
+    fetchEvents();
+  } catch (e) { document.getElementById('loginErr').textContent = 'Connection error.'; }
 }
 
 function doLogout() {
