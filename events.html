@@ -230,60 +230,44 @@ let allEvents  = [];
 let isMember   = false;
 let activeFilter = 'all';
 
-// ── Check member login status from member-auth.js ────────────────────────────
-// member-auth.js stores session in localStorage('rr_member_session')
 function getSession() {
   try { return JSON.parse(localStorage.getItem('rr_member_session')); } catch { return null; }
 }
 
 function checkMemberStatus() {
   const sess = getSession();
-  isMember = !!(sess && sess.token);
+  isMember = !!(sess && sess.member_number);
   if (isMember) {
     const name = sess.first_name || sess.email || 'Member';
     document.getElementById('memberBanner').innerHTML =
       `&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
     document.getElementById('memberBanner').classList.add('visible');
-    // Show Members only filter tab for logged-in members
     const btn = document.getElementById('membersFilterBtn');
     if (btn) btn.style.display = '';
   }
 }
 
-// ── Load events from Supabase via Netlify function ───────────────────────────
 async function loadEvents() {
   try {
-    // Build headers — if member is logged in, pass token so API can return member-only events
-    const fetchHeaders = { 'Accept': 'application/json' };
-    if (isMember && getSession()?.token) {
-      fetchHeaders['Authorization'] = `Bearer ${getSession().token}`;
-    }
-
-    // Public endpoint returns is_active=true&is_public=true only
-    // Member endpoint (with auth) returns all active events including members-only
-    const url = isMember
-      ? `${EVENTS_API}?all=false`
-      : EVENTS_API;
-
-    const res = await fetch(url, { headers: fetchHeaders });
+    const res = await fetch(EVENTS_API);
     if (!res.ok) throw new Error('API error');
-    allEvents = await res.json();
+    let events = await res.json();
 
-    // Filter to today and future only; hide undated events
+    // Filter to today and future only
     const today = new Date();
     today.setHours(0,0,0,0);
-    allEvents = allEvents.filter(e => {
-      if (!e.date_start) return false; // hide events with no date
+    events = events.filter(e => {
+      if (!e.date_start) return false;
       const d = new Date(e.date_start + 'T12:00:00');
       return d >= today;
     });
 
-    // Belt-and-suspenders: hide members-only events from non-members
-    // Treat null as non-public (members-only by default)
+    // Hide members-only events from non-members
     if (!isMember) {
-      allEvents = allEvents.filter(e => e.is_public === true);
+      events = events.filter(e => e.is_public === true);
     }
 
+    allEvents = events;
     renderEvents(allEvents);
   } catch (err) {
     document.getElementById('events-container').innerHTML =
@@ -292,7 +276,6 @@ async function loadEvents() {
   }
 }
 
-// ── Format helpers ────────────────────────────────────────────────────────────
 function formatDate(start, end) {
   if (!start) return 'Date TBD';
   const s = new Date(start + 'T12:00:00');
@@ -332,7 +315,6 @@ function tagsLabel(ev) {
   return '';
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
 function renderEvents(events) {
   const container = document.getElementById('events-container');
   document.getElementById('filter-count').textContent = `${events.length} event${events.length!==1?'s':''}`;
@@ -342,7 +324,6 @@ function renderEvents(events) {
     return;
   }
 
-  // Group by month
   const groups = {};
   events.forEach(ev => {
     const key = getMonthKey(ev.date_start);
@@ -399,6 +380,7 @@ function getPhotos(ev) {
   }
   return Array.isArray(p) ? p.filter(Boolean) : [];
 }
+
 function openModal(id) {
   const ev = allEvents.find(e => e.id === id);
   if (!ev) return;
@@ -445,7 +427,6 @@ function closeModal() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ── Filters ───────────────────────────────────────────────────────────────────
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -459,23 +440,18 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 function filterEvents(filter) {
   if (filter === 'all') return allEvents;
   if (filter === 'members') return allEvents.filter(e => !e.is_public);
-  // Filter by tag (case-insensitive)
   return allEvents.filter(e => {
     const tags = Array.isArray(e.tags) ? e.tags.map(t=>t.toLowerCase()) : [];
     return tags.includes(filter.toLowerCase());
   });
 }
 
-// ── Mobile nav toggle ─────────────────────────────────────────────────────────
 function toggleNav() {
   const nav = document.querySelector('#topbar nav');
   if (nav) nav.classList.toggle('open');
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-// Wait for member-auth.js to finish setting window.rrMember before loading events
 window.addEventListener('DOMContentLoaded', () => {
-  // Small delay to let member-auth.js initialize
   setTimeout(() => {
     checkMemberStatus();
     loadEvents();
