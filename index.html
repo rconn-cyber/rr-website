@@ -790,6 +790,71 @@ footer a:hover { color: var(--gold); }
 .stripe-placeholder .stripe-icon {
   font-size: 2rem; margin-bottom: 0.5rem;
 }
+
+  /* MUSEUM PHOTO GALLERY */
+  .museum-gallery { margin-top: 3rem; }
+  .museum-gallery h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: var(--navy-dark);
+    margin-bottom: 1.25rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  .gallery-item {
+    position: relative; overflow: hidden;
+    border-radius: 2px;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    background: #d4c9a8;
+  }
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.3s ease;
+  }
+  .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(7,20,42,0.82));
+    color: #fff; font-size: 11px; padding: 0.75rem 0.5rem 0.4rem;
+    opacity: 0; transition: opacity 0.2s;
+    font-family: 'Source Serif 4', serif;
+  }
+  .gallery-item:hover .gallery-item-caption { opacity: 1; }
+  /* Lightbox */
+  #galleryLightbox {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92); z-index: 3000;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  #galleryLightbox.open { display: flex; }
+  #galleryLightbox img {
+    max-width: 90vw; max-height: 80vh;
+    object-fit: contain; border: 2px solid rgba(201,168,76,0.4);
+  }
+  #galleryLightbox p {
+    color: rgba(240,232,208,0.8); font-size: 0.85rem;
+    margin-top: 0.75rem; font-family: 'Source Serif 4', serif;
+    font-style: italic;
+  }
+  #galleryLightbox button {
+    position: absolute; top: 1rem; right: 1.5rem;
+    background: none; border: none; color: var(--gold);
+    font-size: 2rem; cursor: pointer; line-height: 1;
+  }
+  #galleryLightboxPrev, #galleryLightboxNext {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold); font-size: 1.5rem; padding: 0.5rem 0.9rem;
+    cursor: pointer; border-radius: 2px; transition: background 0.2s;
+  }
+  #galleryLightboxPrev { left: 1rem; }
+  #galleryLightboxNext { right: 1rem; }
+  #galleryLightboxPrev:hover, #galleryLightboxNext:hover { background: rgba(201,168,76,0.3); }
 </style>
 </head>
 <body>
@@ -976,6 +1041,16 @@ footer a:hover { color: var(--gold); }
           Tours available by appointment for groups and individuals. Educational programs available for schools.
           Contact us to arrange your visit.
         </p>
+
+      <!-- MUSEUM PHOTO GALLERY -->
+      <div class="museum-gallery">
+        <h3>📷 Museum Gallery</h3>
+        <div class="gallery-grid" id="museumGalleryGrid">
+          <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-mid);font-size:0.9rem;">
+            Loading gallery…
+          </div>
+        </div>
+      </div>
       </div>
 
       <div>
@@ -1394,5 +1469,87 @@ function toggleNav() {
 </script>
 <script src="header.js"></script>
 <script src="member-auth.js"></script>
+
+<!-- Museum Gallery Lightbox -->
+<div id="galleryLightbox">
+  <button onclick="closeLightbox()" title="Close">&times;</button>
+  <button id="galleryLightboxPrev" onclick="lightboxNav(-1)">&#8249;</button>
+  <img id="lightboxImg" src="" alt="">
+  <p id="lightboxCaption"></p>
+  <button id="galleryLightboxNext" onclick="lightboxNav(1)">&#8250;</button>
+</div>
+
+<script>
+(function(){
+  const SUPA_URL = 'https://qyoqyeaqacdjstvkonwx.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5b3F5ZWFxYWNkanN0dmtvbnd4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mjc2NTMzMywiZXhwIjoyMDg4MzQxMzMzfQ.uP4Kkn-sV245uad4i6PuOmzz-AwXEPPc5o00BeMAHJ8';
+  const STORAGE  = SUPA_URL + '/storage/v1/object/public/museum-images/';
+
+  let galleryPhotos = [];
+  let lightboxIndex = 0;
+
+  async function loadMuseumGallery() {
+    const grid = document.getElementById('museumGalleryGrid');
+    if (!grid) return;
+    try {
+      const res = await fetch(SUPA_URL + '/rest/v1/museum_photos?select=*&order=sort_order.asc,created_at.asc', {
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+      });
+      const photos = await res.json();
+      galleryPhotos = photos || [];
+      if (!galleryPhotos.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem;color:var(--text-mid);font-size:0.9rem;font-style:italic;">Photos coming soon.</div>';
+        return;
+      }
+      grid.innerHTML = galleryPhotos.map((p, i) =>
+        `<div class="gallery-item" onclick="openLightbox(${i})">
+          <img src="${STORAGE}${encodeURIComponent(p.filename)}" alt="${p.caption||''}" loading="lazy">
+          ${p.caption ? `<div class="gallery-item-caption">${p.caption}</div>` : ''}
+        </div>`
+      ).join('');
+    } catch(e) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-mid);font-size:0.85rem;">Gallery unavailable.</div>';
+    }
+  }
+
+  window.openLightbox = function(index) {
+    lightboxIndex = index;
+    const lb = document.getElementById('galleryLightbox');
+    lb.classList.add('open');
+    showLightboxPhoto();
+    document.addEventListener('keydown', lbKeyHandler);
+  };
+
+  function showLightboxPhoto() {
+    const p = galleryPhotos[lightboxIndex];
+    document.getElementById('lightboxImg').src = STORAGE + encodeURIComponent(p.filename);
+    document.getElementById('lightboxCaption').textContent = p.caption || '';
+    document.getElementById('galleryLightboxPrev').style.display = lightboxIndex > 0 ? '' : 'none';
+    document.getElementById('galleryLightboxNext').style.display = lightboxIndex < galleryPhotos.length-1 ? '' : 'none';
+  }
+
+  window.lightboxNav = function(dir) {
+    lightboxIndex = Math.max(0, Math.min(galleryPhotos.length-1, lightboxIndex + dir));
+    showLightboxPhoto();
+  };
+
+  window.closeLightbox = function() {
+    document.getElementById('galleryLightbox').classList.remove('open');
+    document.removeEventListener('keydown', lbKeyHandler);
+  };
+
+  function lbKeyHandler(e) {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  }
+
+  document.getElementById('galleryLightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  loadMuseumGallery();
+})();
+</script>
 </body>
 </html>
