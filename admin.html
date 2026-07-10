@@ -361,6 +361,31 @@
     .admin-subbar { padding: 0 1rem; overflow-x: auto; }
     .tab-btn { padding: 0 1rem; font-size: 11px; }
   }
+
+  /* MUSEUM PHOTOS */
+  .photo-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s;
+  }
+  .photo-card:hover { box-shadow: var(--shadow-md); }
+  .photo-card img {
+    width: 100%; height: 160px; object-fit: cover; display: block;
+  }
+  .photo-card-body {
+    padding: 0.6rem 0.75rem;
+  }
+  .photo-card-caption {
+    font-size: 12px; color: var(--text-secondary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 0.5rem; min-height: 1.4em;
+  }
+  .photo-card-actions {
+    display: flex; gap: 0.4rem;
+  }
 </style>
 </head>
 <body>
@@ -389,6 +414,7 @@
   <nav class="admin-subbar">
     <button class="tab-btn active" onclick="switchTab('membership',this)">Membership</button>
     <button class="tab-btn" onclick="openEventsAdmin()">Events</button>
+    <button class="tab-btn" onclick="switchTab('photos',this)">Museum Photos</button>
   </nav>
 
   <main>
@@ -494,6 +520,63 @@
         <h3>Events Admin</h3>
         <p>Full event management is available in the dedicated Events Admin panel.</p>
         <a href="#" onclick="openEventsAdmin()" class="btn btn-gold" style="display:inline-flex;text-decoration:none;">Open Events Admin →</a>
+      </div>
+    </div>
+
+
+    <!-- MUSEUM PHOTOS TAB -->
+    <div id="tab-photos" class="tab-panel">
+      <div class="page-header">
+        <div>
+          <h2>Museum Photos</h2>
+          <p>Upload and manage photos displayed in the museum gallery on the public site</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-gold" onclick="document.getElementById('photoFileInput').click()">+ Upload Photos</button>
+          <input type="file" id="photoFileInput" accept="image/*" multiple style="display:none;" onchange="handlePhotoUpload(this)">
+        </div>
+      </div>
+
+      <!-- Drop Zone -->
+      <div id="photoDropZone" style="border:2px dashed var(--border-dark);border-radius:var(--radius);padding:2.5rem;text-align:center;color:var(--text-muted);margin-bottom:1.5rem;transition:border-color 0.2s,background 0.2s;cursor:pointer;"
+        onclick="document.getElementById('photoFileInput').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--gold)';this.style.background='#fffbf0';"
+        ondragleave="this.style.borderColor='var(--border-dark)';this.style.background='';"
+        ondrop="event.preventDefault();this.style.borderColor='var(--border-dark)';this.style.background='';handlePhotoUpload({files:event.dataTransfer.files});">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">📷</div>
+        <div style="font-weight:500;margin-bottom:0.25rem;">Drag &amp; drop photos here</div>
+        <div style="font-size:12px;">or click to browse &mdash; JPG, PNG, WebP supported</div>
+      </div>
+
+      <!-- Upload progress -->
+      <div id="uploadProgress" style="display:none;margin-bottom:1rem;">
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:0.5rem;" id="uploadStatus">Uploading…</div>
+        <div style="background:var(--border);border-radius:2px;height:6px;">
+          <div id="uploadBar" style="height:100%;background:var(--gold);border-radius:2px;width:0%;transition:width 0.3s;"></div>
+        </div>
+      </div>
+
+      <!-- Photo grid -->
+      <div id="photoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+        <div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted);">
+          <span class="spinner"></span> Loading photos…
+        </div>
+      </div>
+    </div>
+
+    <!-- Caption edit modal -->
+    <div id="captionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center;">
+      <div style="background:var(--white);border-radius:var(--radius);padding:1.5rem;max-width:420px;width:100%;box-shadow:var(--shadow-md);">
+        <h3 style="font-size:14px;font-weight:600;margin-bottom:1rem;">Edit Caption</h3>
+        <input type="text" id="captionInput" placeholder="Enter a caption for this photo…"
+          style="width:100%;padding:0.6rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none;margin-bottom:0.5rem;">
+        <input type="number" id="sortInput" placeholder="Sort order (0 = first)" min="0"
+          style="width:100%;padding:0.6rem 0.75rem;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:inherit;outline:none;margin-bottom:1rem;">
+        <input type="hidden" id="captionPhotoId">
+        <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+          <button class="btn btn-outline" onclick="document.getElementById('captionModal').style.display='none'">Cancel</button>
+          <button class="btn btn-gold" onclick="saveCaption()">Save</button>
+        </div>
       </div>
     </div>
 
@@ -900,6 +983,156 @@ function showToast(msg,type='success'){
 document.querySelectorAll('.modal-overlay').forEach(el=>{
   el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');editingId=null;deleteId=null;}});
 });
+
+/* ============================================================
+   MUSEUM PHOTOS — Supabase Storage
+   Bucket: museum-images  (public read, service-role write)
+   Table:  museum_photos  (id, filename, caption, sort_order, created_at)
+   ============================================================ */
+
+const STORAGE_URL = SUPABASE_URL + '/storage/v1';
+const BUCKET      = 'museum-images';
+const PHOTOS_TABLE = 'museum_photos';
+
+/* ---------- load photos ---------- */
+async function loadPhotos() {
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted);"><span class="spinner"></span> Loading…</div>';
+  try {
+    const rows = await sbFetch(PHOTOS_TABLE + '?select=*&order=sort_order.asc,created_at.asc');
+    renderPhotoGrid(rows || []);
+  } catch(e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:1rem;color:var(--danger);">Error loading photos: ' + e.message + '</div>';
+  }
+}
+
+function renderPhotoGrid(photos) {
+  const grid = document.getElementById('photoGrid');
+  if (!photos.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">No photos yet — upload some above.</div>';
+    return;
+  }
+  grid.innerHTML = photos.map(p => {
+    const url = STORAGE_URL + '/object/public/' + BUCKET + '/' + encodeURIComponent(p.filename);
+    const caption = p.caption || '';
+    return `<div class="photo-card" id="photo-${p.id}">
+      <img src="${url}" alt="${caption}" loading="lazy">
+      <div class="photo-card-body">
+        <div class="photo-card-caption" title="${caption}">${caption || '<em style="color:var(--text-muted)">No caption</em>'}</div>
+        <div class="photo-card-actions">
+          <button class="btn btn-outline btn-sm" onclick="openCaptionModal('${p.id}','${caption.replace(/'/g,"\'")}',${p.sort_order||0})">✏️ Caption</button>
+          <button class="btn btn-sm" style="background:var(--danger);color:#fff;border:none;" onclick="deletePhoto('${p.id}','${p.filename}')">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- upload ---------- */
+async function handlePhotoUpload(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+
+  const progress = document.getElementById('uploadProgress');
+  const bar      = document.getElementById('uploadBar');
+  const status   = document.getElementById('uploadStatus');
+  progress.style.display = 'block';
+
+  let done = 0;
+  for (const file of files) {
+    status.textContent = `Uploading ${file.name} (${done+1} of ${files.length})…`;
+    try {
+      // 1. Upload file to Supabase Storage
+      const filename = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uploadRes = await fetch(STORAGE_URL + '/object/' + BUCKET + '/' + filename, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': file.type,
+          'x-upsert': 'true'
+        },
+        body: file
+      });
+      if (!uploadRes.ok) {
+        const err = await uploadRes.text();
+        throw new Error(err);
+      }
+
+      // 2. Insert metadata row
+      await sbFetch(PHOTOS_TABLE, {
+        method: 'POST',
+        body: JSON.stringify({ filename, caption: '', sort_order: 0 }),
+        headers: { 'Prefer': 'return=minimal' }
+      });
+
+    } catch(e) {
+      showToast('Failed to upload ' + file.name + ': ' + e.message, 'error');
+    }
+    done++;
+    bar.style.width = Math.round((done / files.length) * 100) + '%';
+  }
+
+  status.textContent = `Done! ${done} photo${done>1?'s':''} uploaded.`;
+  setTimeout(() => { progress.style.display='none'; bar.style.width='0%'; }, 2000);
+  if (input.value !== undefined) input.value = '';
+  loadPhotos();
+}
+
+/* ---------- caption modal ---------- */
+function openCaptionModal(id, caption, sortOrder) {
+  document.getElementById('captionPhotoId').value  = id;
+  document.getElementById('captionInput').value    = caption;
+  document.getElementById('sortInput').value       = sortOrder;
+  const modal = document.getElementById('captionModal');
+  modal.style.display = 'flex';
+  document.getElementById('captionInput').focus();
+}
+
+async function saveCaption() {
+  const id      = document.getElementById('captionPhotoId').value;
+  const caption = document.getElementById('captionInput').value.trim();
+  const sort    = parseInt(document.getElementById('sortInput').value) || 0;
+  try {
+    await sbFetch(PHOTOS_TABLE + '?id=eq.' + id, {
+      method: 'PATCH',
+      body: JSON.stringify({ caption, sort_order: sort }),
+      headers: { 'Prefer': 'return=minimal' }
+    });
+    document.getElementById('captionModal').style.display = 'none';
+    showToast('Caption saved.', 'success');
+    loadPhotos();
+  } catch(e) {
+    showToast('Save failed: ' + e.message, 'error');
+  }
+}
+
+/* ---------- delete ---------- */
+async function deletePhoto(id, filename) {
+  if (!confirm('Delete this photo? This cannot be undone.')) return;
+  try {
+    // Delete from storage
+    await fetch(STORAGE_URL + '/object/' + BUCKET + '/' + encodeURIComponent(filename), {
+      method: 'DELETE',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    // Delete metadata row
+    await sbFetch(PHOTOS_TABLE + '?id=eq.' + id, { method: 'DELETE', headers:{'Prefer':'return=minimal'} });
+    document.getElementById('photo-' + id)?.remove();
+    showToast('Photo deleted.', 'success');
+  } catch(e) {
+    showToast('Delete failed: ' + e.message, 'error');
+  }
+}
+
+/* ---------- wire up tab switch to load photos ---------- */
+const _origSwitchTab = switchTab;
+switchTab = function(name, btn) {
+  _origSwitchTab(name, btn);
+  if (name === 'photos') loadPhotos();
+};
+
 </script>
 
 <script src="header.js"></script>
