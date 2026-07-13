@@ -1,7 +1,6 @@
 export default async (req) => {
   const ADMIN_KEY = Netlify.env.get("EVENTS_ADMIN_PASSWORD");
   const WA_API_KEY = Netlify.env.get("WA_API_KEY");
-  const ACCOUNT_ID = Netlify.env.get("WA_ACCOUNT_ID") || "279468";
   const BASE = "https://api.wildapricot.org/v2";
 
   const ARCHIVE_IDS = [
