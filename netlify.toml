@@ -3,3 +3,9 @@
 
 [context.production]
   environment = { NODE_VERSION = "18" }
+
+# SUPABASE_URL is a public project URL (not a secret) — safe to appear in
+# browser code. WA_ACCOUNT_ID in wa-archive-trigger.js is now env-only.
+# We tell Netlify's scanner to skip these two key names.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,WA_ACCOUNT_ID"
