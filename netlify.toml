@@ -1,34 +1,11 @@
 [build]
   publish = "."
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+[context.production]
+  environment = { NODE_VERSION = "18" }
 
-# Increase timeout for long-running sync functions (26s = Pro plan max)
-[functions."sync-wa-supabase"]
-  timeout = 26
-
-[functions."sync-members"]
-  timeout = 26
-
-[functions."sync-events"]
-  timeout = 26
-
-[functions."sync-scheduled"]
-  schedule = "0 * * * *"
-
-# Secrets scanner exclusions
-# Supabase anon key + URL are safe in frontend (public-read only)
+# The Supabase URL and anon key in index.html are intentionally public-facing
+# (anon key is designed for browser use with RLS enforced).
+# Omit index.html from secrets scanning.
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "events.html,index-events-snippet.html,admin.html,events-admin.html,netlify/functions/wa-archive-duplicates-background.js,netlify/functions/wa-archive-trigger.js"
-
-[[redirects]]
-  from = "/events-admin"
-  to   = "/events-admin.html"
-  status = 200
-
-[[redirects]]
-  from = "/events"
-  to   = "/events.html"
-  status = 200
+  SECRETS_SCAN_OMIT_PATHS = "index.html"
