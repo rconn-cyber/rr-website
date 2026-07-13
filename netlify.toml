@@ -3,9 +3,3 @@
 
 [context.production]
   environment = { NODE_VERSION = "18" }
-
-# The Supabase URL and anon key in index.html are intentionally public-facing
-# (anon key is designed for browser use with RLS enforced).
-# Omit index.html from secrets scanning.
-[build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "index.html"
