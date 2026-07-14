@@ -1,103 +1,156 @@
 // netlify/functions/events-api.js
-// CRUD for rr_events — public GET, admin-only POST/PUT/DELETE
-// Env vars needed:
-//   SUPABASE_URL        = set in Netlify environment variables
-//   SUPABASE_SERVICE_KEY = your service_role key (bypasses RLS)
-//   EVENTS_ADMIN_PASSWORD = your chosen admin password
+// Fetches campaigns from Zeffy and returns upcoming events.
+// Set ZEFFY_API_KEY in Netlify → Site configuration → Environment variables.
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const ADMIN_PASS   = process.env.EVENTS_ADMIN_PASSWORD;
+const ZEFFY_API = 'https://api.zeffy.com/api/v1/campaigns';
 
-const headers = {
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+// Map Zeffy campaign types to human-friendly tags shown on the event cards.
+// Adjust these to match your actual Zeffy campaign titles / types.
+const TYPE_TAG_MAP = {
+  'ticketing':  'Social',
+  'donation':   'General',
+  'membership': 'General',
 };
 
-function checkAdmin(event) {
-  const auth = event.headers['authorization'] || '';
-  const pass = auth.replace('Bearer ', '').trim();
-  return pass === ADMIN_PASS;
-}
+exports.handler = async () => {
+  const apiKey = process.env.ZEFFY_API_KEY;
 
-async function supabase(method, path, body) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1${path}`, {
-    method,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : 'return=representation'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  const text = await res.text();
-  try { return { ok: res.ok, status: res.status, data: JSON.parse(text) }; }
-  catch { return { ok: res.ok, status: res.status, data: text }; }
-}
-
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
-
-  const method = event.httpMethod;
-  const params = event.queryStringParameters || {};
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'ZEFFY_API_KEY environment variable is not set.' }),
+    };
+  }
 
   try {
+    // Fetch all campaigns (Zeffy paginates; we'll collect up to 200).
+    const campaigns = await fetchAllCampaigns(apiKey);
 
-    // ── GET: list events (public) ──────────────────────────────────────────
-    if (method === 'GET') {
-      const isAdmin = checkAdmin(event);
-      let query = '/rr_events?order=date_start.asc.nullslast,created_at.asc';
+    // Filter to event-type campaigns only and shape them for the front-end.
+    const events = campaigns
+      .filter(isEventCampaign)
+      .map(toEvent)
+      .filter(e => e !== null);
 
-      if (!isAdmin) {
-        // Public: always restrict to active public events regardless of any token
-        query += '&is_active=eq.true&is_public=eq.true';
-      } else {
-        // Admin password: show all, or filter to active only
-        if (params.all !== 'true') query += '&is_active=eq.true';
-      }
-
-      if (params.id) query += `&id=eq.${params.id}`;
-
-      const r = await supabase('GET', query);
-      return { statusCode: 200, headers, body: JSON.stringify(r.data) };
-    }
-
-    // ── All write ops require admin ────────────────────────────────────────
-    if (!checkAdmin(event)) {
-      return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
-    }
-
-    const body = event.body ? JSON.parse(event.body) : {};
-
-    // ── POST: create event ─────────────────────────────────────────────────
-    if (method === 'POST') {
-      const r = await supabase('POST', '/rr_events', body);
-      return { statusCode: r.ok ? 201 : 400, headers, body: JSON.stringify(r.data) };
-    }
-
-    // ── PUT: update event ──────────────────────────────────────────────────
-    if (method === 'PUT') {
-      if (!params.id) return { statusCode: 400, headers, body: JSON.stringify({ error: 'id required' }) };
-      // remove immutable fields
-      const { id, created_at, ...updates } = body;
-      const r = await supabase('PATCH', `/rr_events?id=eq.${params.id}`, updates);
-      return { statusCode: r.ok ? 200 : 400, headers, body: JSON.stringify(r.data) };
-    }
-
-    // ── DELETE: archive event (soft delete) ───────────────────────────────
-    if (method === 'DELETE') {
-      if (!params.id) return { statusCode: 400, headers, body: JSON.stringify({ error: 'id required' }) };
-      const r = await supabase('PATCH', `/rr_events?id=eq.${params.id}`, { is_active: false });
-      return { statusCode: r.ok ? 200 : 400, headers, body: JSON.stringify(r.data) };
-    }
-
-    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
-
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        // Cache for 5 minutes so the page stays snappy without hammering Zeffy.
+        'Cache-Control': 'public, max-age=300',
+      },
+      body: JSON.stringify(events),
+    };
   } catch (err) {
     console.error('events-api error:', err);
-    return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
+    return {
+      statusCode: 502,
+      body: JSON.stringify({ error: 'Failed to fetch events from Zeffy.' }),
+    };
   }
 };
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+
+async function fetchAllCampaigns(apiKey) {
+  const results = [];
+  let cursor = null;
+  let pages   = 0;
+
+  do {
+    const url = new URL(ZEFFY_API);
+    url.searchParams.set('limit', '100');
+    if (cursor) url.searchParams.set('starting_after', cursor);
+
+    const res = await fetch(url.toString(), {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Zeffy API ${res.status}: ${body}`);
+    }
+
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : (data.data ?? []);
+    results.push(...items);
+
+    cursor = data.next_cursor ?? null;
+    pages++;
+    // Safety cap — 200 campaigns is plenty for a small nonprofit.
+  } while (cursor && pages < 2);
+
+  return results;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/**
+ * Returns true for campaigns that are event / ticketing forms.
+ * Zeffy uses `type` values like "ticketing", "event", etc.
+ */
+function isEventCampaign(c) {
+  const t = (c.type ?? '').toLowerCase();
+  return t === 'ticketing' || t === 'event';
+}
+
+/**
+ * Converts a raw Zeffy campaign object into the shape expected by events.html.
+ *
+ * Your HTML reads: id, title, description, body_html, date_start, date_end,
+ * time_display, location, tags, is_public, photo_urls, luma_url / rsvp_url.
+ */
+function toEvent(c) {
+  // Extract the first occurrence date (Zeffy stores occurrences in an array).
+  const occurrence = (c.occurrences ?? [])[0] ?? {};
+  const dateStart  = isoDate(occurrence.start_at ?? c.start_at ?? c.created_at);
+  const dateEnd    = isoDate(occurrence.end_at   ?? c.end_at);
+
+  // Build a human-readable time string, e.g. "2:00 PM – 5:00 PM".
+  const timeDisplay = buildTimeDisplay(occurrence.start_at ?? c.start_at, occurrence.end_at ?? c.end_at);
+
+  // Tags drive the filter buttons (Social / Museum / General / etc.).
+  // We derive them from the campaign type; you can also add a custom field in
+  // Zeffy's description like "[tag:Museum]" and parse it here if you prefer.
+  const rawType  = (c.type ?? '').toLowerCase();
+  const autoTag  = TYPE_TAG_MAP[rawType] ?? 'General';
+  const tags     = [autoTag];
+
+  // photo_urls — Zeffy may expose a banner/cover image.
+  const photoUrls = [c.image_url, c.cover_image_url].filter(Boolean);
+
+  // The RSVP link goes to the campaign's public Zeffy page.
+  const rsvpUrl = c.url ?? c.public_url ?? null;
+
+  return {
+    id:           c.id,
+    title:        c.title ?? 'Untitled Event',
+    description:  c.description ?? '',
+    body_html:    c.body_html ?? '',
+    date_start:   dateStart,
+    date_end:     dateEnd,
+    time_display: timeDisplay,
+    location:     c.location ?? c.address ?? '',
+    tags,
+    is_public:    c.is_public !== false,   // default true unless Zeffy marks it private
+    photo_urls:   photoUrls,
+    rsvp_url:     rsvpUrl,
+  };
+}
+
+/** Returns "YYYY-MM-DD" from an ISO timestamp, or null. */
+function isoDate(ts) {
+  if (!ts) return null;
+  return ts.slice(0, 10);
+}
+
+/** Returns e.g. "2:00 PM – 5:00 PM" from ISO timestamps, or ''. */
+function buildTimeDisplay(startTs, endTs) {
+  if (!startTs) return '';
+  const fmt = ts => new Date(ts).toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York',
+  });
+  const s = fmt(startTs);
+  if (!endTs) return s;
+  return `${s} – ${fmt(endTs)}`;
+}
