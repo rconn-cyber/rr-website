@@ -1,156 +1,129 @@
 // netlify/functions/events-api.js
-// Fetches campaigns from Zeffy and returns upcoming events.
-// Set ZEFFY_API_KEY in Netlify → Site configuration → Environment variables.
+// Fetches campaigns from Zeffy API and returns event-shaped JSON.
+// Required env var: ZEFFY_API_KEY (Netlify → Site config → Environment variables)
 
-const ZEFFY_API = 'https://api.zeffy.com/api/v1/campaigns';
-
-// Map Zeffy campaign types to human-friendly tags shown on the event cards.
-// Adjust these to match your actual Zeffy campaign titles / types.
-const TYPE_TAG_MAP = {
-  'ticketing':  'Social',
-  'donation':   'General',
-  'membership': 'General',
-};
-
-exports.handler = async () => {
+exports.handler = async (event) => {
   const apiKey = process.env.ZEFFY_API_KEY;
+  const debug  = event.queryStringParameters?.debug === '1';
 
   if (!apiKey) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'ZEFFY_API_KEY environment variable is not set.' }),
-    };
+    return json(500, { error: 'ZEFFY_API_KEY env var not set' });
   }
 
   try {
-    // Fetch all campaigns (Zeffy paginates; we'll collect up to 200).
-    const campaigns = await fetchAllCampaigns(apiKey);
-
-    // Filter to event-type campaigns only and shape them for the front-end.
-    const events = campaigns
-      .filter(isEventCampaign)
-      .map(toEvent)
-      .filter(e => e !== null);
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        // Cache for 5 minutes so the page stays snappy without hammering Zeffy.
-        'Cache-Control': 'public, max-age=300',
-      },
-      body: JSON.stringify(events),
-    };
-  } catch (err) {
-    console.error('events-api error:', err);
-    return {
-      statusCode: 502,
-      body: JSON.stringify({ error: 'Failed to fetch events from Zeffy.' }),
-    };
-  }
-};
-
-// ── Pagination ────────────────────────────────────────────────────────────────
-
-async function fetchAllCampaigns(apiKey) {
-  const results = [];
-  let cursor = null;
-  let pages   = 0;
-
-  do {
-    const url = new URL(ZEFFY_API);
-    url.searchParams.set('limit', '100');
-    if (cursor) url.searchParams.set('starting_after', cursor);
-
-    const res = await fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${apiKey}` },
+    // ── 1. Fetch campaigns from Zeffy ────────────────────────────────────────
+    const url = 'https://api.zeffy.com/api/v1/campaigns?limit=100';
+    const res  = await fetch(url, {
+      headers: { Authorization: `Bearer ${apiKey}` }
     });
 
     if (!res.ok) {
       const body = await res.text();
-      throw new Error(`Zeffy API ${res.status}: ${body}`);
+      console.error('Zeffy API error:', res.status, body);
+      return json(502, { error: `Zeffy returned ${res.status}`, detail: body });
     }
 
-    const data = await res.json();
-    const items = Array.isArray(data) ? data : (data.data ?? []);
-    results.push(...items);
+    const raw = await res.json();
 
-    cursor = data.next_cursor ?? null;
-    pages++;
-    // Safety cap — 200 campaigns is plenty for a small nonprofit.
-  } while (cursor && pages < 2);
+    // ── 2. Debug mode: return raw response so we can see real field names ────
+    if (debug) {
+      return json(200, { raw });
+    }
 
-  return results;
-}
+    // ── 3. Normalise: Zeffy returns { data: [...], has_more, next_cursor }
+    //       or possibly a plain array — handle both.
+    const campaigns = Array.isArray(raw) ? raw : (raw.data ?? []);
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+    // ── 4. Map to the shape events.html expects ──────────────────────────────
+    const today = new Date().toISOString().split('T')[0];
 
-/**
- * Returns true for campaigns that are event / ticketing forms.
- * Zeffy uses `type` values like "ticketing", "event", etc.
- */
-function isEventCampaign(c) {
-  const t = (c.type ?? '').toLowerCase();
-  return t === 'ticketing' || t === 'event';
-}
+    const events = campaigns
+      .map(toEvent)
+      .filter(e => e.date_start && e.date_start >= today)   // upcoming only
+      .sort((a, b) => a.date_start.localeCompare(b.date_start));
 
-/**
- * Converts a raw Zeffy campaign object into the shape expected by events.html.
- *
- * Your HTML reads: id, title, description, body_html, date_start, date_end,
- * time_display, location, tags, is_public, photo_urls, luma_url / rsvp_url.
- */
+    return json(200, events);
+
+  } catch (err) {
+    console.error('events-api exception:', err.message);
+    return json(500, { error: err.message });
+  }
+};
+
+// ── Mapping ──────────────────────────────────────────────────────────────────
+// Zeffy campaign fields (from their API docs & known responses):
+//   id, title, description, type, status, is_published,
+//   start_date / end_date  OR  occurrences[].start_at / end_at,
+//   location, image_url, url (public page link), goal,
+//   raised_amount, currency
+
 function toEvent(c) {
-  // Extract the first occurrence date (Zeffy stores occurrences in an array).
-  const occurrence = (c.occurrences ?? [])[0] ?? {};
-  const dateStart  = isoDate(occurrence.start_at ?? c.start_at ?? c.created_at);
-  const dateEnd    = isoDate(occurrence.end_at   ?? c.end_at);
+  // Dates — Zeffy uses occurrences[] for ticketed events, top-level for others
+  const occ       = Array.isArray(c.occurrences) ? c.occurrences[0] : null;
+  const rawStart  = occ?.start_at  ?? c.start_date  ?? c.starts_at  ?? c.date ?? null;
+  const rawEnd    = occ?.end_at    ?? c.end_date    ?? c.ends_at    ?? null;
+  const dateStart = isoDate(rawStart);
+  const dateEnd   = isoDate(rawEnd);
 
-  // Build a human-readable time string, e.g. "2:00 PM – 5:00 PM".
-  const timeDisplay = buildTimeDisplay(occurrence.start_at ?? c.start_at, occurrence.end_at ?? c.end_at);
+  // Time display e.g. "2:00 PM – 5:00 PM ET"
+  const timeDisplay = rawStart ? buildTime(rawStart, rawEnd) : '';
 
-  // Tags drive the filter buttons (Social / Museum / General / etc.).
-  // We derive them from the campaign type; you can also add a custom field in
-  // Zeffy's description like "[tag:Museum]" and parse it here if you prefer.
-  const rawType  = (c.type ?? '').toLowerCase();
-  const autoTag  = TYPE_TAG_MAP[rawType] ?? 'General';
-  const tags     = [autoTag];
+  // Tags — derive from Zeffy campaign type
+  const typeMap = {
+    ticketing:  'Social',
+    event:      'Social',
+    donation:   'General',
+    membership: 'General',
+    raffle:     'General',
+  };
+  const tags = [typeMap[(c.type ?? '').toLowerCase()] ?? 'General'];
 
-  // photo_urls — Zeffy may expose a banner/cover image.
-  const photoUrls = [c.image_url, c.cover_image_url].filter(Boolean);
+  // Photos
+  const photos = [c.image_url, c.banner_url, c.cover_image_url].filter(Boolean);
 
-  // The RSVP link goes to the campaign's public Zeffy page.
-  const rsvpUrl = c.url ?? c.public_url ?? null;
+  // RSVP / registration link — the campaign's public Zeffy page
+  const rsvpUrl = c.url ?? c.public_url ?? c.campaign_url ?? null;
 
   return {
     id:           c.id,
-    title:        c.title ?? 'Untitled Event',
-    description:  c.description ?? '',
-    body_html:    c.body_html ?? '',
+    title:        c.title        ?? 'Untitled Event',
+    description:  c.description  ?? '',
+    body_html:    c.body_html    ?? c.long_description ?? '',
     date_start:   dateStart,
     date_end:     dateEnd,
     time_display: timeDisplay,
-    location:     c.location ?? c.address ?? '',
+    location:     c.location     ?? c.address ?? '',
     tags,
-    is_public:    c.is_public !== false,   // default true unless Zeffy marks it private
-    photo_urls:   photoUrls,
+    is_public:    c.is_published !== false && c.status !== 'draft',
+    photo_urls:   photos,
     rsvp_url:     rsvpUrl,
   };
 }
 
-/** Returns "YYYY-MM-DD" from an ISO timestamp, or null. */
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
 function isoDate(ts) {
   if (!ts) return null;
-  return ts.slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(ts)) return ts;  // already YYYY-MM-DD
+  try { return new Date(ts).toISOString().slice(0, 10); } catch { return null; }
 }
 
-/** Returns e.g. "2:00 PM – 5:00 PM" from ISO timestamps, or ''. */
-function buildTimeDisplay(startTs, endTs) {
-  if (!startTs) return '';
+function buildTime(start, end) {
   const fmt = ts => new Date(ts).toLocaleTimeString('en-US', {
-    hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York',
+    hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York'
   });
-  const s = fmt(startTs);
-  if (!endTs) return s;
-  return `${s} – ${fmt(endTs)}`;
+  try {
+    return end ? `${fmt(start)} – ${fmt(end)} ET` : `${fmt(start)} ET`;
+  } catch { return ''; }
+}
+
+function json(status, body) {
+  return {
+    statusCode: status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': status === 200 ? 'public, max-age=300' : 'no-store',
+    },
+    body: JSON.stringify(body),
+  };
 }
