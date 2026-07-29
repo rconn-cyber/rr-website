@@ -125,7 +125,7 @@ async function pushEventToWA(token, sbEvent) {
   }
 }
 
-async function syncEvents() {
+async function syncEvents(forceAll = false) {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   const results  = { wa_to_sb: 0, sb_to_wa: 0, skipped: 0, errors: [] };
 
@@ -142,13 +142,20 @@ async function syncEvents() {
   for (const e of waEvents) waById[String(e.Id)] = e;
 
   // WA → Supabase
+  // Log first EventImage for diagnosis
+  const sampleImg = waEvents[0]?.EventImage;
+  results.sample_event_image = JSON.stringify(sampleImg);
+
   for (const waEvent of waEvents) {
     try {
       const mapped   = mapWAEventToSupabase(waEvent);
       const existing = sbByWaId[mapped.wa_id];
       const waTime   = new Date(mapped.updated_at).getTime();
       const sbTime   = existing ? new Date(existing.updated_at).getTime() : 0;
-      if (!existing || waTime > sbTime) {
+      // Always update if: no existing row, WA is newer, photos empty, or force mode
+      const photosEmpty = !existing || !existing.photo_urls || existing.photo_urls.length === 0;
+      const needsUpdate = !existing || waTime > sbTime || photosEmpty || forceAll;
+      if (needsUpdate) {
         if (existing) {
           const { error } = await supabase.from('rr_events').update(mapped).eq('id', existing.id);
           if (error) results.errors.push('WA→SB update ' + mapped.wa_id + ': ' + error.message);
@@ -185,7 +192,8 @@ exports.handler = async (event) => {
   const logId = logRow?.id;
 
   try {
-    const results = await syncEvents();
+    const forceAll = event.queryStringParameters?.force === '1' || (event.body && JSON.parse(event.body || '{}').force);
+    const results = await syncEvents(forceAll);
     if (logId) {
       await supabase.from('sync_log').update({
         status: 'complete',
