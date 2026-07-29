@@ -142,7 +142,10 @@ async function syncEvents() {
   const results  = { upserted: 0, errors: [], image_samples: [] };
 
   const token = await getWAToken();
-  const waEvents = await fetchWAEvents(token);
+  const [waEvents, { data: sbEvents }] = await Promise.all([
+    fetchWAEvents(token),
+    supabase.from('rr_events').select('id, wa_id')
+  ]);
 
   // collect image diagnostics
   for (const e of waEvents) {
@@ -156,27 +159,37 @@ async function syncEvents() {
     }
   }
 
-  // Map all events and upsert in ONE call using wa_id as the conflict key
   const rows = waEvents.map(mapWAEventToSupabase);
 
-  const { error, count } = await supabase
-    .from('rr_events')
-    .upsert(rows, { onConflict: 'wa_id', ignoreDuplicates: false })
-    .select('id', { count: 'exact', head: true });
+  // Build lookup of existing rows by wa_id
+  const existingByWaId = {};
+  for (const r of sbEvents || []) { if (r.wa_id) existingByWaId[r.wa_id] = r.id; }
 
-  if (error) {
-    // wa_id may not have a unique constraint yet — fall back to individual upserts
-    console.warn('Bulk upsert failed, falling back:', error.message);
-    results.errors.push('bulk: ' + error.message);
-    for (const row of rows) {
-      const { error: e2 } = await supabase
-        .from('rr_events')
-        .upsert(row, { onConflict: 'wa_id', ignoreDuplicates: false });
-      if (e2) results.errors.push(row.wa_id + ': ' + e2.message);
-      else results.upserted++;
+  const toInsert = rows.filter(r => !existingByWaId[r.wa_id]);
+  const toUpdate = rows.filter(r =>  existingByWaId[r.wa_id]);
+
+  // Insert new rows in one batch
+  if (toInsert.length) {
+    const BATCH = 50;
+    for (let i = 0; i < toInsert.length; i += BATCH) {
+      const { error } = await supabase.from('rr_events').insert(toInsert.slice(i, i + BATCH));
+      if (error) results.errors.push('insert batch ' + i + ': ' + error.message);
+      else results.upserted += Math.min(BATCH, toInsert.length - i);
     }
-  } else {
-    results.upserted = count ?? rows.length;
+  }
+
+  // Update existing rows in parallel batches of 10
+  const CHUNK = 10;
+  for (let i = 0; i < toUpdate.length; i += CHUNK) {
+    const chunk = toUpdate.slice(i, i + CHUNK);
+    const settled = await Promise.allSettled(chunk.map(row =>
+      supabase.from('rr_events').update(row).eq('id', existingByWaId[row.wa_id])
+    ));
+    for (const s of settled) {
+      if (s.status === 'fulfilled' && s.value.error) results.errors.push(s.value.error.message);
+      else if (s.status === 'fulfilled') results.upserted++;
+      else results.errors.push(s.reason?.message || 'unknown');
+    }
   }
 
   return results;
@@ -189,32 +202,14 @@ exports.handler = async (event) => {
   };
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
 
-  // Netlify background functions (-background.js) get 15 min but must return quickly.
-  // We run the sync inline but cap each Supabase chunk so it stays fast.
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  const { data: logRow } = await supabase
-    .from('sync_log')
-    .insert({ sync_type: 'events', status: 'running' })
-    .select('id')
-    .single();
-  const logId = logRow?.id;
-
   try {
     const results = await syncEvents();
-    console.log('Sync complete:', results.upserted, 'rows');
-    if (logId) await supabase.from('sync_log').update({
-      status: 'complete',
-      results: { upserted: results.upserted, errors: results.errors, image_samples: results.image_samples },
-      finished_at: new Date().toISOString()
-    }).eq('id', logId);
     return {
       statusCode: 200, headers,
-      body: JSON.stringify({ success: true, upserted: results.upserted, errors: results.errors?.length, image_samples: results.image_samples?.slice(0,5) })
+      body: JSON.stringify({ success: true, upserted: results.upserted, errors: results.errors, image_samples: results.image_samples?.slice(0,5) })
     };
   } catch (err) {
     console.error('Sync error:', err.message);
-    if (logId) await supabase.from('sync_log').update({ status: 'error', results: { error: err.message }, finished_at: new Date().toISOString() }).eq('id', logId);
     return { statusCode: 500, headers, body: JSON.stringify({ success: false, error: err.message }) };
   }
 };
