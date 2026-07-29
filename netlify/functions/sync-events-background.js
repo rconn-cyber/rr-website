@@ -38,6 +38,42 @@ function toWADate(d) {
   return d.includes('T') ? d : d + 'T00:00:00';
 }
 
+/**
+ * Download an image from WA (which requires auth) using the WA token,
+ * then upload it to Supabase Storage and return the public URL.
+ * Returns null on any failure so the sync keeps going.
+ */
+async function reHostImage(imageUrl, waToken, supabase, waEventId) {
+  try {
+    // Fetch the image from WA with auth
+    const imgRes = await fetch(imageUrl, {
+      headers: { 'Authorization': 'Bearer ' + waToken }
+    });
+    if (!imgRes.ok) return null;
+
+    const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+    const ext = contentType.includes('png') ? 'png' : contentType.includes('gif') ? 'gif' : 'jpg';
+    const buffer = Buffer.from(await imgRes.arrayBuffer());
+
+    const path = `event-images/wa_${waEventId}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from('museum-images')
+      .upload(path, buffer, { contentType, upsert: true });
+
+    if (error) {
+      console.warn('Image upload failed for', waEventId, error.message);
+      return null;
+    }
+
+    const { data } = supabase.storage.from('museum-images').getPublicUrl(path);
+    return data?.publicUrl || null;
+  } catch (e) {
+    console.warn('reHostImage error:', e.message);
+    return null;
+  }
+}
+
 function mapWAEventToSupabase(waEvent) {
   const tags = Array.isArray(waEvent.Tags)
     ? waEvent.Tags.map(t => t.Label || t).filter(Boolean) : [];
@@ -159,7 +195,44 @@ async function syncEvents() {
     }
   }
 
-  const rows = waEvents.map(mapWAEventToSupabase);
+  // Map events and re-host images that are on WA's authenticated CDN
+  const waToken = token; // reuse the WA Bearer token
+  const rowPromises = waEvents.map(async waEvent => {
+    const row = mapWAEventToSupabase(waEvent);
+    // Only fetch image if photo_urls is currently empty
+    if (!row.photo_urls || row.photo_urls.length === 0) {
+      // Try EventImage first, then first <img> in Description
+      let imgUrl = null;
+      if (waEvent.EventImage) {
+        imgUrl = typeof waEvent.EventImage === 'object'
+          ? (waEvent.EventImage.Url || waEvent.EventImage.url || null)
+          : waEvent.EventImage;
+      }
+      if (!imgUrl && waEvent.Description) {
+        const m = waEvent.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (m) imgUrl = m[1];
+      }
+      if (imgUrl) {
+        // Only re-host WA-internal images (not already public CDN)
+        const needsRehost = imgUrl.includes('tamparoughriders.org') || imgUrl.includes('wildapricot');
+        if (needsRehost) {
+          const hosted = await reHostImage(imgUrl, waToken, supabase, waEvent.Id);
+          if (hosted) row.photo_urls = [hosted];
+        } else {
+          row.photo_urls = [imgUrl];
+        }
+      }
+    }
+    return row;
+  });
+
+  // Run image downloads in parallel batches of 5 (don't hammer WA)
+  const rows = [];
+  const IMG_BATCH = 5;
+  for (let i = 0; i < rowPromises.length; i += IMG_BATCH) {
+    const batch = await Promise.all(rowPromises.slice(i, i + IMG_BATCH));
+    rows.push(...batch);
+  }
 
   // Build lookup of existing rows by wa_id
   const existingByWaId = {};
