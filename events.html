@@ -43,7 +43,7 @@ nav a:hover{color:var(--gold)}
 .member-banner strong{color:var(--gold)}
 
 /* CALENDAR CHROME */
-.cal-wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.5rem 3rem;overflow-x:hidden}
+.cal-wrap{max-width:1060px;margin:0 auto;padding:1.5rem 1rem 3rem}
 
 /* month nav */
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
@@ -62,11 +62,11 @@ nav a:hover{color:var(--gold)}
 .filter-pill.active{background:var(--navy);color:var(--gold);border-color:var(--navy)}
 
 /* GRID */
-.cal-grid-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-width:0;width:100%}
-.dow-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--navy)}
+.cal-grid-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:100%}
+.dow-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--navy)}
 .dow-cell{text-align:center;font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);padding:.55rem 0}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{min-height:96px;padding:6px 7px 5px;border-right:1px solid #f0ebe0;border-bottom:1px solid #f0ebe0;cursor:pointer;transition:background .12s;position:relative;min-width:0;overflow:hidden}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal-day{min-height:96px;padding:6px 6px 4px;border-right:1px solid #f0ebe0;border-bottom:1px solid #f0ebe0;cursor:pointer;transition:background .12s;position:relative;overflow:hidden;word-break:break-word}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day:hover{background:#fdf9f2}
 .cal-day.today{background:#fffbf0}
