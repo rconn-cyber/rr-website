@@ -1137,7 +1137,7 @@ async function syncFromWA() {
         ? `✅ Sync complete — ${data.upserted} events updated`
         : '✅ Sync triggered successfully';
       btn.textContent = msg;
-      setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; loadEvents(); }, 3000);
+      setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; fetchEvents(); }, 3000);
     } else {
       btn.textContent = '❌ ' + (data.error || res.status);
       btn.disabled = false;
