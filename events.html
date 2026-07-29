@@ -9,179 +9,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --navy:      #0d1f3c;
-  --gold:      #C9A84C;
-  --gold-dk:   #8b6914;
-  --cream:     #f5efe0;
-  --cream2:    #ede4cc;
-  --parchment: #f0e8d0;
-  --text:      #1a1208;
-  --text2:     #4a3c1e;
-  --muted:     #7a6a48;
-  --border:    #d4c9a8;
-  --white:     #ffffff;
-  --radius:    8px;
+  --navy:#0d1f3c; --gold:#C9A84C; --gold-dk:#8b6914;
+  --cream:#f5efe0; --cream2:#ede4cc; --parchment:#f0e8d0;
+  --text:#1a1208; --text2:#4a3c1e; --muted:#7a6a48;
+  --border:#d4c9a8; --white:#ffffff; --radius:8px;
 }
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
-body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; padding-top:64px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;padding-top:64px}
 
-/* ── NAV ── */
-#topbar {
-  position:fixed; top:0; left:0; right:0; z-index:1000;
-  background:linear-gradient(180deg,rgba(7,20,41,0.98) 0%,rgba(13,31,60,0.95) 100%);
-  border-bottom:2px solid var(--gold);
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 2rem; height:64px; backdrop-filter:blur(8px);
-}
-.logo-nav { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
-.logo-nav span { font-family:'Playfair Display',serif; color:var(--gold); font-size:0.9rem; font-weight:700; line-height:1.3; }
-nav { display:flex; align-items:center; gap:0.25rem; }
-nav a { color:var(--parchment); text-decoration:none; font-family:'Source Serif 4',serif; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.5rem 0.75rem; border-radius:2px; transition:color 0.2s; }
-nav a:hover { color:var(--gold); }
-.member-btn { background:transparent; border:1px solid var(--gold); color:var(--gold) !important; padding:0.4rem 1rem; border-radius:2px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; font-family:'Source Serif 4',serif; cursor:pointer; transition:all 0.2s; }
-.member-btn:hover { background:var(--gold); color:var(--navy) !important; }
-.member-btn-active { background:#c9a84c !important; color:#0d1f3c !important; font-weight:700; border:none; padding:0.4rem 1rem; border-radius:2px; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; font-family:'Source Serif 4',serif; cursor:pointer; }
-.member-btn-active:hover { background:#a07e2a !important; }
-.nav-toggle { display:none; background:none; border:none; color:var(--gold); font-size:1.5rem; cursor:pointer; }
-@media(max-width:768px){
-  .nav-toggle { display:block; }
-  #topbar nav { display:none; flex-direction:column; position:absolute; top:64px; left:0; right:0; background:rgba(7,20,41,0.98); padding:1rem; gap:0.5rem; }
-  #topbar nav.open { display:flex; }
-}
+/* NAV */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(7,20,41,.98) 0%,rgba(13,31,60,.95) 100%);border-bottom:2px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
+.logo-nav{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-nav span{font-family:'Playfair Display',serif;color:var(--gold);font-size:.9rem;font-weight:700;line-height:1.3}
+nav{display:flex;align-items:center;gap:.25rem}
+nav a{color:var(--parchment);text-decoration:none;font-family:'Source Serif 4',serif;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .75rem;border-radius:2px;transition:color .2s}
+nav a:hover{color:var(--gold)}
+.member-btn{background:transparent;border:1px solid var(--gold);color:var(--gold)!important;padding:.4rem 1rem;border-radius:2px;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-family:'Source Serif 4',serif;cursor:pointer;transition:all .2s}
+.member-btn:hover{background:var(--gold);color:var(--navy)!important}
+.member-btn-active{background:#c9a84c!important;color:#0d1f3c!important;font-weight:700;border:none;padding:.4rem 1rem;border-radius:2px;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-family:'Source Serif 4',serif;cursor:pointer}
+.nav-toggle{display:none;background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer}
+@media(max-width:768px){.nav-toggle{display:block}#topbar nav{display:none;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:rgba(7,20,41,.98);padding:1rem;gap:.5rem}#topbar nav.open{display:flex}}
 
-/* ── HERO ── */
-.hero { background:var(--navy); border-bottom:3px solid var(--gold); padding:2.5rem 2rem 2rem; text-align:center; }
-.hero-eyebrow { font-size:0.7rem; letter-spacing:4px; color:var(--gold); font-weight:600; text-transform:uppercase; margin-bottom:0.6rem; }
-.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.8rem); color:var(--parchment); font-weight:700; margin-bottom:0.6rem; line-height:1.2; }
-.hero p { font-family:'Source Serif 4',serif; font-size:1rem; color:#8a9db5; max-width:520px; margin:0 auto; line-height:1.7; font-style:italic; }
+/* HERO */
+.hero{background:var(--navy);border-bottom:3px solid var(--gold);padding:2.5rem 2rem 2rem;text-align:center}
+.hero-eyebrow{font-size:.7rem;letter-spacing:4px;color:var(--gold);font-weight:600;text-transform:uppercase;margin-bottom:.6rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);color:var(--parchment);font-weight:700;margin-bottom:.6rem;line-height:1.2}
+.hero p{font-family:'Source Serif 4',serif;font-size:1rem;color:#8a9db5;max-width:520px;margin:0 auto;line-height:1.7;font-style:italic}
 
-/* ── MEMBER BANNER ── */
-.member-banner { display:none; background:#0a1829; border-bottom:1px solid #1e3a6e; padding:0.6rem 2rem; text-align:center; font-size:0.82rem; color:#8a9db5; }
-.member-banner.visible { display:block; }
-.member-banner strong { color:var(--gold); }
+/* MEMBER BANNER */
+.member-banner{display:none;background:#0a1829;border-bottom:1px solid #1e3a6e;padding:.6rem 2rem;text-align:center;font-size:.82rem;color:#8a9db5}
+.member-banner.visible{display:block}
+.member-banner strong{color:var(--gold)}
 
-/* ── CALENDAR CHROME ── */
-.cal-wrap { max-width:1200px; margin:0 auto; padding:1.5rem 1.5rem 3rem; }
+/* CALENDAR CHROME */
+.cal-wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1.5rem 3rem}
 
-/* month nav strip */
-.month-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
-.month-nav-title { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--navy); font-weight:700; }
-.month-nav-arrows { display:flex; gap:0.4rem; }
-.arrow-btn { background:var(--white); border:1px solid var(--border); color:var(--navy); width:34px; height:34px; border-radius:6px; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
-.arrow-btn:hover { background:var(--navy); color:var(--gold); border-color:var(--navy); }
-.today-btn { background:transparent; border:1px solid var(--border); color:var(--text2); font-size:0.75rem; font-weight:600; padding:0 0.9rem; height:34px; border-radius:6px; cursor:pointer; letter-spacing:0.5px; text-transform:uppercase; transition:all .15s; }
-.today-btn:hover { border-color:var(--gold); color:var(--gold-dk); }
+/* month nav */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.month-nav-title{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--navy);font-weight:700}
+.month-nav-arrows{display:flex;gap:.4rem}
+.arrow-btn{background:var(--white);border:1px solid var(--border);color:var(--navy);width:34px;height:34px;border-radius:6px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.arrow-btn:hover{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.today-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-size:.75rem;font-weight:600;padding:0 .9rem;height:34px;border-radius:6px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;transition:all .15s}
+.today-btn:hover{border-color:var(--gold);color:var(--gold-dk)}
 
 /* filter pills */
-.filter-row { display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-.filter-label { font-size:0.7rem; font-weight:700; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-right:0.1rem; }
-.filter-pill { padding:0.28rem 0.8rem; border-radius:20px; border:1px solid var(--border); background:var(--white); font-size:0.75rem; font-weight:600; color:var(--text2); cursor:pointer; transition:all .15s; }
-.filter-pill:hover { border-color:var(--gold); color:var(--gold-dk); }
-.filter-pill.active { background:var(--navy); color:var(--gold); border-color:var(--navy); }
+.filter-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.filter-label{font-size:.7rem;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-right:.1rem}
+.filter-pill{padding:.28rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--white);font-size:.75rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s}
+.filter-pill:hover{border-color:var(--gold);color:var(--gold-dk)}
+.filter-pill.active{background:var(--navy);color:var(--gold);border-color:var(--navy)}
 
-/* two-column layout: calendar + side panel */
-.cal-layout { display:grid; grid-template-columns:1fr 320px; gap:1.25rem; align-items:start; }
-@media(max-width:900px){ .cal-layout { grid-template-columns:1fr; } }
+/* GRID */
+.cal-grid-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.dow-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--navy)}
+.dow-cell{text-align:center;font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);padding:.55rem 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:96px;padding:6px 7px 5px;border-right:1px solid #f0ebe0;border-bottom:1px solid #f0ebe0;cursor:pointer;transition:background .12s;position:relative}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day:hover{background:#fdf9f2}
+.cal-day.today{background:#fffbf0}
+.cal-day.today .day-num{background:var(--gold);color:var(--navy)}
+.cal-day.other-month{opacity:.35;pointer-events:none}
+.day-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:.78rem;font-weight:600;color:var(--text2);margin-bottom:3px}
 
-/* ── GRID ── */
-.cal-grid-wrap { background:var(--white); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
-.dow-row { display:grid; grid-template-columns:repeat(7,1fr); background:var(--navy); }
-.dow-cell { text-align:center; font-size:0.68rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); padding:0.55rem 0; }
-.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
-.cal-day { min-height:88px; padding:6px 7px 5px; border-right:1px solid #f0ebe0; border-bottom:1px solid #f0ebe0; cursor:pointer; transition:background .12s; position:relative; }
-.cal-day:nth-child(7n) { border-right:none; }
-.cal-day:hover { background:#fdf9f2; }
-.cal-day.today { background:#fffbf0; }
-.cal-day.today .day-num { background:var(--gold); color:var(--navy); }
-.cal-day.selected { background:#f5f0e4; }
-.cal-day.other-month { opacity:.38; pointer-events:none; }
-.day-num { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; font-size:0.78rem; font-weight:600; color:var(--text2); margin-bottom:4px; }
-.dot-row { display:flex; flex-wrap:wrap; gap:3px; margin-top:2px; }
-.dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.dot-public  { background:var(--gold); }
-.dot-member  { background:#3b82f6; }
-.dot-more    { font-size:0.6rem; color:var(--muted); font-weight:600; line-height:7px; }
+/* event pills on grid */
+.day-pill{font-size:.67rem;font-weight:600;color:var(--navy);background:#f0e8d0;border-radius:3px;padding:2px 5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;line-height:1.5;cursor:pointer;transition:background .1s}
+.day-pill:hover{background:var(--gold);color:var(--navy)}
+.day-pill.pill-member{background:#dbeafe;color:#1e3a8a}
+.day-pill.pill-member:hover{background:#3b82f6;color:#fff}
+.pill-more{background:transparent!important;color:var(--muted)!important;font-style:italic}
+@media(max-width:600px){.day-pill{display:none}.dot-row{display:flex!important}}
 
-/* event pills on day (desktop — visible when space allows) */
-.day-pill { font-size:0.67rem; font-weight:600; color:var(--navy); background:#f5efe0; border-radius:3px; padding:1px 4px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; display:block; line-height:1.5; }
-.day-pill.pill-member { background:#dbeafe; color:#1e3a8a; }
-@media(max-width:640px){ .day-pill { display:none; } }
+/* dots for mobile */
+.dot-row{display:none;flex-wrap:wrap;gap:3px;margin-top:3px}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot-public{background:var(--gold)}
+.dot-member{background:#3b82f6}
 
-/* ── SIDE PANEL ── */
-.side-panel { background:var(--white); border:1px solid var(--border); border-radius:10px; overflow:hidden; position:sticky; top:80px; }
-.side-header { background:var(--navy); padding:0.9rem 1.1rem; }
-.side-header h3 { font-family:'Playfair Display',serif; font-size:1rem; color:var(--parchment); font-weight:700; }
-.side-header p { font-size:0.75rem; color:#8a9db5; margin-top:2px; }
-.side-body { padding:0.75rem; max-height:520px; overflow-y:auto; }
-.side-empty { text-align:center; padding:2rem 1rem; color:var(--muted); font-size:0.83rem; font-style:italic; font-family:'Source Serif 4',serif; }
-.side-event { display:flex; gap:0.7rem; padding:0.65rem 0.5rem; border-radius:6px; cursor:pointer; transition:background .12s; border-bottom:1px solid #f5f0e4; }
-.side-event:last-child { border-bottom:none; }
-.side-event:hover { background:#fdf9f2; }
-.side-event-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-.side-event-info { flex:1; min-width:0; }
-.side-event-title { font-size:0.83rem; font-weight:700; color:var(--navy); line-height:1.3; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.side-event-meta  { font-size:0.72rem; color:var(--muted); }
-.side-event-badge { font-size:0.62rem; font-weight:700; padding:1px 6px; border-radius:8px; margin-top:3px; display:inline-block; }
-.badge-public  { background:#EAF3DE; color:#27500A; }
-.badge-member  { background:#DBEAFE; color:#1e40af; }
+/* UPCOMING STRIP */
+.upcoming-strip{margin-top:1.5rem}
+.upcoming-heading{font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.upcoming-heading::after{content:'';flex:1;height:1px;background:var(--border)}
+.upcoming-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.upcoming-card{background:var(--white);border:1px solid var(--border);border-radius:8px;display:flex;overflow:hidden;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.upcoming-card:hover{border-color:var(--gold);box-shadow:0 2px 12px rgba(13,31,60,.08)}
+.upcoming-card.is-member{border-left:4px solid #3b82f6}
+.upcoming-date-block{background:var(--navy);color:var(--parchment);width:56px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem 0}
+.umon{font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.uday{font-size:1.5rem;font-weight:700;font-family:'Playfair Display',serif;line-height:1}
+.upcoming-info{padding:.65rem .9rem;flex:1;min-width:0}
+.upcoming-title{font-size:.88rem;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:3px}
+.upcoming-sub{font-size:.75rem;color:var(--muted)}
 
-/* ── UPCOMING STRIP (below calendar, mobile-friendly fallback) ── */
-.upcoming-strip { margin-top:1.5rem; }
-.upcoming-heading { font-family:'Playfair Display',serif; font-size:1rem; color:var(--navy); font-weight:700; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem; }
-.upcoming-heading::after { content:''; flex:1; height:1px; background:var(--border); }
-.upcoming-list { display:flex; flex-direction:column; gap:8px; }
-.upcoming-card { background:var(--white); border:1px solid var(--border); border-radius:8px; display:flex; gap:0; overflow:hidden; cursor:pointer; transition:border-color .15s, box-shadow .15s; }
-.upcoming-card:hover { border-color:var(--gold); box-shadow:0 2px 12px rgba(13,31,60,.07); }
-.upcoming-card.is-member { border-left:4px solid #3b82f6; }
-.upcoming-date-block { background:var(--navy); color:var(--parchment); width:56px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0.6rem 0; }
-.upcoming-date-block .umon { font-size:0.62rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); font-weight:700; }
-.upcoming-date-block .uday { font-size:1.5rem; font-weight:700; font-family:'Playfair Display',serif; line-height:1; }
-.upcoming-info { padding:0.65rem 0.9rem; flex:1; min-width:0; }
-.upcoming-title { font-size:0.88rem; font-weight:700; color:var(--navy); line-height:1.3; margin-bottom:3px; }
-.upcoming-sub { font-size:0.75rem; color:var(--muted); }
+/* DAY EVENTS MODAL (multi-event picker) */
+.day-modal-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(13,31,60,.5);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:1rem}
+.day-modal-overlay.open{display:flex}
+.day-modal-box{background:var(--white);border-radius:10px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 16px 48px rgba(13,31,60,.2);animation:modalIn .18s ease}
+.day-modal-header{background:var(--navy);padding:.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between}
+.day-modal-header h3{font-family:'Playfair Display',serif;color:var(--parchment);font-size:1rem;font-weight:700}
+.day-modal-close{background:none;border:none;color:#8a9db5;font-size:1.2rem;cursor:pointer;line-height:1;padding:0 .25rem}
+.day-modal-close:hover{color:var(--gold)}
+.day-modal-list{padding:.5rem}
+.day-modal-item{display:flex;gap:.75rem;padding:.65rem .75rem;border-radius:6px;cursor:pointer;transition:background .12s;align-items:flex-start}
+.day-modal-item:hover{background:#fdf9f2}
+.day-modal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.day-modal-info{}
+.day-modal-title{font-size:.88rem;font-weight:700;color:var(--navy);line-height:1.3}
+.day-modal-meta{font-size:.75rem;color:var(--muted);margin-top:2px}
 
-/* ── DETAIL MODAL ── */
-.modal-overlay { display:none; position:fixed; inset:0; z-index:500; background:rgba(13,31,60,0.6); backdrop-filter:blur(4px); align-items:flex-start; justify-content:center; padding:5.5rem 1rem 2rem; overflow-y:auto; }
-.modal-overlay.open { display:flex; }
-.modal-box { background:var(--white); border-radius:10px; width:100%; max-width:680px; overflow:hidden; box-shadow:0 20px 60px rgba(13,31,60,0.25); animation:modalIn 0.2s ease; }
-@keyframes modalIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-.modal-photo { width:100%; height:220px; object-fit:cover; background:var(--cream2); display:block; }
-.modal-body { padding:1.5rem 1.75rem; }
-.modal-eyebrow { font-size:0.68rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dk); margin-bottom:0.5rem; }
-.modal-title { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--navy); line-height:1.2; margin-bottom:1rem; }
-.modal-meta { display:flex; flex-direction:column; gap:6px; margin-bottom:1.25rem; padding:1rem; background:var(--cream); border-radius:6px; border:1px solid var(--border); }
-.modal-meta span { font-size:0.85rem; color:var(--text2); display:flex; align-items:flex-start; gap:8px; }
-.modal-desc { font-family:'Source Serif 4',serif; font-size:0.95rem; color:var(--text2); line-height:1.75; margin-bottom:1.25rem; }
-.modal-body-html { font-family:'Source Serif 4',serif; font-size:0.95rem; color:var(--text); line-height:1.75; margin-bottom:1.5rem; }
-.modal-body-html h2,.modal-body-html h3 { font-family:'Playfair Display',serif; color:var(--navy); margin:1rem 0 0.5rem; }
-.modal-body-html ul,.modal-body-html ol { padding-left:1.5rem; margin:0.5rem 0; }
-.modal-body-html a { color:var(--gold-dk); }
-.modal-footer { padding:1rem 1.75rem 1.5rem; display:flex; gap:0.75rem; align-items:center; justify-content:space-between; border-top:1px solid var(--border); }
-.modal-close { background:none; border:1px solid var(--border); color:var(--muted); padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font-size:0.82rem; transition:all .15s; }
-.modal-close:hover { border-color:var(--navy); color:var(--navy); }
-.btn { display:inline-flex; align-items:center; gap:6px; padding:0.6rem 1.25rem; border-radius:var(--radius); font-size:0.85rem; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:opacity .15s,transform .1s; }
-.btn:hover { opacity:.88; transform:translateY(-1px); }
-.btn-gold { background:var(--gold); color:var(--navy); }
+/* DETAIL MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(13,31,60,.6);backdrop-filter:blur(4px);align-items:flex-start;justify-content:center;padding:5.5rem 1rem 2rem;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--white);border-radius:10px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 20px 60px rgba(13,31,60,.25);animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.modal-photo{width:100%;height:220px;object-fit:cover;background:var(--cream2);display:block}
+.modal-body{padding:1.5rem 1.75rem}
+.modal-eyebrow{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dk);margin-bottom:.5rem}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:1rem}
+.modal-meta{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem;padding:1rem;background:var(--cream);border-radius:6px;border:1px solid var(--border)}
+.modal-meta span{font-size:.85rem;color:var(--text2);display:flex;align-items:flex-start;gap:8px}
+.modal-desc{font-family:'Source Serif 4',serif;font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:1.25rem}
+.modal-body-html{font-family:'Source Serif 4',serif;font-size:.95rem;color:var(--text);line-height:1.75;margin-bottom:1.5rem}
+.modal-body-html h2,.modal-body-html h3{font-family:'Playfair Display',serif;color:var(--navy);margin:1rem 0 .5rem}
+.modal-body-html ul,.modal-body-html ol{padding-left:1.5rem;margin:.5rem 0}
+.modal-body-html a{color:var(--gold-dk)}
+.modal-body-html img{max-width:100%;border-radius:6px;margin:.5rem 0}
+.modal-footer{padding:1rem 1.75rem 1.5rem;display:flex;gap:.75rem;align-items:center;justify-content:space-between;border-top:1px solid var(--border)}
+.modal-close{background:none;border:1px solid var(--border);color:var(--muted);padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.82rem;transition:all .15s}
+.modal-close:hover{border-color:var(--navy);color:var(--navy)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.6rem 1.25rem;border-radius:var(--radius);font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:opacity .15s,transform .1s}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:var(--navy)}
 
 /* loading */
-.loading-state { text-align:center; padding:4rem 1rem; color:var(--muted); grid-column:1/-1; }
-.spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 1rem; }
-@keyframes spin { to{transform:rotate(360deg);} }
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state{text-align:center;padding:4rem 1rem;color:var(--muted);grid-column:1/-1}
 
 /* footer */
-.footer { background:var(--navy); border-top:3px solid var(--gold); padding:2rem; text-align:center; margin-top:0; }
-.footer p { font-size:0.78rem; color:#3d5570; line-height:1.8; }
-.footer a { color:var(--gold); text-decoration:none; }
+.footer{background:var(--navy);border-top:3px solid var(--gold);padding:2rem;text-align:center}
+.footer p{font-size:.78rem;color:#3d5570;line-height:1.8}
+.footer a{color:var(--gold);text-decoration:none}
 </style>
 </head>
 <body>
 
 <div id="site-header"></div>
-
-<div class="member-banner" id="memberBanner">
-  &#9733; Welcome back — <strong>member-only events</strong> are shown below
-</div>
+<div class="member-banner" id="memberBanner">&#9733; Welcome back — <strong>member-only events</strong> are shown below</div>
 
 <section class="hero">
   <p class="hero-eyebrow">&#10022; &nbsp; Tampa Rough Riders &nbsp; &#10022;</p>
@@ -190,19 +166,16 @@ nav a:hover { color:var(--gold); }
 </section>
 
 <div class="cal-wrap">
-
-  <!-- month navigation -->
   <div class="month-nav">
     <div class="month-nav-arrows">
-      <button class="arrow-btn" id="prevMonth" title="Previous month">&#8249;</button>
+      <button class="arrow-btn" id="prevMonth">&#8249;</button>
       <button class="today-btn" id="todayBtn">Today</button>
-      <button class="arrow-btn" id="nextMonth" title="Next month">&#8250;</button>
+      <button class="arrow-btn" id="nextMonth">&#8250;</button>
     </div>
     <div class="month-nav-title" id="monthTitle"></div>
-    <div style="width:120px"></div><!-- spacer to centre title -->
+    <div style="width:120px"></div>
   </div>
 
-  <!-- filter pills -->
   <div class="filter-row">
     <span class="filter-label">Show</span>
     <button class="filter-pill active" data-filter="all">All</button>
@@ -212,44 +185,32 @@ nav a:hover { color:var(--gold); }
     <button class="filter-pill" data-filter="members" id="membersFilterBtn" style="display:none">Members only</button>
   </div>
 
-  <!-- calendar + side panel -->
-  <div class="cal-layout">
-
-    <!-- grid -->
-    <div class="cal-grid-wrap">
-      <div class="dow-row">
-        <div class="dow-cell">Sun</div>
-        <div class="dow-cell">Mon</div>
-        <div class="dow-cell">Tue</div>
-        <div class="dow-cell">Wed</div>
-        <div class="dow-cell">Thu</div>
-        <div class="dow-cell">Fri</div>
-        <div class="dow-cell">Sat</div>
-      </div>
-      <div class="cal-grid" id="calGrid">
-        <div class="loading-state" style="grid-column:1/-1"><div class="spinner"></div><p>Loading events…</p></div>
-      </div>
+  <div class="cal-grid-wrap">
+    <div class="dow-row">
+      <div class="dow-cell">Sun</div><div class="dow-cell">Mon</div><div class="dow-cell">Tue</div>
+      <div class="dow-cell">Wed</div><div class="dow-cell">Thu</div><div class="dow-cell">Fri</div>
+      <div class="dow-cell">Sat</div>
     </div>
-
-    <!-- side panel -->
-    <div class="side-panel">
-      <div class="side-header">
-        <h3 id="sideDateLabel">Select a date</h3>
-        <p id="sideCount"></p>
-      </div>
-      <div class="side-body" id="sideBody">
-        <div class="side-empty">Click any date to see its events</div>
-      </div>
+    <div class="cal-grid" id="calGrid">
+      <div class="loading-state"><div class="spinner"></div><p>Loading events…</p></div>
     </div>
-
   </div>
 
-  <!-- upcoming events strip -->
   <div class="upcoming-strip" id="upcomingStrip" style="display:none">
     <div class="upcoming-heading">Upcoming this month</div>
     <div class="upcoming-list" id="upcomingList"></div>
   </div>
+</div>
 
+<!-- DAY PICKER MODAL (when a day has multiple events) -->
+<div class="day-modal-overlay" id="dayModal" onclick="if(event.target===this)closeDayModal()">
+  <div class="day-modal-box">
+    <div class="day-modal-header">
+      <h3 id="dayModalTitle"></h3>
+      <button class="day-modal-close" onclick="closeDayModal()">&#10005;</button>
+    </div>
+    <div class="day-modal-list" id="dayModalList"></div>
+  </div>
 </div>
 
 <!-- DETAIL MODAL -->
@@ -276,355 +237,177 @@ nav a:hover { color:var(--gold); }
 </footer>
 
 <script>
-const EVENTS_API = '/.netlify/functions/events-api';
-const MONTHS_LONG  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const DAYS_LONG    = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const EVENTS_API='/.netlify/functions/events-api';
+const MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DAYS_LONG=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-let allEvents    = [];
-let filteredEvts = [];
-let isMember     = false;
-let activeFilter = 'all';
-let viewYear, viewMonth;   // currently displayed month
-let selectedDate = null;   // "YYYY-MM-DD"
+let allEvents=[],filteredEvts=[],isMember=false,activeFilter='all',viewYear,viewMonth;
 
-// ── session ───────────────────────────────────────────────────────────────
-function getSession() {
-  try { return JSON.parse(localStorage.getItem('rr_member_session')); } catch { return null; }
-}
-function checkMemberStatus() {
-  const sess = getSession();
-  isMember = !!(sess && sess.member_number);
-  if (isMember) {
-    const name = sess.first_name || sess.email || 'Member';
-    document.getElementById('memberBanner').innerHTML =
-      `&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
+function getSession(){try{return JSON.parse(localStorage.getItem('rr_member_session'));}catch{return null;}}
+function checkMemberStatus(){
+  const sess=getSession();
+  isMember=!!(sess&&sess.member_number);
+  if(isMember){
+    const name=sess.first_name||sess.email||'Member';
+    document.getElementById('memberBanner').innerHTML=`&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
     document.getElementById('memberBanner').classList.add('visible');
-    const btn = document.getElementById('membersFilterBtn');
-    if (btn) btn.style.display = '';
+    const btn=document.getElementById('membersFilterBtn');
+    if(btn)btn.style.display='';
   }
 }
 
-// ── data loading ──────────────────────────────────────────────────────────
-async function loadEvents() {
-  try {
-    const res = await fetch(EVENTS_API);
-    if (!res.ok) throw new Error('API error');
-    let events = await res.json();
-    // Show events from the start of the current month onward
-    // so the calendar always populates for the current month
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    events = events.filter(e => {
-      if (!e.date_start) return false;
-      const d = new Date(e.date_start + 'T12:00:00');
-      return d >= monthStart;
+async function loadEvents(){
+  try{
+    const res=await fetch(EVENTS_API);
+    if(!res.ok)throw new Error('API error');
+    let events=await res.json();
+    const now=new Date();
+    const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+    events=events.filter(e=>{
+      if(!e.date_start)return false;
+      return new Date(e.date_start+'T12:00:00')>=monthStart;
     });
-    if (!isMember) events = events.filter(e => e.is_public === true);
-    allEvents = events;
+    if(!isMember)events=events.filter(e=>e.is_public===true);
+    allEvents=events;
     applyFilter();
-  } catch(err) {
-    document.getElementById('calGrid').innerHTML =
-      '<div class="loading-state" style="grid-column:1/-1"><p>Could not load events. Please try again shortly.</p></div>';
+  }catch(err){
+    document.getElementById('calGrid').innerHTML='<div class="loading-state"><p>Could not load events. Please try again shortly.</p></div>';
   }
 }
 
-// ── filtering ─────────────────────────────────────────────────────────────
-function applyFilter() {
-  if (activeFilter === 'all') {
-    filteredEvts = allEvents;
-  } else if (activeFilter === 'members') {
-    filteredEvts = allEvents.filter(e => !e.is_public);
-  } else {
-    filteredEvts = allEvents.filter(e => {
-      const tags = Array.isArray(e.tags) ? e.tags.map(t=>t.toLowerCase()) : [];
-      return tags.includes(activeFilter.toLowerCase());
-    });
-  }
+function applyFilter(){
+  if(activeFilter==='all') filteredEvts=allEvents;
+  else if(activeFilter==='members') filteredEvts=allEvents.filter(e=>!e.is_public);
+  else filteredEvts=allEvents.filter(e=>(Array.isArray(e.tags)?e.tags:[]).map(t=>t.toLowerCase()).includes(activeFilter.toLowerCase()));
   renderCalendar();
   renderUpcoming();
-  if (selectedDate) renderSidePanel(selectedDate);
 }
 
-// ── date helpers ──────────────────────────────────────────────────────────
-function toDateStr(y,m,d) {
-  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-}
-function eventDateStr(e) { return e.date_start || ''; }
-function eventsOnDate(dateStr) {
-  return filteredEvts.filter(e => {
-    const s = e.date_start;
-    const en = e.date_end || s;
-    return dateStr >= s && dateStr <= en;
-  });
-}
-function formatFull(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T12:00:00');
-  return `${DAYS_LONG[d.getDay()]}, ${MONTHS_LONG[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-}
+function toDateStr(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function eventsOnDate(ds){return filteredEvts.filter(e=>{const s=e.date_start,en=e.date_end||s;return ds>=s&&ds<=en;});}
 
-// ── calendar render ───────────────────────────────────────────────────────
-function renderCalendar() {
-  const grid = document.getElementById('calGrid');
-  const title = document.getElementById('monthTitle');
-  title.textContent = `${MONTHS_LONG[viewMonth]} ${viewYear}`;
+function renderCalendar(){
+  const grid=document.getElementById('calGrid');
+  document.getElementById('monthTitle').textContent=`${MONTHS_LONG[viewMonth]} ${viewYear}`;
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=toDateStr(today.getFullYear(),today.getMonth(),today.getDate());
+  const firstDay=new Date(viewYear,viewMonth,1).getDay();
+  const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+  const daysInPrev=new Date(viewYear,viewMonth,0).getDate();
+  let cells='',count=0;
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
-
-  const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-  const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
-  const daysInPrev  = new Date(viewYear, viewMonth, 0).getDate();
-
-  let cells = '';
-  let cellCount = 0;
-
-  // prev month filler
-  for (let i = firstDay - 1; i >= 0; i--) {
-    const d = daysInPrev - i;
-    const y = viewMonth === 0 ? viewYear - 1 : viewYear;
-    const m = viewMonth === 0 ? 11 : viewMonth - 1;
-    const ds = toDateStr(y, m, d);
-    cells += dayCell(d, ds, todayStr, true);
-    cellCount++;
+  // prev filler
+  for(let i=firstDay-1;i>=0;i--){
+    const d=daysInPrev-i,y=viewMonth===0?viewYear-1:viewYear,m=viewMonth===0?11:viewMonth-1;
+    cells+=dayCell(d,toDateStr(y,m,d),todayStr,true);count++;
   }
-
   // this month
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds = toDateStr(viewYear, viewMonth, d);
-    cells += dayCell(d, ds, todayStr, false);
-    cellCount++;
-  }
+  for(let d=1;d<=daysInMonth;d++){cells+=dayCell(d,toDateStr(viewYear,viewMonth,d),todayStr,false);count++;}
+  // next filler
+  const rem=7-(count%7);
+  if(rem<7){for(let d=1;d<=rem;d++){const y=viewMonth===11?viewYear+1:viewYear,m=viewMonth===11?0:viewMonth+1;cells+=dayCell(d,toDateStr(y,m,d),todayStr,true);}}
 
-  // next month filler
-  const remaining = 7 - (cellCount % 7);
-  if (remaining < 7) {
-    for (let d = 1; d <= remaining; d++) {
-      const y = viewMonth === 11 ? viewYear + 1 : viewYear;
-      const m = viewMonth === 11 ? 0 : viewMonth + 1;
-      const ds = toDateStr(y, m, d);
-      cells += dayCell(d, ds, todayStr, true);
-    }
-  }
-
-  grid.innerHTML = cells;
-
-  // attach click listeners
-  grid.querySelectorAll('.cal-day:not(.other-month)').forEach(el => {
-    el.addEventListener('click', () => {
-      grid.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedDate = el.dataset.date;
-      renderSidePanel(selectedDate);
-    });
+  grid.innerHTML=cells;
+  grid.querySelectorAll('.cal-day:not(.other-month)').forEach(el=>{
+    el.addEventListener('click',()=>handleDayClick(el.dataset.date));
   });
-
-  // re-highlight selected if still in view
-  if (selectedDate) {
-    const sel = grid.querySelector(`[data-date="${selectedDate}"]`);
-    if (sel) sel.classList.add('selected');
-  }
+  // pill clicks — stop propagation to avoid double-firing day click
+  grid.querySelectorAll('.day-pill[data-id]').forEach(pill=>{
+    pill.addEventListener('click',e=>{e.stopPropagation();openModal(pill.dataset.id);});
+  });
 }
 
-function dayCell(dayNum, dateStr, todayStr, otherMonth) {
-  const evs = otherMonth ? [] : eventsOnDate(dateStr);
-  const isToday = dateStr === todayStr;
-  let cls = 'cal-day';
-  if (isToday) cls += ' today';
-  if (otherMonth) cls += ' other-month';
-  if (dateStr === selectedDate) cls += ' selected';
-
-  let inner = `<div class="day-num">${dayNum}</div>`;
-
-  if (!otherMonth && evs.length) {
-    // Show up to 2 pills on desktop, dots on mobile
-    const pills = evs.slice(0,2).map(e => {
-      const isMem = !e.is_public;
-      return `<span class="day-pill${isMem?' pill-member':''}" title="${e.title}">${e.title}</span>`;
-    }).join('');
-    const morePill = evs.length > 2
-      ? `<span class="day-pill" style="color:var(--muted);background:transparent">+${evs.length-2} more</span>` : '';
-    inner += pills + morePill;
-
-    // dot row (visible on mobile)
-    const dots = evs.slice(0,5).map(e =>
-      `<span class="dot ${e.is_public===false?'dot-member':'dot-public'}"></span>`
-    ).join('') + (evs.length > 5 ? `<span class="dot-more">+${evs.length-5}</span>` : '');
-    inner += `<div class="dot-row" style="display:none" id="dots-${dateStr}">${dots}</div>`;
+function dayCell(dayNum,dateStr,todayStr,otherMonth){
+  const evs=otherMonth?[]:eventsOnDate(dateStr);
+  let cls='cal-day'+(dateStr===todayStr?' today':'')+(otherMonth?' other-month':'');
+  let inner=`<div class="day-num">${dayNum}</div>`;
+  if(!otherMonth&&evs.length){
+    inner+=evs.slice(0,2).map(e=>`<span class="day-pill${!e.is_public?' pill-member':''}" data-id="${e.id}">${e.title}</span>`).join('');
+    if(evs.length>2)inner+=`<span class="day-pill pill-more">+${evs.length-2} more</span>`;
+    const dots=evs.slice(0,5).map(e=>`<span class="dot ${e.is_public===false?'dot-member':'dot-public'}"></span>`).join('');
+    inner+=`<div class="dot-row">${dots}</div>`;
   }
-
-  return `<div class="${cls}" data-date="${dateStr}">${inner}</div>`;
+  return`<div class="${cls}" data-date="${dateStr}">${inner}</div>`;
 }
 
-// ── side panel ────────────────────────────────────────────────────────────
-function renderSidePanel(dateStr) {
-  const evs = eventsOnDate(dateStr);
-  const label = document.getElementById('sideDateLabel');
-  const count = document.getElementById('sideCount');
-  const body  = document.getElementById('sideBody');
+function handleDayClick(dateStr){
+  const evs=eventsOnDate(dateStr);
+  if(!evs.length)return;
+  if(evs.length===1){openModal(evs[0].id);return;}
+  // multiple events — show picker
+  const d=new Date(dateStr+'T12:00:00');
+  document.getElementById('dayModalTitle').textContent=`${DAYS_LONG[d.getDay()]}, ${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById('dayModalList').innerHTML=evs.map(ev=>{
+    const dotCls=ev.is_public===false?'dot-member':'dot-public';
+    const time=ev.time_display?`<div class="day-modal-meta">${ev.time_display}${ev.location?' · '+ev.location:''}</div>`:'';
+    return`<div class="day-modal-item" onclick="closeDayModal();openModal('${ev.id}')">
+      <span class="day-modal-dot dot ${dotCls}"></span>
+      <div class="day-modal-info"><div class="day-modal-title">${ev.title}</div>${time}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('dayModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDayModal(){document.getElementById('dayModal').classList.remove('open');document.body.style.overflow='';}
 
-  const d = new Date(dateStr + 'T12:00:00');
-  label.textContent = `${DAYS_LONG[d.getDay()]}, ${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}`;
-  count.textContent = evs.length ? `${evs.length} event${evs.length>1?'s':''}` : 'No events';
-
-  if (!evs.length) {
-    body.innerHTML = '<div class="side-empty">No events on this date</div>';
-    return;
-  }
-
-  body.innerHTML = evs.map(ev => {
-    const isMem = !ev.is_public;
-    const dotCls = isMem ? 'dot-member' : 'dot-public';
-    const badgeCls = isMem ? 'badge-member' : 'badge-public';
-    const badgeText = isMem ? 'Members only' : 'Public';
-    const time = ev.time_display ? `<br>${ev.time_display}` : '';
-    const loc  = ev.location ? ` · ${ev.location}` : '';
-    return `
-      <div class="side-event" onclick="openModal('${ev.id}')">
-        <span class="side-event-dot dot ${dotCls}" style="margin-top:5px"></span>
-        <div class="side-event-info">
-          <div class="side-event-title">${ev.title}</div>
-          <div class="side-event-meta">${time}${loc ? loc : (time ? '' : '—')}</div>
-          <span class="side-event-badge ${badgeCls}">${badgeText}</span>
-        </div>
-      </div>`;
+function renderUpcoming(){
+  const strip=document.getElementById('upcomingStrip'),list=document.getElementById('upcomingList');
+  const ms=toDateStr(viewYear,viewMonth,1),me=toDateStr(viewYear,viewMonth,new Date(viewYear,viewMonth+1,0).getDate());
+  const evts=filteredEvts.filter(e=>e.date_start>=ms&&e.date_start<=me).slice(0,12);
+  if(!evts.length){strip.style.display='none';return;}
+  strip.style.display='';
+  list.innerHTML=evts.map(ev=>{
+    const d=ev.date_start?new Date(ev.date_start+'T12:00:00'):null;
+    return`<div class="upcoming-card${!ev.is_public?' is-member':''}" onclick="openModal('${ev.id}')">
+      <div class="upcoming-date-block"><span class="umon">${d?MONTHS_SHORT[d.getMonth()]:'—'}</span><span class="uday">${d?d.getDate():'—'}</span></div>
+      <div class="upcoming-info"><div class="upcoming-title">${ev.title}</div><div class="upcoming-sub">${ev.time_display||''}${ev.location?' · '+ev.location:''}</div></div>
+    </div>`;
   }).join('');
 }
 
-// ── upcoming strip ────────────────────────────────────────────────────────
-function renderUpcoming() {
-  const strip = document.getElementById('upcomingStrip');
-  const list  = document.getElementById('upcomingList');
+function tagsLabel(ev){if(!ev.is_public)return'★ Members Only Event';const t=Array.isArray(ev.tags)?ev.tags:[];return t.length?t.join(' · '):''}
+function getPhotos(ev){let p=ev.photo_urls;if(!p)return[];if(typeof p==='string'){try{p=JSON.parse(p);}catch{return p?[p]:[]; }}return Array.isArray(p)?p.filter(Boolean):[];}
+function formatDateRange(s,e){if(!s)return'Date TBD';const d=new Date(s+'T12:00:00'),opts={month:'long',day:'numeric',year:'numeric'};const dn=DAYS_LONG[d.getDay()];if(e&&e!==s){const ed=new Date(e+'T12:00:00');return`${dn}, ${d.toLocaleDateString('en-US',opts)} – ${ed.toLocaleDateString('en-US',opts)}`;}return`${dn}, ${d.toLocaleDateString('en-US',opts)}`;}
 
-  const monthStart = toDateStr(viewYear, viewMonth, 1);
-  const monthEnd   = toDateStr(viewYear, viewMonth, new Date(viewYear, viewMonth+1, 0).getDate());
-  const monthEvts  = filteredEvts
-    .filter(e => e.date_start >= monthStart && e.date_start <= monthEnd)
-    .slice(0, 8);
-
-  if (!monthEvts.length) { strip.style.display = 'none'; return; }
-  strip.style.display = '';
-
-  list.innerHTML = monthEvts.map(ev => {
-    const d = ev.date_start ? new Date(ev.date_start + 'T12:00:00') : null;
-    const mon = d ? MONTHS_SHORT[d.getMonth()] : '—';
-    const day = d ? d.getDate() : '—';
-    const isMem = !ev.is_public;
-    return `
-      <div class="upcoming-card${isMem?' is-member':''}" onclick="openModal('${ev.id}')">
-        <div class="upcoming-date-block">
-          <span class="umon">${mon}</span>
-          <span class="uday">${day}</span>
-        </div>
-        <div class="upcoming-info">
-          <div class="upcoming-title">${ev.title}</div>
-          <div class="upcoming-sub">${ev.time_display||''}${ev.location?' · '+ev.location:''}</div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-// ── modal ─────────────────────────────────────────────────────────────────
-function tagsLabel(ev) {
-  if (!ev.is_public) return '★ Members Only Event';
-  const tags = Array.isArray(ev.tags) ? ev.tags : [];
-  return tags.length ? tags.join(' · ') : '';
-}
-function formatDateRange(start, end) {
-  if (!start) return 'Date TBD';
-  const s = new Date(start + 'T12:00:00');
-  const opts = { month:'long', day:'numeric', year:'numeric' };
-  const dayName = DAYS_LONG[s.getDay()];
-  if (end && end !== start) {
-    const e = new Date(end + 'T12:00:00');
-    return `${dayName}, ${s.toLocaleDateString('en-US',opts)} – ${e.toLocaleDateString('en-US',opts)}`;
-  }
-  return `${dayName}, ${s.toLocaleDateString('en-US',opts)}`;
-}
-function getPhotos(ev) {
-  let p = ev.photo_urls;
-  if (!p) return [];
-  if (typeof p === 'string') { try { p = JSON.parse(p); } catch { return p ? [p] : []; } }
-  return Array.isArray(p) ? p.filter(Boolean) : [];
-}
-
-function openModal(id) {
-  const ev = allEvents.find(e => e.id === id) || filteredEvts.find(e => e.id === id);
-  if (!ev) return;
-  const photos = getPhotos(ev);
-  const photoEl = document.getElementById('modalPhoto');
-  if (photos.length) { photoEl.src = photos[0]; photoEl.style.display = 'block'; }
-  else photoEl.style.display = 'none';
-  document.getElementById('modalTags').textContent = tagsLabel(ev);
-  document.getElementById('modalTitle').textContent = ev.title;
-  const meta = [];
-  if (ev.date_start) meta.push(`<span>&#128197; ${formatDateRange(ev.date_start, ev.date_end)}${ev.time_display ? ' &middot; ' + ev.time_display : ''}</span>`);
-  if (ev.location)   meta.push(`<span>&#128205; ${ev.location}</span>`);
-  document.getElementById('modalMeta').innerHTML = meta.join('');
-  const bodyHtml = document.getElementById('modalBodyHtml');
-  if (ev.body_html && ev.body_html.trim() && ev.body_html.trim() !== '<p><br></p>') {
-    bodyHtml.innerHTML = ev.body_html;
-    document.getElementById('modalDesc').textContent = '';
-  } else if (ev.description) {
-    bodyHtml.innerHTML = '';
-    document.getElementById('modalDesc').textContent = ev.description;
-  } else {
-    bodyHtml.innerHTML = '';
-    document.getElementById('modalDesc').textContent = '';
-  }
-  const rsvpBtn = document.getElementById('modalRsvp');
-  const rsvpUrl = ev.luma_url || ev.rsvp_url;
-  if (rsvpUrl) { rsvpBtn.href = rsvpUrl; rsvpBtn.style.display = 'inline-flex'; }
-  else rsvpBtn.style.display = 'none';
+function openModal(id){
+  const ev=allEvents.find(e=>e.id===id)||filteredEvts.find(e=>e.id===id);
+  if(!ev)return;
+  closeDayModal();
+  const photos=getPhotos(ev);
+  const photoEl=document.getElementById('modalPhoto');
+  if(photos.length){photoEl.src=photos[0];photoEl.style.display='block';}else photoEl.style.display='none';
+  document.getElementById('modalTags').textContent=tagsLabel(ev);
+  document.getElementById('modalTitle').textContent=ev.title;
+  const meta=[];
+  if(ev.date_start)meta.push(`<span>&#128197; ${formatDateRange(ev.date_start,ev.date_end)}${ev.time_display?' &middot; '+ev.time_display:''}</span>`);
+  if(ev.location)meta.push(`<span>&#128205; ${ev.location}</span>`);
+  document.getElementById('modalMeta').innerHTML=meta.join('');
+  const bh=document.getElementById('modalBodyHtml');
+  if(ev.body_html&&ev.body_html.trim()&&ev.body_html.trim()!=='<p><br></p>'){bh.innerHTML=ev.body_html;document.getElementById('modalDesc').textContent='';}
+  else if(ev.description){bh.innerHTML='';document.getElementById('modalDesc').textContent=ev.description;}
+  else{bh.innerHTML='';document.getElementById('modalDesc').textContent='';}
+  const rsvpBtn=document.getElementById('modalRsvp');
+  const rsvpUrl=ev.luma_url||ev.rsvp_url;
+  if(rsvpUrl){rsvpBtn.href=rsvpUrl;rsvpBtn.style.display='inline-flex';}else rsvpBtn.style.display='none';
   document.getElementById('eventModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-function closeModal() {
-  document.getElementById('eventModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function closeModal(){document.getElementById('eventModal').classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDayModal();}});
 
-// ── nav controls ──────────────────────────────────────────────────────────
-document.getElementById('prevMonth').addEventListener('click', () => {
-  viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-  renderCalendar(); renderUpcoming();
-});
-document.getElementById('nextMonth').addEventListener('click', () => {
-  viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-  renderCalendar(); renderUpcoming();
-});
-document.getElementById('todayBtn').addEventListener('click', () => {
-  const t = new Date();
-  viewYear = t.getFullYear(); viewMonth = t.getMonth();
-  selectedDate = null;
-  renderCalendar(); renderUpcoming();
-  document.getElementById('sideDateLabel').textContent = 'Select a date';
-  document.getElementById('sideCount').textContent = '';
-  document.getElementById('sideBody').innerHTML = '<div class="side-empty">Click any date to see its events</div>';
+document.getElementById('prevMonth').addEventListener('click',()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--;}renderCalendar();renderUpcoming();});
+document.getElementById('nextMonth').addEventListener('click',()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++;}renderCalendar();renderUpcoming();});
+document.getElementById('todayBtn').addEventListener('click',()=>{const t=new Date();viewYear=t.getFullYear();viewMonth=t.getMonth();renderCalendar();renderUpcoming();});
+document.querySelectorAll('.filter-pill').forEach(btn=>{
+  btn.addEventListener('click',()=>{document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeFilter=btn.dataset.filter;applyFilter();});
 });
 
-// ── filter pills ──────────────────────────────────────────────────────────
-document.querySelectorAll('.filter-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter = btn.dataset.filter;
-    applyFilter();
-  });
-});
-
-// ── init ──────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const now = new Date();
-  viewYear  = now.getFullYear();
-  viewMonth = now.getMonth();
-  checkMemberStatus();
-  loadEvents();
+window.addEventListener('DOMContentLoaded',()=>{
+  const now=new Date();viewYear=now.getFullYear();viewMonth=now.getMonth();
+  checkMemberStatus();loadEvents();
 });
 </script>
-
 <script src="header.js"></script>
 <script src="member-auth.js"></script>
 </body>
