@@ -79,9 +79,21 @@ function mapWAEventToSupabase(waEvent) {
   is_public:   waEvent.AccessLevel === 'Public',
     is_active:   !waEvent.IsDraft,
     tags,
-    photo_urls:  waEvent.EventImage
-      ? [typeof waEvent.EventImage === 'object' ? (waEvent.EventImage.Url || waEvent.EventImage.url || '') : waEvent.EventImage].filter(Boolean)
-      : [],
+    photo_urls:  (() => {
+      // Prefer EventImage field
+      if (waEvent.EventImage) {
+        const url = typeof waEvent.EventImage === 'object'
+          ? (waEvent.EventImage.Url || waEvent.EventImage.url || '')
+          : waEvent.EventImage;
+        if (url) return [url];
+      }
+      // Fall back to first <img src="..."> in Description HTML
+      if (waEvent.Description) {
+        const m = waEvent.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (m && m[1]) return [m[1]];
+      }
+      return [];
+    })(),
     updated_at:  waEvent.LastUpdated ? new Date(waEvent.LastUpdated).toISOString() : new Date().toISOString()
   };
 }
@@ -152,15 +164,16 @@ async function syncEvents(forceAll = false) {
       const existing = sbByWaId[mapped.wa_id];
       const waTime   = new Date(mapped.updated_at).getTime();
       const sbTime   = existing ? new Date(existing.updated_at).getTime() : 0;
-      // Always update if: no existing row, WA is newer, photos empty, or force mode
       const photosEmpty = !existing || !existing.photo_urls || existing.photo_urls.length === 0;
       const needsUpdate = !existing || waTime > sbTime || photosEmpty || forceAll;
       if (needsUpdate) {
         if (existing) {
+          // UPDATE existing row by its Supabase UUID — never insert a duplicate
           const { error } = await supabase.from('rr_events').update(mapped).eq('id', existing.id);
           if (error) results.errors.push('WA→SB update ' + mapped.wa_id + ': ' + error.message);
           else results.wa_to_sb++;
         } else {
+          // Only INSERT if there is truly no row with this wa_id
           const { error } = await supabase.from('rr_events').insert(mapped);
           if (error) results.errors.push('WA→SB insert ' + mapped.wa_id + ': ' + error.message);
           else results.wa_to_sb++;
