@@ -75,6 +75,15 @@ function normalise(row) {
   }
   if (!Array.isArray(photos)) photos = [];
 
+  // Rewrite WA-hosted image URLs through our proxy so they load publicly
+  photos = photos.map(url => {
+    if (!url) return null;
+    if (url.includes('tamparoughriders.org') || url.includes('wildapricot')) {
+      return `/.netlify/functions/event-image-proxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  }).filter(Boolean);
+
   let tags = row.tags;
   if (typeof tags === 'string') {
     const pg = tags.match(/^\{(.*)\}$/);
