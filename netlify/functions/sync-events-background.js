@@ -139,21 +139,13 @@ async function pushEventToWA(token, sbEvent) {
 
 async function syncEvents() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const results  = { updated: 0, inserted: 0, errors: [], image_samples: [] };
+  const results  = { upserted: 0, errors: [], image_samples: [] };
 
   const token = await getWAToken();
-  const [waEvents, { data: sbEvents, error: sbErr }] = await Promise.all([
-    fetchWAEvents(token),
-    supabase.from('rr_events').select('id,wa_id')
-  ]);
-  if (sbErr) throw new Error('Supabase fetch: ' + sbErr.message);
+  const waEvents = await fetchWAEvents(token);
 
-  // index existing rows by wa_id
-  const sbByWaId = {};
-  for (const e of sbEvents || []) { if (e.wa_id) sbByWaId[e.wa_id] = e.id; }
-
-  // collect image diagnostics from first 30 events that have images
-  for (const e of waEvents.slice(0, 30)) {
+  // collect image diagnostics
+  for (const e of waEvents) {
     if (e.EventImage || (e.Description && /<img/i.test(e.Description))) {
       const srcMatch = e.Description && e.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
       results.image_samples.push({
@@ -164,35 +156,27 @@ async function syncEvents() {
     }
   }
 
-  // Split into updates (existing wa_id) and inserts (new)
-  const toUpdate = [];
-  const toInsert = [];
-  for (const waEvent of waEvents) {
-    const mapped  = mapWAEventToSupabase(waEvent);
-    const existId = sbByWaId[mapped.wa_id];
-    if (existId) {
-      toUpdate.push({ supabaseId: existId, mapped });
-    } else {
-      toInsert.push(mapped);
+  // Map all events and upsert in ONE call using wa_id as the conflict key
+  const rows = waEvents.map(mapWAEventToSupabase);
+
+  const { error, count } = await supabase
+    .from('rr_events')
+    .upsert(rows, { onConflict: 'wa_id', ignoreDuplicates: false })
+    .select('id', { count: 'exact', head: true });
+
+  if (error) {
+    // wa_id may not have a unique constraint yet — fall back to individual upserts
+    console.warn('Bulk upsert failed, falling back:', error.message);
+    results.errors.push('bulk: ' + error.message);
+    for (const row of rows) {
+      const { error: e2 } = await supabase
+        .from('rr_events')
+        .upsert(row, { onConflict: 'wa_id', ignoreDuplicates: false });
+      if (e2) results.errors.push(row.wa_id + ': ' + e2.message);
+      else results.upserted++;
     }
-  }
-
-  // Batch updates in parallel (chunks of 20)
-  const CHUNK = 20;
-  for (let i = 0; i < toUpdate.length; i += CHUNK) {
-    const chunk = toUpdate.slice(i, i + CHUNK);
-    await Promise.all(chunk.map(async ({ supabaseId, mapped }) => {
-      const { error } = await supabase.from('rr_events').update(mapped).eq('id', supabaseId);
-      if (error) results.errors.push('update ' + mapped.wa_id + ': ' + error.message);
-      else results.updated++;
-    }));
-  }
-
-  // Batch inserts (all at once — Supabase handles it)
-  if (toInsert.length) {
-    const { error } = await supabase.from('rr_events').insert(toInsert);
-    if (error) results.errors.push('batch insert: ' + error.message);
-    else results.inserted += toInsert.length;
+  } else {
+    results.upserted = count ?? rows.length;
   }
 
   return results;
@@ -216,30 +200,21 @@ exports.handler = async (event) => {
     .single();
   const logId = logRow?.id;
 
-  // Run sync — batched parallel so it completes in ~3-5s
-  syncEvents().then(async results => {
-    console.log('Events sync complete:', JSON.stringify({ updated: results.updated, inserted: results.inserted, errors: results.errors?.length }));
-    if (logId) {
-      await supabase.from('sync_log').update({
-        status: 'complete',
-        results: { updated: results.updated, inserted: results.inserted, errors: results.errors, image_samples: results.image_samples },
-        finished_at: new Date().toISOString()
-      }).eq('id', logId);
-    }
-  }).catch(async err => {
-    console.error('Events sync error:', err.message);
-    if (logId) {
-      await supabase.from('sync_log').update({
-        status: 'error',
-        results: { error: err.message },
-        finished_at: new Date().toISOString()
-      }).eq('id', logId);
-    }
-  });
-
-  // Return immediately with the log ID so the client can poll sync-status
-  return {
-    statusCode: 202, headers,
-    body: JSON.stringify({ success: true, status: 'running', log_id: logId })
-  };
+  try {
+    const results = await syncEvents();
+    console.log('Sync complete:', results.upserted, 'rows');
+    if (logId) await supabase.from('sync_log').update({
+      status: 'complete',
+      results: { upserted: results.upserted, errors: results.errors, image_samples: results.image_samples },
+      finished_at: new Date().toISOString()
+    }).eq('id', logId);
+    return {
+      statusCode: 200, headers,
+      body: JSON.stringify({ success: true, upserted: results.upserted, errors: results.errors?.length, image_samples: results.image_samples?.slice(0,5) })
+    };
+  } catch (err) {
+    console.error('Sync error:', err.message);
+    if (logId) await supabase.from('sync_log').update({ status: 'error', results: { error: err.message }, finished_at: new Date().toISOString() }).eq('id', logId);
+    return { statusCode: 500, headers, body: JSON.stringify({ success: false, error: err.message }) };
+  }
 };
