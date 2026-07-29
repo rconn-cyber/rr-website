@@ -1122,26 +1122,44 @@ function toast(msg, type) {
 }
 async function syncFromWA() {
   const btn = document.getElementById('syncBtn');
-  btn.textContent = '⏳ Syncing…';
+  btn.textContent = '⏳ Starting sync…';
   btn.disabled = true;
   try {
     const token = localStorage.getItem('events_admin_token');
+    // Trigger sync — returns 202 immediately
     const res = await fetch('/.netlify/functions/sync-events-background', {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+      headers: { 'Authorization': 'Bearer ' + token }
     });
-    const text = await res.text();
-    const data = text ? JSON.parse(text) : {};
-    if (res.ok) {
-      const msg = data.upserted !== undefined
-        ? `✅ Sync complete — ${data.upserted} events updated`
-        : '✅ Sync triggered successfully';
-      btn.textContent = msg;
-      setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; fetchEvents(); }, 3000);
-    } else {
-      btn.textContent = '❌ ' + (data.error || res.status);
-      btn.disabled = false;
-    }
+    if (!res.ok) { btn.textContent = '❌ Failed to start (' + res.status + ')'; btn.disabled = false; return; }
+
+    btn.textContent = '⏳ Syncing events…';
+
+    // Poll sync-status every 2s until complete (max 30 polls = 60s)
+    let polls = 0;
+    const poll = setInterval(async () => {
+      polls++;
+      try {
+        const sr = await fetch('/.netlify/functions/sync-status');
+        const sd = await sr.json();
+        const latest = sd.latest?.events;
+        if (latest && latest.status === 'complete') {
+          clearInterval(poll);
+          const r = latest.results || {};
+          btn.textContent = `✅ Done — ${r.updated||0} updated, ${r.inserted||0} new`;
+          setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; fetchEvents(); }, 4000);
+        } else if (latest && latest.status === 'error') {
+          clearInterval(poll);
+          btn.textContent = '❌ Sync error — check console';
+          btn.disabled = false;
+        } else if (polls >= 30) {
+          clearInterval(poll);
+          btn.textContent = '⚠️ Sync running (check back shortly)';
+          setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; fetchEvents(); }, 3000);
+        }
+      } catch(e) { /* keep polling */ }
+    }, 2000);
+
   } catch(err) {
     btn.textContent = '❌ ' + err.message;
     btn.disabled = false;
