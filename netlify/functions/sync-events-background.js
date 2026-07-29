@@ -43,8 +43,26 @@ function mapWAEventToSupabase(waEvent) {
     ? waEvent.Tags.map(t => t.Label || t).filter(Boolean) : [];
   const description = waEvent.Description
     ? waEvent.Description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 500) : '';
-  const time_display = waEvent.StartDate
-    ? new Date(waEvent.StartDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+  // Parse date+time from WA's ISO string without UTC conversion
+  // WA sends e.g. "2026-07-23T18:00:00-05:00" — extract time directly from the string
+  let time_display = '';
+  if (waEvent.StartDate) {
+    const timePart = waEvent.StartDate.match(/T(\d{2}):(\d{2})/);
+    if (timePart) {
+      const h = parseInt(timePart[1]), m = parseInt(timePart[2]);
+      const d = new Date(2000, 0, 1, h, m);
+      const start = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      if (waEvent.EndDate) {
+        const eTimePart = waEvent.EndDate.match(/T(\d{2}):(\d{2})/);
+        if (eTimePart) {
+          const eh = parseInt(eTimePart[1]), em = parseInt(eTimePart[2]);
+          const ed = new Date(2000, 0, 1, eh, em);
+          const end = ed.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+          time_display = `${start} – ${end}`;
+        } else { time_display = start; }
+      } else { time_display = start; }
+    }
+  }
   return {
     wa_id:       String(waEvent.Id),
     title:       waEvent.Name     || '',
@@ -61,7 +79,9 @@ function mapWAEventToSupabase(waEvent) {
   is_public:   waEvent.AccessLevel === 'Public',
     is_active:   !waEvent.IsDraft,
     tags,
-    photo_urls:  waEvent.EventImage ? [waEvent.EventImage] : [],
+    photo_urls:  waEvent.EventImage
+      ? [typeof waEvent.EventImage === 'object' ? (waEvent.EventImage.Url || waEvent.EventImage.url || '') : waEvent.EventImage].filter(Boolean)
+      : [],
     updated_at:  waEvent.LastUpdated ? new Date(waEvent.LastUpdated).toISOString() : new Date().toISOString()
   };
 }
