@@ -169,6 +169,12 @@ async function syncEvents() {
 }
 
 exports.handler = async (event) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  };
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const { data: logRow } = await supabase
@@ -188,6 +194,10 @@ exports.handler = async (event) => {
       }).eq('id', logId);
     }
     console.log('Events sync complete:', JSON.stringify(results));
+    return {
+      statusCode: 200, headers,
+      body: JSON.stringify({ success: true, upserted: results.upserted ?? results.synced ?? 0, results })
+    };
   } catch (err) {
     console.error('Events sync error:', err.message);
     if (logId) {
@@ -197,5 +207,9 @@ exports.handler = async (event) => {
         finished_at: new Date().toISOString()
       }).eq('id', logId);
     }
+    return {
+      statusCode: 500, headers,
+      body: JSON.stringify({ success: false, error: err.message })
+    };
   }
 };
