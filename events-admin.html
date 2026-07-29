@@ -1130,7 +1130,8 @@ async function syncFromWA() {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
     });
-    const data = await res.json();
+    const text = await res.text();
+    const data = text ? JSON.parse(text) : {};
     if (res.ok) {
       const msg = data.upserted !== undefined
         ? `✅ Sync complete — ${data.upserted} events updated`
