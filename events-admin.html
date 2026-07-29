@@ -1120,9 +1120,6 @@ function toast(msg, type) {
   el.className = 'toast show' + (type === 'ok' ? ' ok' : type === true ? ' err' : '');
   setTimeout(() => { el.className = 'toast'; }, 3500);
 }
-</script>
-<script src="header.js"></script>
-<script src="member-auth.js">
 async function syncFromWA() {
   const btn = document.getElementById('syncBtn');
   btn.textContent = '⏳ Syncing…';
@@ -1141,14 +1138,17 @@ async function syncFromWA() {
       btn.textContent = msg;
       setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; loadEvents(); }, 3000);
     } else {
-      btn.textContent = '❌ Sync failed: ' + (data.error || res.status);
+      btn.textContent = '❌ ' + (data.error || res.status);
       btn.disabled = false;
     }
   } catch(err) {
-    btn.textContent = '❌ Error: ' + err.message;
+    btn.textContent = '❌ ' + err.message;
     btn.disabled = false;
   }
 }
+
 </script>
+<script src="header.js"></script>
+<script src="member-auth.js">
 </body>
 </html>
