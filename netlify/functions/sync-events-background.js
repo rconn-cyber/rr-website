@@ -154,9 +154,14 @@ async function syncEvents(forceAll = false) {
   for (const e of waEvents) waById[String(e.Id)] = e;
 
   // WA → Supabase
-  // Log first EventImage for diagnosis
-  const sampleImg = waEvents[0]?.EventImage;
-  results.sample_event_image = JSON.stringify(sampleImg);
+  // Log EventImage shape across first 10 events for diagnosis
+  results.image_samples = waEvents.slice(0, 20).map(e => ({
+    id: e.Id,
+    title: e.Name,
+    EventImage: e.EventImage,
+    desc_has_img: !!(e.Description && e.Description.match(/<img/i)),
+    desc_img_src: (e.Description && e.Description.match(/<img[^>]+src=["']([^"']+)["']/i) || [])[1] || null
+  })).filter(e => e.EventImage || e.desc_has_img);
 
   for (const waEvent of waEvents) {
     try {
