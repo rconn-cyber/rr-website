@@ -139,7 +139,7 @@ async function pushEventToWA(token, sbEvent) {
 
 async function syncEvents() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const results  = { updated: 0, inserted: 0, skipped: 0, errors: [], image_samples: [] };
+  const results  = { updated: 0, inserted: 0, errors: [], image_samples: [] };
 
   const token = await getWAToken();
   const [waEvents, { data: sbEvents, error: sbErr }] = await Promise.all([
@@ -152,10 +152,9 @@ async function syncEvents() {
   const sbByWaId = {};
   for (const e of sbEvents || []) { if (e.wa_id) sbByWaId[e.wa_id] = e.id; }
 
-  // collect image diagnostics
+  // collect image diagnostics from first 30 events that have images
   for (const e of waEvents.slice(0, 30)) {
-    const hasImg = !!(e.EventImage || (e.Description && /<img/i.test(e.Description)));
-    if (hasImg) {
+    if (e.EventImage || (e.Description && /<img/i.test(e.Description))) {
       const srcMatch = e.Description && e.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
       results.image_samples.push({
         id: e.Id, title: e.Name,
@@ -165,20 +164,35 @@ async function syncEvents() {
     }
   }
 
+  // Split into updates (existing wa_id) and inserts (new)
+  const toUpdate = [];
+  const toInsert = [];
   for (const waEvent of waEvents) {
-    try {
-      const mapped  = mapWAEventToSupabase(waEvent);
-      const existId = sbByWaId[mapped.wa_id];
-      if (existId) {
-        const { error } = await supabase.from('rr_events').update(mapped).eq('id', existId);
-        if (error) results.errors.push('update ' + mapped.wa_id + ': ' + error.message);
-        else results.updated++;
-      } else {
-        const { error } = await supabase.from('rr_events').insert(mapped);
-        if (error) results.errors.push('insert ' + mapped.wa_id + ': ' + error.message);
-        else results.inserted++;
-      }
-    } catch (e) { results.errors.push(e.message); }
+    const mapped  = mapWAEventToSupabase(waEvent);
+    const existId = sbByWaId[mapped.wa_id];
+    if (existId) {
+      toUpdate.push({ supabaseId: existId, mapped });
+    } else {
+      toInsert.push(mapped);
+    }
+  }
+
+  // Batch updates in parallel (chunks of 20)
+  const CHUNK = 20;
+  for (let i = 0; i < toUpdate.length; i += CHUNK) {
+    const chunk = toUpdate.slice(i, i + CHUNK);
+    await Promise.all(chunk.map(async ({ supabaseId, mapped }) => {
+      const { error } = await supabase.from('rr_events').update(mapped).eq('id', supabaseId);
+      if (error) results.errors.push('update ' + mapped.wa_id + ': ' + error.message);
+      else results.updated++;
+    }));
+  }
+
+  // Batch inserts (all at once — Supabase handles it)
+  if (toInsert.length) {
+    const { error } = await supabase.from('rr_events').insert(toInsert);
+    if (error) results.errors.push('batch insert: ' + error.message);
+    else results.inserted += toInsert.length;
   }
 
   return results;
