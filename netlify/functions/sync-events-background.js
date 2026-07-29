@@ -195,44 +195,18 @@ async function syncEvents() {
     }
   }
 
-  // Map events and re-host images that are on WA's authenticated CDN
-  const waToken = token; // reuse the WA Bearer token
-  const rowPromises = waEvents.map(async waEvent => {
+  // Map all events — store raw image URL from WA for proxy fetching later
+  const rows = waEvents.map(waEvent => {
     const row = mapWAEventToSupabase(waEvent);
-    // Only fetch image if photo_urls is currently empty
+    // If no photo yet, grab first image URL from description HTML
     if (!row.photo_urls || row.photo_urls.length === 0) {
-      // Try EventImage first, then first <img> in Description
-      let imgUrl = null;
-      if (waEvent.EventImage) {
-        imgUrl = typeof waEvent.EventImage === 'object'
-          ? (waEvent.EventImage.Url || waEvent.EventImage.url || null)
-          : waEvent.EventImage;
-      }
-      if (!imgUrl && waEvent.Description) {
+      if (waEvent.Description) {
         const m = waEvent.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
-        if (m) imgUrl = m[1];
-      }
-      if (imgUrl) {
-        // Only re-host WA-internal images (not already public CDN)
-        const needsRehost = imgUrl.includes('tamparoughriders.org') || imgUrl.includes('wildapricot');
-        if (needsRehost) {
-          const hosted = await reHostImage(imgUrl, waToken, supabase, waEvent.Id);
-          if (hosted) row.photo_urls = [hosted];
-        } else {
-          row.photo_urls = [imgUrl];
-        }
+        if (m && m[1]) row.photo_urls = [m[1]];
       }
     }
     return row;
   });
-
-  // Run image downloads in parallel batches of 5 (don't hammer WA)
-  const rows = [];
-  const IMG_BATCH = 5;
-  for (let i = 0; i < rowPromises.length; i += IMG_BATCH) {
-    const batch = await Promise.all(rowPromises.slice(i, i + IMG_BATCH));
-    rows.push(...batch);
-  }
 
   // Build lookup of existing rows by wa_id
   const existingByWaId = {};
