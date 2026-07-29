@@ -340,7 +340,7 @@ td { padding:0.75rem 1rem; font-size:0.9rem; vertical-align:middle; }
     <div class="admin-title">⭐ Rough Riders — Events CMS</div>
     <div class="admin-actions">
       <a href="/events.html" target="_blank" class="btn btn-ghost">View Public Page ↗</a>
-      <a href="/events-dashboard.html" target="_blank" class="btn btn-ghost">📊 Dashboard ↗</a>
+      <button class="btn btn-ghost" onclick="syncFromWA()" id="syncBtn">🔄 Sync from WA</button>
       <button class="btn btn-outline" onclick="exportCSV()">↓ Export CSV</button>
       <button class="btn btn-outline" onclick="openImport()">↑ Import CSV</button>
       <button class="btn btn-primary" onclick="openForm()">+ New Event</button>
@@ -1122,6 +1122,33 @@ function toast(msg, type) {
 }
 </script>
 <script src="header.js"></script>
-<script src="member-auth.js"></script>
+<script src="member-auth.js">
+async function syncFromWA() {
+  const btn = document.getElementById('syncBtn');
+  btn.textContent = '⏳ Syncing…';
+  btn.disabled = true;
+  try {
+    const token = localStorage.getItem('events_admin_token');
+    const res = await fetch('/.netlify/functions/sync-events-background', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      const msg = data.upserted !== undefined
+        ? `✅ Sync complete — ${data.upserted} events updated`
+        : '✅ Sync triggered successfully';
+      btn.textContent = msg;
+      setTimeout(() => { btn.textContent = '🔄 Sync from WA'; btn.disabled = false; loadEvents(); }, 3000);
+    } else {
+      btn.textContent = '❌ Sync failed: ' + (data.error || res.status);
+      btn.disabled = false;
+    }
+  } catch(err) {
+    btn.textContent = '❌ Error: ' + err.message;
+    btn.disabled = false;
+  }
+}
+</script>
 </body>
 </html>
