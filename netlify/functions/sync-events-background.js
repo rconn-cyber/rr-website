@@ -137,58 +137,49 @@ async function pushEventToWA(token, sbEvent) {
   }
 }
 
-async function syncEvents(forceAll = false) {
+async function syncEvents() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const results  = { wa_to_sb: 0, sb_to_wa: 0, skipped: 0, errors: [] };
+  const results  = { updated: 0, inserted: 0, skipped: 0, errors: [], image_samples: [] };
 
   const token = await getWAToken();
   const [waEvents, { data: sbEvents, error: sbErr }] = await Promise.all([
     fetchWAEvents(token),
-    supabase.from('rr_events').select('*')
+    supabase.from('rr_events').select('id,wa_id')
   ]);
-  if (sbErr) throw new Error('Supabase events fetch: ' + sbErr.message);
+  if (sbErr) throw new Error('Supabase fetch: ' + sbErr.message);
 
+  // index existing rows by wa_id
   const sbByWaId = {};
-  for (const e of sbEvents || []) { if (e.wa_id) sbByWaId[e.wa_id] = e; }
-  const waById = {};
-  for (const e of waEvents) waById[String(e.Id)] = e;
+  for (const e of sbEvents || []) { if (e.wa_id) sbByWaId[e.wa_id] = e.id; }
 
-  // WA → Supabase
-  // Log EventImage shape across first 10 events for diagnosis
-  results.image_samples = waEvents.slice(0, 20).map(e => ({
-    id: e.Id,
-    title: e.Name,
-    EventImage: e.EventImage,
-    desc_has_img: !!(e.Description && e.Description.match(/<img/i)),
-    desc_img_src: (e.Description && e.Description.match(/<img[^>]+src=["']([^"']+)["']/i) || [])[1] || null
-  })).filter(e => e.EventImage || e.desc_has_img);
+  // collect image diagnostics
+  for (const e of waEvents.slice(0, 30)) {
+    const hasImg = !!(e.EventImage || (e.Description && /<img/i.test(e.Description)));
+    if (hasImg) {
+      const srcMatch = e.Description && e.Description.match(/<img[^>]+src=["']([^"']+)["']/i);
+      results.image_samples.push({
+        id: e.Id, title: e.Name,
+        EventImage: e.EventImage,
+        desc_img_src: srcMatch ? srcMatch[1] : null
+      });
+    }
+  }
 
   for (const waEvent of waEvents) {
     try {
-      const mapped   = mapWAEventToSupabase(waEvent);
-      const existing = sbByWaId[mapped.wa_id];
-      const waTime   = new Date(mapped.updated_at).getTime();
-      const sbTime   = existing ? new Date(existing.updated_at).getTime() : 0;
-      const photosEmpty = !existing || !existing.photo_urls || existing.photo_urls.length === 0;
-      const needsUpdate = !existing || waTime > sbTime || photosEmpty || forceAll;
-      if (needsUpdate) {
-        if (existing) {
-          // UPDATE existing row by its Supabase UUID — never insert a duplicate
-          const { error } = await supabase.from('rr_events').update(mapped).eq('id', existing.id);
-          if (error) results.errors.push('WA→SB update ' + mapped.wa_id + ': ' + error.message);
-          else results.wa_to_sb++;
-        } else {
-          // Only INSERT if there is truly no row with this wa_id
-          const { error } = await supabase.from('rr_events').insert(mapped);
-          if (error) results.errors.push('WA→SB insert ' + mapped.wa_id + ': ' + error.message);
-          else results.wa_to_sb++;
-        }
-      } else results.skipped++;
-    } catch (e) { results.errors.push('WA→SB error: ' + e.message); }
+      const mapped  = mapWAEventToSupabase(waEvent);
+      const existId = sbByWaId[mapped.wa_id];
+      if (existId) {
+        const { error } = await supabase.from('rr_events').update(mapped).eq('id', existId);
+        if (error) results.errors.push('update ' + mapped.wa_id + ': ' + error.message);
+        else results.updated++;
+      } else {
+        const { error } = await supabase.from('rr_events').insert(mapped);
+        if (error) results.errors.push('insert ' + mapped.wa_id + ': ' + error.message);
+        else results.inserted++;
+      }
+    } catch (e) { results.errors.push(e.message); }
   }
-
- // Supabase → WA disabled — WA is source of truth for events
-  // New events created in events-admin.html push to WA directly via admin-events.js
 
   return results;
 }
@@ -210,8 +201,7 @@ exports.handler = async (event) => {
   const logId = logRow?.id;
 
   try {
-    const forceAll = event.queryStringParameters?.force === '1' || (event.body && JSON.parse(event.body || '{}').force);
-    const results = await syncEvents(forceAll);
+    const results = await syncEvents();
     if (logId) {
       await supabase.from('sync_log').update({
         status: 'complete',
@@ -222,7 +212,7 @@ exports.handler = async (event) => {
     console.log('Events sync complete:', JSON.stringify(results));
     return {
       statusCode: 200, headers,
-      body: JSON.stringify({ success: true, upserted: results.upserted ?? results.synced ?? 0, results })
+      body: JSON.stringify({ success: true, updated: results.updated, inserted: results.inserted, errors: results.errors?.length, image_samples: results.image_samples })
     };
   } catch (err) {
     console.error('Events sync error:', err.message);
