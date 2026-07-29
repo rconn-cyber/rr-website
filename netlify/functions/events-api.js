@@ -1,18 +1,19 @@
 // netlify/functions/events-api.js
-// Public events feed from Supabase rr_events table.
-// Returns all active events; is_public flag lets the client hide members-only ones.
-// Env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY (same as admin-events.js)
+// Public events feed from Supabase rr_events.
+// ?debug=1 returns raw diagnostics (row count, first row, env check).
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-exports.handler = async () => {
+exports.handler = async (event) => {
+  const debug = event.queryStringParameters?.debug === '1';
+
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    return json(500, { error: 'Missing SUPABASE_URL or SUPABASE_SERVICE_KEY env vars' });
+    return json(500, { error: 'Missing env vars', SUPABASE_URL: !!SUPABASE_URL, SUPABASE_KEY: !!SUPABASE_KEY });
   }
 
   try {
-    // Fetch all active events ordered by start date ascending
+    // First try: active events only
     const query = '/rr_events?is_active=eq.true&order=date_start.asc.nullslast,created_at.asc&limit=500';
 
     const res = await fetch(`${SUPABASE_URL}/rest/v1${query}`, {
@@ -23,16 +24,42 @@ exports.handler = async () => {
       }
     });
 
+    const text = await res.text();
+
     if (!res.ok) {
-      const text = await res.text();
-      return json(502, { error: `Supabase ${res.status}`, detail: text });
+      // Try without the is_active filter — maybe column doesn't exist or RLS blocks it
+      const res2 = await fetch(`${SUPABASE_URL}/rest/v1/rr_events?order=date_start.asc.nullslast&limit=500`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      const text2 = await res2.text();
+      return json(502, {
+        error: `Supabase ${res.status}`,
+        detail: text.slice(0, 300),
+        fallback_status: res2.status,
+        fallback_body: text2.slice(0, 300)
+      });
     }
 
-    const rows = await res.json();
+    let rows;
+    try { rows = JSON.parse(text); } catch(e) {
+      return json(500, { error: 'JSON parse failed', raw: text.slice(0, 200) });
+    }
 
-    // Normalise each row so events.html gets the same shape it already expects
+    if (debug) {
+      return json(200, {
+        count: rows.length,
+        env_ok: true,
+        supabase_url: SUPABASE_URL,
+        first_row: rows[0] || null,
+        sample_dates: rows.slice(0,5).map(r => ({ title: r.title, date_start: r.date_start, is_public: r.is_public, is_active: r.is_active }))
+      });
+    }
+
     const events = rows.map(normalise);
-
     return json(200, events);
 
   } catch (err) {
@@ -41,23 +68,15 @@ exports.handler = async () => {
   }
 };
 
-/**
- * Map an rr_events row to the shape events.html already consumes:
- *   id, title, description, body_html, date_start, date_end,
- *   time_display, location, tags, is_public, photo_urls, luma_url
- */
 function normalise(row) {
-  // photo_urls may be stored as a JSON string or already an array
   let photos = row.photo_urls;
   if (typeof photos === 'string') {
     try { photos = JSON.parse(photos); } catch { photos = photos ? [photos] : []; }
   }
   if (!Array.isArray(photos)) photos = [];
 
-  // tags may be stored as a Postgres array string like {"Social","Museum"} or JSON
   let tags = row.tags;
   if (typeof tags === 'string') {
-    // Postgres text[] comes back as {"tag1","tag2"}
     const pg = tags.match(/^\{(.*)\}$/);
     if (pg) {
       tags = pg[1].split(',').map(t => t.replace(/"/g, '').trim()).filter(Boolean);
@@ -67,28 +86,25 @@ function normalise(row) {
   }
   if (!Array.isArray(tags)) tags = tags ? [String(tags)] : ['General'];
 
-  // Build a human-readable time string from time_display or start/end times
-  const timeDisplay = row.time_display
-    || (row.time_start ? buildTime(row.time_start, row.time_end) : '');
+  const timeDisplay = row.time_display || (row.time_start ? buildTime(row.time_start, row.time_end) : '');
 
   return {
     id:           String(row.id),
     title:        row.title        || 'Untitled Event',
     description:  row.description  || '',
     body_html:    row.body_html    || '',
-    date_start:   row.date_start   || null,   // "YYYY-MM-DD"
+    date_start:   row.date_start   || null,
     date_end:     row.date_end     || null,
     time_display: timeDisplay,
     location:     row.location     || '',
     tags,
-    is_public:    row.is_public !== false,     // default true if null
+    is_public:    row.is_public !== false,
     photo_urls:   photos,
-    luma_url:     row.luma_url     || row.rsvp_url || null,
-    rsvp_url:     row.rsvp_url     || row.luma_url || null,
+    luma_url:     row.luma_url  || row.rsvp_url || null,
+    rsvp_url:     row.rsvp_url || row.luma_url  || null,
   };
 }
 
-/** "09:00:00" + "17:00:00" → "9:00 AM – 5:00 PM ET" */
 function buildTime(startStr, endStr) {
   const fmt = str => {
     if (!str) return '';
@@ -96,8 +112,7 @@ function buildTime(startStr, endStr) {
     const d = new Date(2000, 0, 1, h, m);
     return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
   };
-  const s = fmt(startStr);
-  const e = fmt(endStr);
+  const s = fmt(startStr), e = fmt(endStr);
   return e ? `${s} – ${e} ET` : s ? `${s} ET` : '';
 }
 
