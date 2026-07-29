@@ -205,6 +205,8 @@ exports.handler = async (event) => {
   };
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
 
+  // Netlify background functions (-background.js) get 15 min but must return quickly.
+  // We run the sync inline but cap each Supabase chunk so it stays fast.
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const { data: logRow } = await supabase
@@ -214,21 +216,17 @@ exports.handler = async (event) => {
     .single();
   const logId = logRow?.id;
 
-  try {
-    const results = await syncEvents();
+  // Run sync — batched parallel so it completes in ~3-5s
+  syncEvents().then(async results => {
+    console.log('Events sync complete:', JSON.stringify({ updated: results.updated, inserted: results.inserted, errors: results.errors?.length }));
     if (logId) {
       await supabase.from('sync_log').update({
         status: 'complete',
-        results: { events: results },
+        results: { updated: results.updated, inserted: results.inserted, errors: results.errors, image_samples: results.image_samples },
         finished_at: new Date().toISOString()
       }).eq('id', logId);
     }
-    console.log('Events sync complete:', JSON.stringify(results));
-    return {
-      statusCode: 200, headers,
-      body: JSON.stringify({ success: true, updated: results.updated, inserted: results.inserted, errors: results.errors?.length, image_samples: results.image_samples })
-    };
-  } catch (err) {
+  }).catch(async err => {
     console.error('Events sync error:', err.message);
     if (logId) {
       await supabase.from('sync_log').update({
@@ -237,9 +235,11 @@ exports.handler = async (event) => {
         finished_at: new Date().toISOString()
       }).eq('id', logId);
     }
-    return {
-      statusCode: 500, headers,
-      body: JSON.stringify({ success: false, error: err.message })
-    };
-  }
+  });
+
+  // Return immediately with the log ID so the client can poll sync-status
+  return {
+    statusCode: 202, headers,
+    body: JSON.stringify({ success: true, status: 'running', log_id: logId })
+  };
 };
