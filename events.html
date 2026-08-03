@@ -245,8 +245,6 @@ function checkMemberStatus(){
   isMember=!!(sess&&sess.member_number);
   if(isMember){
     const name=sess.first_name||sess.email||'Member';
-    document.getElementById('memberBanner').innerHTML=`&#9733; Welcome back, <strong>${name}</strong> — member-only events are shown below`;
-    document.getElementById('memberBanner').classList.add('visible');
     const btn=document.getElementById('membersFilterBtn');
     if(btn)btn.style.display='';
   }
