@@ -25,6 +25,7 @@
     + anchor('#museum', 'Museum')
     + pageLink('events.html', 'Events')
     + anchor('#donate', 'Donate')
+    + pageLink('faq.html', 'FAQ')
     + '<button class="member-btn" onclick="openMemberModal()">Member Login</button>'
     + '<a href="admin.html" title="Admin Panel"'
     + ' style="color:rgba(201,168,76,0.4);font-size:2.2rem;text-decoration:none;padding:0 0.3rem;transition:color 0.2s;"'
