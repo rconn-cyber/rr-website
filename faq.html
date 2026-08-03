@@ -3,184 +3,213 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAQs | 1st U.S. Volunteer Cavalry – Rough Riders</title>
+<title>FAQs | 1st U.S. Volunteer Cavalry – Tampa Rough Riders</title>
 <meta name="description" content="Answers to the most common questions about joining the Tampa Rough Riders, membership dues, events, and our mission honoring Theodore Roosevelt's legacy.">
-<link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  /* ── FAQ-specific styles ───────────────────────── */
-  .faq-page-wrap {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
+:root {
+  --navy:#0d1f3c; --navy-dark:#07101f; --gold:#C9A84C; --gold-dk:#8b6914;
+  --cream:#f5efe0; --cream2:#ede4cc; --parchment:#f0e8d0;
+  --text:#1a1208; --text2:#4a3c1e; --muted:#7a6a48;
+  --border:#d4c9a8; --burgundy:#6b1a1a; --radius:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--cream);color:var(--text);min-height:100vh;padding-top:64px}
 
-  /* Hero */
-  .faq-hero {
-    background: #1B2A4A;
-    color: #fff;
-    padding: 48px 40px 42px;
-    margin-bottom: 40px;
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-  }
-  .faq-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(-45deg,transparent,transparent 18px,rgba(255,255,255,0.03) 18px,rgba(255,255,255,0.03) 19px);
-    pointer-events: none;
-  }
-  .faq-hero-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #A07830;
-    margin-bottom: 12px;
-  }
-  .faq-hero-bar { width: 48px; height: 3px; background: #8B1A1A; margin-bottom: 18px; }
-  .faq-hero h1 {
-    font-family: Georgia, serif;
-    font-size: clamp(26px, 4vw, 38px);
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 14px;
-  }
-  .faq-hero h1 span { color: #FFFFFF; }
-  .faq-hero p { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.80); max-width: 540px; }
+/* ── NAV (matches home page) ── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--navy-dark);
+  border-bottom:1px solid rgba(201,168,76,0.3);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;height:64px;
+}
+.logo-nav{display:flex;align-items:center;gap:.75rem;text-decoration:none;}
+.logo-nav img{width:48px;height:48px;object-fit:contain;flex-shrink:0;}
+.logo-nav span{font-family:'IM Fell English',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.04em;}
+#topbar nav{display:flex;align-items:center;gap:0;}
+#topbar nav a{
+  color:var(--cream);text-decoration:none;
+  font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+  padding:0 1rem;height:64px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+}
+#topbar nav a:hover,#topbar nav a.active{color:var(--gold);border-bottom-color:var(--gold);}
+.member-btn{
+  background:transparent;border:1px solid var(--gold);color:var(--gold)!important;
+  padding:.4rem 1.1rem;border-radius:2px;font-size:.7rem;text-transform:uppercase;
+  letter-spacing:.06em;font-family:'Source Serif 4',serif;cursor:pointer;
+  transition:all .2s;line-height:1.3;white-space:normal;max-width:90px;text-align:center;
+}
+.member-btn:hover{background:var(--gold);color:var(--navy-dark)!important;}
+.cta-btn{
+  background:var(--gold);color:var(--navy-dark)!important;text-decoration:none;
+  padding:.5rem 1.2rem;font-family:'Cinzel',serif;font-size:.72rem;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;transition:background .2s;
+}
+.cta-btn:hover{background:#e0bc5a;border-bottom-color:transparent!important;}
+.nav-toggle{display:none;background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer;}
 
-  /* Section labels */
-  .faq-section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.20em;
-    text-transform: uppercase;
-    color: #A07830;
-    border-left: 3px solid #8B1A1A;
-    padding-left: 10px;
-    margin: 36px 0 14px;
-  }
+/* ── PAGE HERO ── */
+.faq-hero{
+  background: linear-gradient(135deg, var(--navy-dark) 0%, #1a3060 100%);
+  padding:4rem 2rem 3rem;
+  text-align:center;
+  border-bottom:1px solid rgba(201,168,76,.3);
+  position:relative;
+  overflow:hidden;
+}
+.faq-hero::before{
+  content:'FAQ';
+  position:absolute;
+  font-family:'Cinzel',serif;font-size:12rem;font-weight:700;
+  color:rgba(201,168,76,.04);letter-spacing:.3em;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;white-space:nowrap;
+}
+.faq-hero-eyebrow{
+  font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:1rem;opacity:.9;
+}
+.faq-hero h1{
+  font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;
+  color:var(--gold);letter-spacing:.08em;text-transform:uppercase;
+  text-shadow:0 2px 20px rgba(0,0,0,.5);margin-bottom:.75rem;
+}
+.faq-hero p{
+  font-family:'Source Serif 4',serif;font-style:italic;
+  font-size:1.05rem;color:rgba(240,232,216,.8);max-width:540px;margin:0 auto;line-height:1.7;
+}
+.faq-divider{
+  width:160px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);
+  margin:1.5rem auto;
+}
 
-  /* Accordion items */
-  .faq-item {
-    background: #fff;
-    border: 1px solid #E6DEC4;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
-  .faq-item:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.13); }
-  .faq-item.open { border-color: #2E4A7A; }
+/* ── MAIN CONTENT ── */
+.faq-wrap{max-width:820px;margin:0 auto;padding:3rem 2rem 5rem;}
 
-  .faq-q {
-    width: 100%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 18px 20px;
-    text-align: left;
-    font-family: Georgia, serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #1B2A4A;
-    line-height: 1.35;
-  }
-  .faq-q:focus-visible { outline: 2px solid #8B1A1A; outline-offset: -2px; }
-  .faq-item.open .faq-q { color: #8B1A1A; }
+/* Section labels */
+.faq-section-label{
+  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--gold);
+  border-left:3px solid var(--burgundy);padding-left:.75rem;
+  margin:2.5rem 0 1rem;
+}
 
-  .faq-chevron {
-    flex-shrink: 0;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: #F2ECD8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, transform 0.25s;
-  }
-  .faq-item.open .faq-chevron { background: #8B1A1A; transform: rotate(180deg); }
-  .faq-item.open .faq-chevron svg path { stroke: #fff; }
+/* Accordion */
+.faq-item{
+  background:#fff;
+  border:1px solid var(--border);
+  margin-bottom:6px;
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.faq-item:hover{box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.faq-item.open{border-color:var(--navy);}
 
-  .faq-a {
-    display: none;
-    padding: 4px 20px 20px;
-    font-size: 15px;
-    line-height: 1.75;
-    color: #5A5A4A;
-    border-top: 1px solid #E6DEC4;
-  }
-  .faq-item.open .faq-a { display: block; }
-  .faq-a p { margin-top: 12px; }
+.faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1.1rem 1.25rem;text-align:left;
+  font-family:'IM Fell English',serif;font-size:1.05rem;font-weight:400;
+  color:var(--navy);line-height:1.4;
+}
+.faq-q:focus-visible{outline:2px solid var(--burgundy);outline-offset:-2px;}
+.faq-item.open .faq-q{color:var(--burgundy);}
 
-  /* CTA strip */
-  .faq-cta {
-    margin-top: 48px;
-    background: #1B2A4A;
-    border-radius: 6px;
-    padding: 32px 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .faq-cta h3 { font-family: Georgia, serif; font-size: 20px; color: #fff; margin-bottom: 6px; }
-  .faq-cta p { font-size: 14px; color: rgba(255,255,255,0.72); }
-  .faq-cta-btn {
-    display: inline-block;
-    background: #8B1A1A;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 13px 28px;
-    border-radius: 4px;
-    white-space: nowrap;
-    transition: background 0.18s;
-  }
-  .faq-cta-btn:hover { background: #6E1414; }
+.faq-chevron{
+  flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  background:var(--parchment);display:flex;align-items:center;justify-content:center;
+  transition:background .2s,transform .25s;
+}
+.faq-item.open .faq-chevron{background:var(--burgundy);transform:rotate(180deg);}
+.faq-item.open .faq-chevron svg path{stroke:#fff;}
 
-  /* States */
-  .faq-loading { text-align: center; padding: 48px; color: #5A5A4A; font-size: 15px; }
-  .faq-error { background: #fff3f3; border: 1px solid #f5c6c6; border-radius: 4px; padding: 16px 20px; color: #7a1a1a; font-size: 14px; margin: 20px 0; }
+.faq-a{
+  display:none;padding:0 1.25rem 1.25rem;
+  font-size:.97rem;line-height:1.8;color:var(--text2);
+  border-top:1px solid var(--border);
+}
+.faq-item.open .faq-a{display:block;}
+.faq-a p{margin-top:.85rem;}
 
-  @media (max-width: 600px) {
-    .faq-hero { padding: 32px 20px 28px; }
-    .faq-cta { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
-    .faq-q { font-size: 15px; padding: 14px 16px; }
-    .faq-a { padding: 4px 16px 16px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .faq-chevron, .faq-item { transition: none; }
-  }
+/* ── CTA STRIP ── */
+.faq-cta{
+  margin-top:3rem;
+  background:var(--navy-dark);
+  border:1px solid rgba(201,168,76,.25);
+  padding:2.5rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+}
+.faq-cta h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:.5rem;letter-spacing:.05em;}
+.faq-cta p{font-size:.95rem;color:rgba(240,232,216,.7);}
+.faq-cta-btn{
+  display:inline-block;background:var(--gold);color:var(--navy-dark)!important;
+  font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
+  padding:.85rem 2rem;white-space:nowrap;transition:background .2s;border:2px solid var(--gold);
+}
+.faq-cta-btn:hover{background:#e0bc5a;}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--navy-dark);border-top:1px solid rgba(201,168,76,.15);
+  padding:3rem 2rem 1.5rem;text-align:center;
+}
+.footer-inner{max-width:700px;margin:0 auto;}
+footer h3{font-family:'Cinzel',serif;color:var(--gold);font-size:.85rem;letter-spacing:.1em;margin-bottom:.75rem;line-height:1.5;}
+footer p{color:rgba(240,232,216,.45);font-size:.85rem;line-height:1.8;}
+.footer-bully{font-family:'IM Fell English',serif;font-style:italic;color:var(--gold);font-size:1.1rem;display:block;margin-top:.75rem;}
+
+/* Loading/error */
+.faq-loading{text-align:center;padding:3rem;color:var(--muted);font-style:italic;}
+
+@media(max-width:700px){
+  #topbar nav{display:none;}
+  #topbar nav.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--navy-dark);padding:1rem 0;}
+  #topbar nav.open a{height:auto;padding:.75rem 1.5rem;}
+  .nav-toggle{display:block;}
+  .faq-hero{padding:3rem 1.25rem 2rem;}
+  .faq-wrap{padding:2rem 1.25rem 4rem;}
+  .faq-cta{flex-direction:column;align-items:flex-start;padding:1.5rem;}
+}
 </style>
 </head>
 <body>
 
-<!-- Shared nav -->
-<div id="header-placeholder"></div>
-<script src="assets/header.js"></script>
+<!-- NAV -->
+<header id="topbar">
+  <a href="index.html" class="logo-nav">
+    <img src="logo.png" alt="Tampa Rough Riders Logo"/>
+    <span>Tampa Rough Riders</span>
+  </a>
+  <nav id="main-nav">
+    <a href="index.html">Home</a>
+    <a href="index.html#history">History</a>
+    <a href="index.html#gallery">Gallery</a>
+    <a href="index.html#museum">Museum</a>
+    <a href="events.html">Events</a>
+    <a href="index.html#donate">Donate</a>
+    <a href="faq.html" class="active">FAQ</a>
+    <button class="member-btn" onclick="openMemberModal()">Member Login</button>
+    <a href="index.html#museum" class="cta-btn">Tour</a>
+  </nav>
+  <button class="nav-toggle" onclick="document.getElementById('main-nav').classList.toggle('open')">&#9776;</button>
+</header>
 
-<main class="faq-page-wrap">
+<!-- HERO -->
+<div class="faq-hero">
+  <div class="faq-hero-eyebrow">✦ &nbsp; 1st U.S. Volunteer Cavalry Regiment &nbsp; ✦</div>
+  <h1>Frequently Asked Questions</h1>
+  <div class="faq-divider"></div>
+  <p>Everything you need to know about joining the Rough Riders, our events, and our mission honoring Theodore Roosevelt's legacy in Tampa Bay.</p>
+</div>
 
-  <div class="faq-hero">
-    <div class="faq-hero-eyebrow">1st U.S. Volunteer Cavalry Regiment</div>
-    <div class="faq-hero-bar"></div>
-    <h1>Frequently Asked<br><span>Questions</span></h1>
-    <p>Everything you need to know about joining the Rough Riders, our events, and our mission honoring Theodore Roosevelt's legacy in Tampa Bay.</p>
-  </div>
-
+<!-- FAQ CONTENT -->
+<div class="faq-wrap">
   <div id="faq-content">
     <div class="faq-loading">Loading frequently asked questions…</div>
   </div>
@@ -190,56 +219,46 @@
       <h3>Ready to Ride With Us?</h3>
       <p>Membership applications open May 1 – June 30 each year.</p>
     </div>
-    <a href="/membership" class="faq-cta-btn">Learn About Membership</a>
+    <a href="index.html#donate" class="faq-cta-btn">Learn About Membership</a>
   </div>
+</div>
 
-</main>
-
-<!-- Shared footer -->
-<div id="footer-placeholder"></div>
-<script src="assets/footer.js"></script>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <h3>1st U.S. Volunteer Cavalry Regiment<br>Rough Riders, Inc.</h3>
+    <p>A 501(c)(3) nonprofit organization dedicated to preserving the legacy of President Theodore Roosevelt<br>and the men of the 1st U.S. Volunteer Cavalry.<br><br>
+    📍 601 N. 19th St., Tampa, FL 33605 &nbsp;·&nbsp; ✉️ office@tamparoughriders.org</p>
+    <span class="footer-bully">"Bully!"</span>
+    <p style="margin-top:1.5rem;font-size:.78rem;">© 2026 1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc. All rights reserved.</p>
+  </div>
+</footer>
 
 <script>
-// ── Fallback data (baked in — always works even if Supabase is unreachable) ──
+// ── Member modal stub (matches home page) ──
+function openMemberModal(){
+  alert('Member login coming soon. Please visit tamparoughriders.org/members');
+}
+
+// ── FAQ data ──
 var FAQ_FALLBACK = [
-  {category:"Membership",question:"What is the 1st U.S. Volunteer Cavalry Regiment \u2013 Rough Riders?",answer:"The 1st U.S. Volunteer Cavalry Regiment \u2013 Rough Riders, Inc. is a Tampa, Florida-based 501(c)(3) nonprofit organization that honors the legacy of Theodore Roosevelt and his famous Rough Riders regiment. We are a patriotic, civic, and charitable organization with approximately 630 members dedicated to community service, veteran support, and preserving the Rough Riders\u2019 historic spirit."},
-  {category:"Membership",question:"Who can join the Tampa Rough Riders?",answer:"Membership is open to men and women who share our values of patriotism, community service, and camaraderie. You do not need to be a military veteran to join, though we proudly count many veterans among our members. If you believe in TR\u2019s spirit of service and love the Tampa Bay community, you belong with us."},
+  {category:"Membership",question:"What is the 1st U.S. Volunteer Cavalry Regiment – Rough Riders?",answer:"The 1st U.S. Volunteer Cavalry Regiment – Rough Riders, Inc. is a Tampa, Florida-based 501(c)(3) nonprofit organization that honors the legacy of Theodore Roosevelt and his famous Rough Riders regiment. We are a patriotic, civic, and charitable organization with approximately 630 members dedicated to community service, veteran support, and preserving the Rough Riders' historic spirit."},
+  {category:"Membership",question:"Who can join the Tampa Rough Riders?",answer:"Membership is open to men and women who share our values of patriotism, community service, and camaraderie. You do not need to be a military veteran to join, though we proudly count many veterans among our members. If you believe in TR's spirit of service and love the Tampa Bay community, you belong with us."},
   {category:"Membership",question:"When can I apply for membership?",answer:"The membership application window opens May 1 and closes June 30 each year. Applications submitted outside this window cannot be processed until the following enrollment period. Existing members renew annually with a deadline in August."},
   {category:"Membership",question:"Is the Rough Riders a veterans-only organization?",answer:"No. While we deeply honor military service and have many veterans among our ranks, the Rough Riders is open to all patriotic citizens who share our commitment to community and the legacy of Theodore Roosevelt. Veterans, first responders, business owners, and community leaders all ride together."},
-  {category:"Events & Activities",question:"What events does the Rough Riders organize?",answer:"We run a full calendar year-round. Flagship events include the Annual Charity Golf Tournament (September, Hunter\u2019s Green Country Club), the Annual Charity Fishing Tournament (June, Tampa Bay area), and the Teddy Bear Run to Moffitt Cancer Center. We also hold regular member socials and community service events throughout the year."},
-  {category:"Events & Activities",question:"How do I register for the Annual Golf Tournament?",answer:"Registration for the Golf Tournament is available online at tamparoughriders.org. The tournament is a 4-person scramble held each September at Hunter\u2019s Green Country Club. Optional add-ons include a Mulligan Pack, Closest to Pin, Longest Drive contest, and Hole Sponsorships ($250). A Golf Cart Raffle \u2014 limited to 300 tickets \u2014 is drawn at the tournament."},
-  {category:"Events & Activities",question:"Are Rough Riders events open to the public?",answer:"Many of our events \u2014 including the Golf and Fishing Tournaments \u2014 are open to the public and welcome non-members. Some member meetings and social events are reserved for members only. Check tamparoughriders.org for the current event calendar and public event listings."},
-  {category:"Mission & Organization",question:"What charities does the Rough Riders support?",answer:"As a 501(c)(3) nonprofit, all fundraising supports charitable causes. Our primary beneficiaries include Moffitt Cancer Center\u2019s pediatric programs, veterans\u2019 support organizations, and other Tampa Bay area charities. Our Golf and Fishing Tournaments are our two largest annual fundraisers."},
-  {category:"Mission & Organization",question:"How do I stay informed about news and events?",answer:"Members receive the Bullygram \u2014 our weekly email newsletter covering upcoming events, member news, and organization updates. Public event listings are always available at tamparoughriders.org. You can also follow us on social media for the latest news."},
-  {category:"Mission & Organization",question:"Why is the motto \u201cBully!\u201d?",answer:"\u201cBully!\u201d was Theodore Roosevelt\u2019s favorite exclamation \u2014 meaning excellent, first-rate, superb. It captures his enthusiasm and the spirit of charging forward with purpose. You\u2019ll hear it often at our events."}
+  {category:"Events & Activities",question:"What events does the Rough Riders organize?",answer:"We run a full calendar year-round. Flagship events include the Annual Charity Golf Tournament (September, Hunter's Green Country Club), the Annual Charity Fishing Tournament (June, Tampa Bay area), and the Teddy Bear Run to Moffitt Cancer Center. We also hold regular member socials and community service events throughout the year."},
+  {category:"Events & Activities",question:"How do I register for the Annual Golf Tournament?",answer:"Registration for the Golf Tournament is available online at tamparoughriders.org. The tournament is a 4-person scramble held each September at Hunter's Green Country Club. Optional add-ons include a Mulligan Pack, Closest to Pin, Longest Drive contest, and Hole Sponsorships ($250). A Golf Cart Raffle — limited to 300 tickets — is drawn at the tournament."},
+  {category:"Events & Activities",question:"Are Rough Riders events open to the public?",answer:"Many of our events — including the Golf and Fishing Tournaments — are open to the public and welcome non-members. Some member meetings and social events are reserved for members only. Check tamparoughriders.org for the current event calendar and public event listings."},
+  {category:"Mission & Organization",question:"What charities does the Rough Riders support?",answer:"As a 501(c)(3) nonprofit, all fundraising supports charitable causes. Our primary beneficiaries include Moffitt Cancer Center's pediatric programs, veterans' support organizations, and other Tampa Bay area charities. Our Golf and Fishing Tournaments are our two largest annual fundraisers."},
+  {category:"Mission & Organization",question:"How do I stay informed about news and events?",answer:"Members receive the Bullygram — our weekly email newsletter covering upcoming events, member news, and organization updates. Public event listings are always available at tamparoughriders.org. You can also follow us on social media for the latest news."},
+  {category:"Mission & Organization",question:"Why is the motto \"Bully!\"?",answer:"\"Bully!\" was Theodore Roosevelt's favorite exclamation — meaning excellent, first-rate, superb. It captures his enthusiasm and the spirit of charging forward with purpose. You'll hear it often at our events."}
 ];
 
 var SUPABASE_URL  = 'https://qyoqyeaqacdjstvkonwx.supabase.co';
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5b3F5ZWFxYWNkanN0dmtvbnd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NjUzMzMsImV4cCI6MjA4ODM0MTMzM30.Ln-i6P0qZlmGYoD-bC9xAlggyjt36bXXQfrqmHi-LLo';
-
 var chevron = '<svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#1B2A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function injectSchema(faqs) {
-  var s = document.createElement('script');
-  s.type = 'application/ld+json';
-  s.textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map(function(f){
-      return {"@type":"Question","name":f.question,"acceptedAnswer":{"@type":"Answer","text":f.answer}};
-    }),
-    "publisher": {
-      "@type": "Organization",
-      "name": "1st U.S. Volunteer Cavalry Regiment \u2013 Rough Riders, Inc.",
-      "url": "https://www.tamparoughriders.org",
-      "taxID": "59-1867553",
-      "nonprofitStatus": "Nonprofit501c3"
-    }
-  });
-  document.head.appendChild(s);
-}
 
 function render(faqs) {
   var cats = [], grouped = {};
@@ -270,10 +289,8 @@ function render(faqs) {
       if (!open){ item.classList.add('open'); this.setAttribute('aria-expanded','true'); }
     });
   });
-  injectSchema(faqs);
 }
 
-// Try Supabase first; fall back to baked-in data
 fetch(SUPABASE_URL + '/rest/v1/rr_faqs?active=eq.true&order=sort_order.asc', {
   headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
 })
@@ -281,6 +298,5 @@ fetch(SUPABASE_URL + '/rest/v1/rr_faqs?active=eq.true&order=sort_order.asc', {
 .then(function(data){ render(data && data.length ? data : FAQ_FALLBACK); })
 .catch(function(){ render(FAQ_FALLBACK); });
 </script>
-
 </body>
 </html>
