@@ -846,7 +846,7 @@ footer a:hover { color: var(--gold); }
     <a href="#history">History</a>
     <a href="#gallery">Gallery</a>
     <a href="#museum">Museum</a>
-    <a href="#events">Events</a>
+    <a href="events.html">Events</a>
     <a href="#donate">Donate</a>
     <a href="faq.html">FAQ</a>
     <button class="member-btn" onclick="openMemberModal()">Member Login</button>
@@ -1173,63 +1173,59 @@ footer a:hover { color: var(--gold); }
       <h2 class="section-title">Upcoming Events</h2>
       <div class="ornamental-rule"></div>
       <p style="max-width:600px;margin:1.5rem auto 0;font-size:0.9rem;color:rgba(240,232,208,0.7);">
-        All public events. Members may access full event details and member-only events after logging in.
+        Upcoming public events. Members may access full details and member-only events after logging in.
       </p>
     </div>
-    <div class="events-grid fade-in">
-
-      <div class="event-card">
-        <div class="event-date-badge">June 19&ndash;20, 2026</div>
-        <h3>31st Annual Charity Fishing Tournament</h3>
-        <p>Treasure Island, FL. Open to the public. Categories for Inshore, Tarpon, and more. Live scoring, prizes, and awards ceremony. Registration via CognitoForms.</p>
-        <a href="http://roughridersfishing.org" target="_blank" class="event-ticket">&#127907; Register Now</a>
-        <div class="payment-note">Ticket sales via Square Payments &mdash; integration active at roughridersfishing.org</div>
-      </div>
-
-      <div class="event-card">
-        <div class="event-date-badge">2026 Season</div>
-        <h3>Charity Sporting Clays Tournament</h3>
-        <p>Annual clay shooting fundraiser open to the public and corporate sponsors. Sponsor packages available. Benefits community charity programs.</p>
-        <a href="#" class="event-ticket">&#127919; View Details</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-date-badge">2026 Season</div>
-        <h3>Cop Cup Clays Tournament</h3>
-        <p>Law enforcement appreciation shooting tournament. Honoring the service of Tampa Bay area law enforcement with a day of competition and fellowship.</p>
-        <a href="#" class="event-ticket">&#127942; View Details</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-date-badge">Annual</div>
-        <h3>St. Patrick's Day Parade</h3>
-        <p>The Tampa Rough Riders march in one of Tampa's most beloved parades &mdash; an annual tradition celebrating community, heritage, and Tampa pride.</p>
-        <a href="#" class="event-ticket">&#9752;&#65039; View Details</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-date-badge">By Appointment</div>
-        <h3>Museum &amp; Historical Tours</h3>
-        <p>Private guided tours of the Teddy Roosevelt Museum and Library. Educational group tours for schools, civic organizations, and historical societies.</p>
-        <a href="#museum" class="event-ticket">&#127963; Book a Tour</a>
-        <div class="square-placeholder">
-          <div class="sq-icon">&#9633;</div>
-          <p>Online ticket sales via Square &mdash; coming soon</p>
-        </div>
-      </div>
-
-      <div class="event-card">
-        <div class="event-date-badge">May 1 &ndash; June 30</div>
-        <h3>Annual Membership Drive</h3>
-        <p>New member applications accepted once per year. Join 630+ members dedicated to preserving the legacy of TR and the Rough Riders. All backgrounds welcome.</p>
-        <a href="#" class="event-ticket">&#11088; Apply for Membership</a>
-      </div>
-
+    <div class="events-grid fade-in" id="home-events-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:2rem;color:rgba(240,232,208,0.5);">Loading events&hellip;</div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <a href="events.html" class="cta-link">View Full Events Calendar &rarr;</a>
     </div>
   </div>
 </section>
 
-<!-- DONATION -->
+<script>
+(function(){
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  fetch('/.netlify/functions/events-api')
+    .then(function(r){ return r.json(); })
+    .then(function(events){
+      var now = new Date(); now.setHours(0,0,0,0);
+      var upcoming = events
+        .filter(function(e){ return e.is_public && e.date_start && new Date(e.date_start+'T12:00:00') >= now; })
+        .sort(function(a,b){ return a.date_start.localeCompare(b.date_start); })
+        .slice(0,6);
+      var grid = document.getElementById('home-events-grid');
+      if(!upcoming.length){
+        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:rgba(240,232,208,0.5);"><a href="events.html" style="color:var(--gold)">View full calendar &rarr;</a></div>';
+        return;
+      }
+      grid.innerHTML = upcoming.map(function(ev){
+        var d = new Date(ev.date_start+'T12:00:00');
+        var dateLabel = MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+        var time = ev.time_display ? ' &middot; '+ev.time_display : '';
+        var loc = ev.location ? '<div class="event-meta">&#128205; '+ev.location+'</div>' : '';
+        var desc = ev.description ? '<p class="event-desc">'+ev.description.slice(0,120)+(ev.description.length>120?'&hellip;':'')+'</p>' : '';
+        var btn = ev.rsvp_url
+          ? '<a href="'+ev.rsvp_url+'" target="_blank" class="event-link">&#127903; Register Now</a>'
+          : '<a href="events.html" class="event-link">&#128197; View Details</a>';
+        return '<div class="event-card">'
+          +'<div class="event-date-badge">'+dateLabel+time+'</div>'
+          +'<h3 class="event-title">'+ev.title+'</h3>'
+          +loc+desc
+          +'<div class="event-actions">'+btn+'</div>'
+          +'</div>';
+      }).join('');
+    })
+    .catch(function(){
+      document.getElementById('home-events-grid').innerHTML=
+        '<div style="grid-column:1/-1;text-align:center;padding:2rem;">'
+        +'<a href="events.html" style="color:var(--gold)">View events calendar &rarr;</a></div>';
+    });
+})();
+</script>
+
 <section id="donate" class="section-navy">
   <div class="section-inner">
     <div class="section-header fade-in">
