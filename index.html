@@ -1256,29 +1256,19 @@ footer a:hover { color: var(--gold); }
         All donations acknowledged for tax purposes.
       </p>
 
-      <!-- Square Payment Integration Placeholder -->
-      <div id="square-payment-form" style="max-width:420px;margin:0 auto;">
-        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.3);padding:1.5rem;border-radius:4px;">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-            <div style="width:36px;height:36px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--navy-dark);font-weight:900;font-size:1.1rem;">&#9633;</div>
-            <div>
-              <div style="font-size:0.75rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Square Payments</div>
-              <div style="font-size:0.8rem;color:rgba(240,232,208,0.6);">Secure card processing</div>
-            </div>
-          </div>
-          <div id="card-container" style="min-height:90px;background:rgba(255,255,255,0.04);border:1px dashed rgba(201,168,76,0.2);border-radius:4px;display:flex;align-items:center;justify-content:center;">
-            <p style="font-size:0.8rem;color:rgba(240,232,208,0.4);font-style:italic;text-align:center;padding:1rem;">
-              Square Web Payments SDK mounts here<br/>
-              <span style="font-size:0.72rem;">Connect your Square account to activate</span>
-            </p>
-          </div>
-          <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="processDonation()">
-            Donate $<span id="donateDisplayAmt">50</span>
-          </button>
-          <p style="font-size:0.72rem;color:rgba(240,232,208,0.35);text-align:center;margin-top:0.75rem;">
-            &#128274; Secured by Square &middot; PCI Compliant &middot; SSL Encrypted
-          </p>
-        </div>
+      <!-- Stripe Donate Button -->
+      <div style="max-width:420px;margin:0 auto;">
+        <a id="stripe-donate-btn" href="https://donate.stripe.com/aFaaEW93C4jk3KPczcbMQ0h" target="_blank"
+           style="display:block;width:100%;background:var(--gold);color:var(--navy-dark);text-align:center;
+                  padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;font-weight:700;
+                  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;
+                  border-radius:2px;transition:background 0.2s;"
+           onmouseover="this.style.background='#e0bc5a'" onmouseout="this.style.background='var(--gold)'">
+          Donate $<span id="donateDisplayAmt">50</span>
+        </a>
+        <p style="font-size:0.72rem;color:rgba(240,232,208,0.4);text-align:center;margin-top:0.75rem;">
+          &#128274; Secured by Stripe &middot; PCI Compliant &middot; SSL Encrypted
+        </p>
       </div>
 
       <p style="margin-top:2rem;font-size:0.82rem;color:rgba(240,232,208,0.5);">
